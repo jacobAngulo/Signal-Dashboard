@@ -1,0 +1,15 @@
+[Unit]
+Description=Signal Dashboard (LSTM + Intrinsic signal analytics UI)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/.openclaw/workspace/Signal-Dashboard
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/root/.openclaw/workspace/Signal-Dashboard/.venv/bin/python -m uvicorn backend.main:app --host 127.0.0.1 --port 8010
+Restart=always
+RestartSec=5
+User=root
+
+[Install]
+WantedBy=multi-user.target

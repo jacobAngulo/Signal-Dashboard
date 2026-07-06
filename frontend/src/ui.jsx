@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from 'react'
 import { PRODUCER_META } from './api.js'
+import { href } from './nav.js'
 import { signCls, fmtPct, fmtMoney } from './format.js'
 
-export function Tag({ kind, children }) {
-  return <span className={`tag tag-${kind || 'default'}`}>{children}</span>
+export function Tag({ kind, children, title }) {
+  return <span title={title} className={`tag tag-${kind || 'default'}`}>{children}</span>
 }
 
 export function ProducerTag({ producer }) {
@@ -21,17 +22,30 @@ export function StatusTag({ status }) {
   return <Tag kind={kind}>{status}</Tag>
 }
 
-export function StateTag({ state }) {
+// Performance status of a signal (price-based, since signal date).
+export function PerfTag({ status }) {
   const map = {
-    open: ['ok', 'open'],
-    partial: ['warn', 'partial'],
-    closed: ['info', 'closed'],
-    pending: ['warn', 'pending'],
-    not_traded: ['muted', 'not traded'],
+    pending: ['warn', '⧗ pending'],
+    up: ['ok', '▲ up'],
+    down: ['err', '▼ down'],
+    flat: ['muted', '— flat'],
     no_action: ['muted', 'no action'],
   }
-  const [kind, label] = map[state] || ['muted', state || '–']
+  const [kind, label] = map[status] || ['muted', status || '–']
   return <Tag kind={kind}>{label}</Tag>
+}
+
+export function TickerLink({ t, bold = true }) {
+  return (
+    <a className="tlink" href={href('ticker', t)} onClick={(e) => e.stopPropagation()}>
+      {bold ? <b>{t}</b> : t}
+    </a>
+  )
+}
+
+export function DateLink({ d }) {
+  if (!d) return <span className="muted">–</span>
+  return <a className="dlink" href={href('day', d)} onClick={(e) => e.stopPropagation()}>{d}</a>
 }
 
 export function Pct({ v, digits = 1 }) {
@@ -42,8 +56,28 @@ export function Money({ v }) {
   return <span className={signCls(v)}>{fmtMoney(v)}</span>
 }
 
+// Tiny inline sparkline for table cells; dot marks the signal date.
+export function MiniSpark({ spark, ret }) {
+  if (!spark || !spark.px || spark.px.length < 2) return <span className="muted">–</span>
+  const { px, signal_i } = spark
+  const w = 92, h = 24
+  const min = Math.min(...px), max = Math.max(...px)
+  const span = max - min || 1
+  const X = (i) => 2 + (i / (px.length - 1)) * (w - 4)
+  const Y = (v) => 2 + (1 - (v - min) / span) * (h - 4)
+  const color = ret === null || ret === undefined ? '#7d8899' : ret > 0 ? '#3ecf8e' : ret < 0 ? '#f07070' : '#7d8899'
+  const pts = px.map((v, i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ')
+  return (
+    <svg width={w} height={h} className="minispark">
+      <polyline points={pts} fill="none" stroke={color} strokeWidth="1.3" />
+      {signal_i !== null && signal_i !== undefined && signal_i < px.length && (
+        <circle cx={X(signal_i)} cy={Y(px[signal_i])} r="2.6" fill="#f6c453" />
+      )}
+    </svg>
+  )
+}
+
 // Generic client-side sortable table.
-// columns: [{ key, label, render(row), sortVal(row), align, title }]
 export function Table({ columns, rows, initSort, initDir = 'desc', onRow, empty = 'No rows', maxHeight }) {
   const [sort, setSort] = useState(initSort)
   const [dir, setDir] = useState(initDir)
@@ -97,30 +131,6 @@ export function Table({ columns, rows, initSort, initDir = 'desc', onRow, empty 
         </tbody>
       </table>
     </div>
-  )
-}
-
-// Inline SVG price sparkline with optional signal markers.
-export function Spark({ series, markers = [], width = 560, height = 120 }) {
-  if (!series || series.length < 2) return <div className="muted">no price series</div>
-  const px = series.map((p) => p.px)
-  const min = Math.min(...px), max = Math.max(...px)
-  const span = max - min || 1
-  const X = (i) => 4 + (i / (series.length - 1)) * (width - 8)
-  const Y = (v) => 6 + (1 - (v - min) / span) * (height - 12)
-  const path = series.map((p, i) => `${i ? 'L' : 'M'}${X(i).toFixed(1)},${Y(p.px).toFixed(1)}`).join(' ')
-  const markerSet = new Set(markers)
-  return (
-    <svg width={width} height={height} className="spark">
-      <path d={path} fill="none" stroke="#5b9cf6" strokeWidth="1.5" />
-      {series.map((p, i) =>
-        markerSet.has(p.date) ? (
-          <circle key={p.date + i} cx={X(i)} cy={Y(p.px)} r="3.5" fill="#f6c453" stroke="#111" />
-        ) : null
-      )}
-      <text x={width - 6} y={12} textAnchor="end" className="spark-label">{max.toPrecision(4)}</text>
-      <text x={width - 6} y={height - 4} textAnchor="end" className="spark-label">{min.toPrecision(4)}</text>
-    </svg>
   )
 }
 

@@ -1,46 +1,68 @@
-"""Signal enrichment (forward returns + execution lifecycle) and aggregates."""
+"""Signal enrichment (forward performance) and analytics aggregates.
+
+Purely signal + price based — this dashboard is decoupled from the trading
+arena and only exposes what the producers generated and how it moved.
+"""
 from collections import defaultdict
+from datetime import date as _date
 from statistics import median
 
-from .arena import ARENA
 from .store import STORE
 
 HORIZONS = (1, 5, 20)
 
 
-def enrich(rec):
-    """Attach entry price, forward returns and arena execution to a decision."""
+def enrich(rec, spark=False):
+    """Attach entry price, forward returns and a performance status."""
     out = dict(rec)
-    ticker, date = rec["ticker"], rec["date"]
+    ticker, dt = rec["ticker"], rec["date"]
     entry = rec.get("price")
     try:
         entry = float(entry) if entry is not None else None
     except (TypeError, ValueError):
         entry = None
     if not entry:
-        entry = STORE.price_on(ticker, date)
+        entry = STORE.price_on(ticker, dt)
     out["entry_px"] = entry
 
     last_px, last_date = STORE.last_price(ticker)
     out["last_px"], out["last_date"] = last_px, last_date
     for h in HORIZONS:
-        px, _ = STORE.fwd_price(ticker, date, h)
+        px, _ = STORE.fwd_price(ticker, dt, h)
         out[f"ret_{h}d"] = (px / entry - 1) if (px and entry) else None
-    out["ret_since"] = (last_px / entry - 1) if (last_px and entry and last_date and last_date > date) else None
+    has_fwd = last_px and entry and last_date and last_date > dt
+    out["ret_since"] = (last_px / entry - 1) if has_fwd else None
 
-    ex = ARENA.match_signal(rec["producer"], date, ticker) if rec.get("decision") == "BUY" else {"traded": False}
-    out["exec"] = ex
     if rec.get("decision") != "BUY":
-        out["state"] = "no_action"
-    elif not ex["traded"]:
-        out["state"] = "not_traded"
+        out["status_perf"] = "no_action"
+    elif not has_fwd:
+        out["status_perf"] = "pending"
+    elif out["ret_since"] > 0.001:
+        out["status_perf"] = "up"
+    elif out["ret_since"] < -0.001:
+        out["status_perf"] = "down"
     else:
-        out["state"] = ex["state"]
+        out["status_perf"] = "flat"
+
+    if spark:
+        series = STORE.series(ticker)
+        i = next((k for k, p in enumerate(series) if p["date"] >= dt), None)
+        if i is not None:
+            window = series[max(0, i - 3):]
+            out["spark"] = {
+                "px": [round(p["px"], 6) for p in window[-45:]],
+                "signal_i": min(i, 3) if len(window) <= 45 else None,
+            }
+            # if truncated from the left, recompute marker index
+            if out["spark"]["signal_i"] is None:
+                w = window[-45:]
+                out["spark"]["signal_i"] = next(
+                    (k for k, p in enumerate(w) if p["date"] >= dt), None)
     return out
 
 
 def enriched_decisions(producer=None, date_from=None, date_to=None,
-                       ticker=None, buys_only=False):
+                       ticker=None, buys_only=False, spark=False):
     rows = []
     for rec in STORE.all_decisions:
         if producer and rec["producer"] != producer:
@@ -53,7 +75,7 @@ def enriched_decisions(producer=None, date_from=None, date_to=None,
             continue
         if buys_only and rec.get("decision") != "BUY":
             continue
-        rows.append(enrich(rec))
+        rows.append(enrich(rec, spark=spark))
     return rows
 
 
@@ -92,10 +114,26 @@ def _buckets(rows, field, n_buckets=4):
     return buckets
 
 
+def _histogram(universe, signals, lo, hi, n_bins):
+    """Share-normalized distribution: signal metric vs whole score universe."""
+    step = (hi - lo) / n_bins
+    bins = []
+    u_tot = len(universe) or 1
+    s_tot = len(signals) or 1
+    for i in range(n_bins):
+        b_lo, b_hi = lo + i * step, lo + (i + 1) * step
+        last = i == n_bins - 1
+        u = sum(1 for v in universe if b_lo <= v < b_hi or (last and v >= b_hi))
+        s = sum(1 for v in signals if b_lo <= v < b_hi or (last and v >= b_hi))
+        bins.append({"lo": round(b_lo, 4), "label": f"{b_lo:.2f}",
+                     "universe": u / u_tot, "signals": s / s_tot,
+                     "n_universe": u, "n_signals": s})
+    return bins
+
+
 def analytics(producer=None, date_from=None, date_to=None):
     rows = enriched_decisions(producer, date_from, date_to, buys_only=True)
 
-    # per-day timeline (all producers kept so the chart can stack them)
     timeline = defaultdict(lambda: {"date": None})
     for p in STORE.producers.values():
         for run in p.run_rows():
@@ -107,26 +145,21 @@ def analytics(producer=None, date_from=None, date_to=None):
             t["date"] = run["date"]
             t[f"{run['producer']}_buys"] = run["n_buy"]
             t[f"{run['producer']}_status"] = run["status"]
-    for r in rows:
-        t = timeline[r["date"]]
-        key = f"{r['producer']}_traded"
-        t[key] = t.get(key, 0) + (1 if r["exec"]["traded"] else 0)
 
     by_producer = {}
     for name in STORE.producers:
         prows = [r for r in rows if r["producer"] == name]
-        traded = [r for r in prows if r["exec"]["traded"]]
         by_producer[name] = {
             "n_signals": len(prows),
-            "n_traded": len(traded),
+            "n_pending": sum(1 for r in prows if r["status_perf"] == "pending"),
+            "n_up": sum(1 for r in prows if r["status_perf"] == "up"),
+            "n_down": sum(1 for r in prows if r["status_perf"] == "down"),
             "horizons": {f"{h}d": _stats([r.get(f"ret_{h}d") for r in prows])
                          for h in HORIZONS},
             "since": _stats([r.get("ret_since") for r in prows]),
-            "realized_pnl": sum(r["exec"].get("realized_pnl") or 0 for r in traded),
-            "unrealized_pnl": sum(r["exec"].get("unrealized_pnl") or 0 for r in traded),
         }
 
-    # cumulative equal-weight return of taking every BUY at close, per producer
+    # cumulative equal-weight return of taking every BUY at close, 1-day hold
     cumulative = []
     daily = defaultdict(dict)
     for name in STORE.producers:
@@ -143,11 +176,35 @@ def analytics(producer=None, date_from=None, date_to=None):
         running.update(daily[dt])
         cumulative.append({"date": dt, **{k: round(v, 6) for k, v in running.items()}})
 
+    scatter = [{"ticker": r["ticker"], "date": r["date"], "producer": r["producer"],
+                "metric": r.get("metric"), "ret_5d": r.get("ret_5d"),
+                "ret_since": r.get("ret_since")}
+               for r in rows if r.get("metric") is not None]
+
+    sig_metric = {n: [r["metric"] for r in rows
+                      if r["producer"] == n and r.get("metric") is not None]
+                  for n in STORE.producers}
+    histograms = {
+        "lstm": _histogram(STORE.producers["lstm"].metric_values,
+                           sig_metric.get("lstm", []), 0.0, 0.35, 14),
+        "intrinsic": _histogram(
+            [v for v in STORE.producers["intrinsic"].metric_values if 0 <= v <= 1],
+            sig_metric.get("intrinsic", []), 0.0, 1.0, 20),
+    }
+
+    weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+    weekday = []
+    for wd in range(5):
+        sel = [r for r in rows
+               if _date.fromisoformat(r["date"]).weekday() == wd]
+        weekday.append({"day": weekdays[wd], "n": len(sel),
+                        **_stats([r.get("ret_5d") for r in sel])})
+
     ranked = sorted((r for r in rows if r.get("ret_since") is not None),
                     key=lambda r: r["ret_since"])
     slim = lambda r: {k: r.get(k) for k in
                       ("id", "producer", "date", "ticker", "metric",
-                       "entry_px", "ret_since", "state")}
+                       "entry_px", "ret_since", "status_perf")}
 
     return {
         "timeline": sorted(timeline.values(), key=lambda t: t["date"] or ""),
@@ -158,47 +215,9 @@ def analytics(producer=None, date_from=None, date_to=None):
                                   "discount_to_intrinsic"),
         },
         "cumulative": cumulative,
+        "scatter": scatter,
+        "histograms": histograms,
+        "weekday": weekday,
         "best": [slim(r) for r in ranked[::-1][:5]],
         "worst": [slim(r) for r in ranked[:5]],
-    }
-
-
-def execution_summary():
-    trips = ARENA.round_trips()
-    live = ARENA.live_prices()
-    by_bot = defaultdict(lambda: {"trips": 0, "wins": 0, "pnl": 0.0})
-    for t in trips:
-        b = by_bot[t["bot"]]
-        b["trips"] += 1
-        b["wins"] += 1 if t["pnl"] > 0 else 0
-        b["pnl"] += t["pnl"]
-
-    open_rows = []
-    for (bot_id, symbol), lot_list in ARENA.open_lots().items():
-        for lot in lot_list:
-            px = live.get(symbol)
-            open_rows.append({
-                "bot": lot["bot"], "symbol": symbol, "producers": lot["producers"],
-                "entry_date": lot["date"], "qty": lot["qty"], "entry_px": lot["px"],
-                "cost": lot["qty"] * lot["px"],
-                "live_px": px,
-                "unrealized_pnl": lot["qty"] * (px - lot["px"]) if px else None,
-                "ret": (px / lot["px"] - 1) if (px and lot["px"]) else None,
-            })
-    open_rows.sort(key=lambda r: r["entry_date"], reverse=True)
-
-    recent = sorted(ARENA.orders, key=lambda o: o["timestamp"] or "", reverse=True)[:80]
-    return {
-        "round_trips": sorted(trips, key=lambda t: t["exit_date"], reverse=True),
-        "by_bot": [{"bot": k, **v, "win_rate": v["wins"] / v["trips"] if v["trips"] else None}
-                   for k, v in sorted(by_bot.items(), key=lambda kv: -kv[1]["pnl"])],
-        "open_positions": open_rows,
-        "recent_orders": recent,
-        "totals": {
-            "realized_pnl": sum(t["pnl"] for t in trips),
-            "n_trips": len(trips),
-            "win_rate": (sum(1 for t in trips if t["pnl"] > 0) / len(trips)) if trips else None,
-            "open_cost": sum(r["cost"] for r in open_rows),
-            "open_unrealized": sum(r["unrealized_pnl"] or 0 for r in open_rows),
-        },
     }

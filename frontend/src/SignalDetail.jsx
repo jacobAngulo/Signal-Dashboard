@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { api } from './api.js'
-import { fmtMoney, fmtNum, fmtPct, fmtPx, fmtTs } from './format.js'
-import { Money, Pct, ProducerTag, Spark, StateTag, Table, Tag } from './ui.jsx'
+import { fmtNum, fmtPx, fmtTs } from './format.js'
+import { navigate } from './nav.js'
+import { Pct, PerfTag, ProducerTag, Tag } from './ui.jsx'
+import { PriceChart } from './charts.jsx'
 
 const CORE_KEYS = new Set([
-  'id', 'producer', 'date', 'ticker', 'decision', 'metric', 'exec', 'state',
+  'id', 'producer', 'date', 'ticker', 'decision', 'metric', 'status_perf', 'spark',
   'entry_px', 'last_px', 'last_date', 'ret_1d', 'ret_5d', 'ret_20d', 'ret_since',
 ])
 
@@ -19,11 +21,11 @@ export default function SignalDetail({ signal, onClose }) {
   }, [signal?.id])
 
   if (!signal) return null
-  const ex = signal.exec || { traded: false }
   const raw = Object.entries(signal)
     .filter(([k, v]) => !CORE_KEYS.has(k) && v !== null && v !== undefined && typeof v !== 'object')
-
-  const sigDates = tickerData?.signals?.map((s) => s.date) || [signal.date]
+  const markers = (tickerData?.signals || [signal])
+    .filter((s) => s.decision === 'BUY')
+    .map((s) => ({ date: s.date, producer: s.producer }))
 
   return (
     <div className="drawer-overlay" onClick={onClose}>
@@ -33,9 +35,14 @@ export default function SignalDetail({ signal, onClose }) {
             <span className="drawer-ticker">{signal.ticker}</span>{' '}
             <ProducerTag producer={signal.producer} />{' '}
             <Tag kind="info">{signal.decision}</Tag>{' '}
-            <StateTag state={signal.state} />
+            <PerfTag status={signal.status_perf} />
           </div>
-          <button className="btn" onClick={onClose}>✕</button>
+          <div>
+            <button className="btn" onClick={() => { onClose(); navigate('ticker', signal.ticker) }}>
+              open ticker page →
+            </button>
+            <button className="btn" onClick={onClose}>✕</button>
+          </div>
         </div>
         <div className="drawer-sub muted">
           signaled {signal.date}
@@ -52,37 +59,8 @@ export default function SignalDetail({ signal, onClose }) {
           <MiniStat label="since" v={<Pct v={signal.ret_since} />} />
         </div>
 
-        <h4>Price (from daily score files, signal dates marked)</h4>
-        <Spark series={tickerData?.series} markers={sigDates} />
-
-        <h4>Arena execution</h4>
-        {!ex.traded ? (
-          <div className="muted">No producer-linked bot bought {signal.ticker} on {signal.date}.</div>
-        ) : (
-          <div>
-            <div className="kv-grid">
-              <span>bots</span><b>{(ex.bots || []).join(', ')}</b>
-              <span>filled qty</span><b>{fmtNum(ex.fill_qty, 4)}</b>
-              <span>avg fill</span><b>{fmtPx(ex.avg_fill_px)}</b>
-              <span>open qty</span><b>{fmtNum(ex.open_qty, 4)}</b>
-              <span>realized P&L</span><b><Money v={ex.realized_pnl} /></b>
-              <span>unrealized P&L</span><b><Money v={ex.unrealized_pnl} /></b>
-            </div>
-            {ex.exits?.length > 0 && (
-              <Table
-                columns={[
-                  { key: 'date', label: 'Exit date' },
-                  { key: 'bot', label: 'Bot' },
-                  { key: 'qty', label: 'Qty', align: 'right', render: (r) => fmtNum(r.qty, 4) },
-                  { key: 'px', label: 'Px', align: 'right', render: (r) => fmtPx(r.px) },
-                  { key: 'pnl', label: 'P&L', align: 'right', render: (r) => <Money v={r.pnl} /> },
-                ]}
-                rows={ex.exits}
-                initSort="date"
-              />
-            )}
-          </div>
-        )}
+        <h4>Price — signal dates marked</h4>
+        <PriceChart series={tickerData?.series || []} signals={markers} height={200} />
 
         <h4>All signal fields</h4>
         <div className="kv-grid">

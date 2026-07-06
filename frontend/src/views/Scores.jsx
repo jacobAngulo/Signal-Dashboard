@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { api } from '../api.js'
 import { fmtNum } from '../format.js'
-import { Card, ErrorBox, Spinner } from '../ui.jsx'
+import { href } from '../nav.js'
+import { Card, ErrorBox, Spinner, TickerLink } from '../ui.jsx'
 
 const PAGE = 100
 
-// Server-side sorted/paginated browser over the full daily score files.
-export default function Scores({ initial }) {
-  const [producer, setProducer] = useState(initial?.producer || 'lstm')
-  const [date, setDate] = useState(initial?.date || '')
+// Server-side sorted/paginated browser over the raw daily score files.
+// Route: #/scores or #/scores/<producer>/<date>
+export default function Scores({ producer: p0, date: d0 }) {
+  const [producer, setProducer] = useState(p0 || 'lstm')
+  const [date, setDate] = useState(d0 || '')
   const [q, setQ] = useState('')
   const [sort, setSort] = useState(null)
   const [dir, setDir] = useState('desc')
@@ -21,20 +23,19 @@ export default function Scores({ initial }) {
 
   useEffect(() => {
     setErr(null)
-    const d = date || 'latest'
     const load = async () => {
       let useDate = date
       if (!useDate) {
-        // resolve latest available date for the producer via the runs list
         const runs = await api('runs')
         const mine = runs.runs.filter((r) => r.producer === producer && r.has_scores)
         if (!mine.length) throw new Error(`no score files for ${producer}`)
-        useDate = mine[0].date
-        setDate(useDate)
-        return // state change re-triggers
+        setDate(mine[0].date)
+        return
       }
       const res = await api(`scores/${producer}/${useDate}`, { sort, dir, limit: PAGE, offset, q })
       setData(res)
+      // keep the URL shareable without triggering a re-route
+      history.replaceState(null, '', href('scores', producer, useDate))
     }
     load().catch(setErr)
   }, [producer, date, sort, dir, offset, q])
@@ -71,7 +72,7 @@ export default function Scores({ initial }) {
 
       {err ? <ErrorBox err={err} /> : !data ? <Spinner /> : (
         <Card>
-          <div className="table-wrap" style={{ maxHeight: '65vh', overflowY: 'auto' }}>
+          <div className="table-wrap" style={{ maxHeight: '68vh', overflowY: 'auto' }}>
             <table>
               <thead>
                 <tr>
@@ -87,7 +88,9 @@ export default function Scores({ initial }) {
                   <tr key={i}>
                     {data.columns.map((c) => (
                       <td key={c}>
-                        {typeof r[c] === 'number' ? fmtNum(r[c], 4) : r[c] === null ? '–' : String(r[c])}
+                        {c === 'ticker'
+                          ? <TickerLink t={String(r[c]).toUpperCase()} bold={false} />
+                          : typeof r[c] === 'number' ? fmtNum(r[c], 4) : r[c] === null ? '–' : String(r[c])}
                       </td>
                     ))}
                   </tr>

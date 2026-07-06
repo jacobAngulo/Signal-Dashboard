@@ -24,6 +24,9 @@ PRODUCERS = {
         "status_glob": "premarket_status_*.json",
         "price_col": "close",
         "metric": "adj_prob",
+        # per-ticker score history exposed on ticker pages
+        "history_metric": "best_adj_prob",
+        "history_extra": ("best_horizon", "status"),
     },
     "intrinsic": {
         "dir": INTRINSIC_DIR,
@@ -32,6 +35,8 @@ PRODUCERS = {
         "status_glob": "premarket_status_*.json",
         "price_col": "price",
         "metric": "discount_to_intrinsic",
+        "history_metric": "discount_to_intrinsic",
+        "history_extra": ("intrinsic_value", "status"),
     },
 }
 
@@ -80,6 +85,8 @@ class ProducerData:
         self.scores = {}             # date -> DataFrame
         self.status = {}             # date -> raw status json (+ _mtime)
         self.dates = []              # sorted trading dates seen in scores
+        self.history = {}            # ticker -> [{date, metric, px, ...}]
+        self.metric_values = []      # metric across the whole score universe
 
     def stale(self):
         return _fingerprint(self.spec["dir"]) != self.fingerprint
@@ -121,6 +128,31 @@ class ProducerData:
                 self.decisions.append(rec)
 
         self.dates = sorted(self.scores.keys())
+        self._build_history()
+
+    def _build_history(self):
+        """Per-ticker daily score history + full-universe metric sample."""
+        metric_col = self.spec["history_metric"]
+        px_col = self.spec["price_col"]
+        extra = self.spec["history_extra"]
+        self.history = {}
+        self.metric_values = []
+        for dt in self.dates:
+            df = self.scores[dt]
+            if "ticker" not in df.columns:
+                continue
+            cols = [c for c in (metric_col, px_col, *extra) if c in df.columns]
+            for row in df[["ticker", *cols]].itertuples(index=False):
+                rec = dict(zip(("ticker", *cols), row))
+                t = str(rec.pop("ticker")).upper()
+                h = {"date": dt, "metric": rec.get(metric_col), "px": rec.get(px_col)}
+                for e in extra:
+                    if e in rec:
+                        h[e] = rec[e]
+                self.history.setdefault(t, []).append(h)
+                m = rec.get(metric_col)
+                if isinstance(m, float) and math.isfinite(m):
+                    self.metric_values.append(m)
 
     def run_rows(self):
         """One row per known date: run health + volumes."""
@@ -166,6 +198,32 @@ class Store:
                 changed = True
         if changed or not self.prices:
             self._build_prices()
+            self._build_ticker_index()
+
+    def _build_ticker_index(self):
+        idx = {}
+        for rec in self.all_decisions:
+            e = idx.setdefault(rec["ticker"], {"ticker": rec["ticker"], "n_signals": 0,
+                                               "last_signal": None, "producers": set()})
+            if rec.get("decision") == "BUY":
+                e["n_signals"] += 1
+                e["producers"].add(rec["producer"])
+                if e["last_signal"] is None or rec["date"] > e["last_signal"]:
+                    e["last_signal"] = rec["date"]
+        for t in self.prices:
+            idx.setdefault(t, {"ticker": t, "n_signals": 0, "last_signal": None,
+                               "producers": set()})
+        self.ticker_index = {t: {**e, "producers": sorted(e["producers"])}
+                             for t, e in idx.items()}
+
+    def search_tickers(self, q, limit=15):
+        qu = (q or "").upper().strip()
+        if not qu:
+            return []
+        hits = [e for t, e in self.ticker_index.items() if qu in t]
+        hits.sort(key=lambda e: (0 if e["ticker"].startswith(qu) else 1,
+                                 -e["n_signals"], e["ticker"]))
+        return hits[:limit]
 
     def _build_prices(self):
         # Daily per-ticker prices reconstructed from the producers' own score

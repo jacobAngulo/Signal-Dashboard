@@ -1,5 +1,26 @@
 # Progress
 
+## 2026-07-06 — decoupled from arena, explorable UI rebuild
+
+Jacob's feedback: must be decoupled from Trading-Bot-Arena (signals only),
+and the UI was too basic for digging.
+
+- Removed all arena coupling: `backend/arena.py`, execution endpoint,
+  traded/open/closed lifecycle, live Alpaca prices. Signal status is now
+  price-based: up / down / flat / pending since signal.
+- Backend additions: per-ticker score history (metric over time), ticker
+  search index, signal-vs-universe metric histograms, metric-vs-return
+  scatter data, weekday stats, per-signal sparkline series, day pages with
+  top-of-score-file and prev/next.
+- Frontend rebuilt around exploration: hash router (deep links, back/forward),
+  global jump-to-ticker search, calendar heatmap of runs, pages — Overview,
+  Explore (filter rail + slice summary), Ticker (price with signal markers +
+  metric history charts), Day, Runs, Scores, Analytics (scatter, histograms,
+  buckets, cumulative, weekday). Every ticker/date anywhere is a link;
+  signal rows carry inline sparklines.
+
+## 2026-07-05 — initial build
+
 ## 2026-07-05 — initial build
 
 - New repo. FastAPI backend (:8010) + React/Vite/recharts frontend.

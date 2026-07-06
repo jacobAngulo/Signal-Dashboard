@@ -1,36 +1,48 @@
 import React, { useEffect, useState } from 'react'
 import { api } from '../api.js'
 import { fmtTs } from '../format.js'
-import { Card, ErrorBox, ProducerTag, Spinner, StatusTag, Table, Tag } from '../ui.jsx'
-import SignalDetail from '../SignalDetail.jsx'
-import { DecisionTable } from './Today.jsx'
+import { navigate } from '../nav.js'
+import { Card, DateLink, ErrorBox, ProducerTag, Spinner, StatusTag, Table } from '../ui.jsx'
+import Heatmap from '../Heatmap.jsx'
 
-export default function Runs({ openScores }) {
+// Chronological log of every producer run; click through to the day page.
+export default function Runs() {
   const [data, setData] = useState(null)
   const [err, setErr] = useState(null)
-  const [day, setDay] = useState(null)      // selected date
-  const [dayData, setDayData] = useState(null)
-  const [sel, setSel] = useState(null)
+  const [producer, setProducer] = useState('')
 
   useEffect(() => { api('runs').then(setData).catch(setErr) }, [])
-  useEffect(() => {
-    setDayData(null)
-    if (day) api(`day/${day}`).then(setDayData).catch(setErr)
-  }, [day])
 
   if (err) return <ErrorBox err={err} />
   if (!data) return <Spinner />
 
+  const rows = data.runs
+    .filter((r) => !producer || r.producer === producer)
+    .map((r) => ({ ...r, key: r.producer + r.date }))
+
   return (
     <div>
-      <Card title="Signal generation runs" right={<span className="muted">click a row to inspect the day</span>}>
+      <Card title="Run calendar">
+        <Heatmap calendar={data.runs} />
+      </Card>
+
+      <Card
+        title="All runs"
+        right={
+          <select value={producer} onChange={(e) => setProducer(e.target.value)}>
+            <option value="">both producers</option>
+            <option value="lstm">LSTM</option>
+            <option value="intrinsic">Intrinsic</option>
+          </select>
+        }
+      >
         <Table
-          rows={data.runs.map((r) => ({ ...r, key: r.producer + r.date }))}
+          rows={rows}
           initSort="date"
-          onRow={(r) => setDay(r.date)}
-          maxHeight="45vh"
+          onRow={(r) => navigate('day', r.date)}
+          maxHeight="62vh"
           columns={[
-            { key: 'date', label: 'Trade date' },
+            { key: 'date', label: 'Trade date', render: (r) => <DateLink d={r.date} /> },
             { key: 'producer', label: 'Producer', render: (r) => <ProducerTag producer={r.producer} /> },
             { key: 'status', label: 'Run status', render: (r) => <StatusTag status={r.status} /> },
             {
@@ -39,7 +51,7 @@ export default function Runs({ openScores }) {
             },
             {
               key: 'n_buy', label: 'Buys', align: 'right',
-              render: (r) => r.n_buy > 0 ? <b>{r.n_buy}</b> : <span className="muted">{r.decision_summary === 'NO_BUY' ? 'NO_BUY' : 0}</span>,
+              render: (r) => r.n_buy > 0 ? <b className="pos">{r.n_buy}</b> : <span className="muted">{r.decision_summary === 'NO_BUY' ? 'NO_BUY' : 0}</span>,
             },
             { key: 'stale', label: 'Stale rows', align: 'right', render: (r) => r.stale ?? '–' },
             { key: 'as_of_date', label: 'As-of close', render: (r) => r.as_of_date || '–' },
@@ -47,37 +59,6 @@ export default function Runs({ openScores }) {
           ]}
         />
       </Card>
-
-      {day && (
-        <Card title={`Day detail — ${day}`} right={<button className="btn" onClick={() => setDay(null)}>close</button>}>
-          {!dayData ? <Spinner /> : Object.entries(dayData.producers).map(([name, p]) => (
-            <div key={name} className="day-block">
-              <div className="day-head">
-                <ProducerTag producer={name} />
-                {p.run ? <StatusTag status={p.run.status} /> : <Tag kind="muted">no run</Tag>}
-                {p.scores_available && (
-                  <button className="btn" onClick={() => openScores(name, day)}>
-                    browse {p.n_scores} scores →
-                  </button>
-                )}
-              </div>
-              {p.status_raw && (
-                <div className="kv-grid small">
-                  {Object.entries(p.status_raw)
-                    .filter(([k, v]) => !k.startsWith('_') && typeof v !== 'object')
-                    .map(([k, v]) => (
-                      <React.Fragment key={k}><span>{k}</span><b>{String(v)}</b></React.Fragment>
-                    ))}
-                </div>
-              )}
-              {p.decisions.length > 0
-                ? <DecisionTable rows={p.decisions} onRow={setSel} />
-                : <div className="muted" style={{ padding: '6px 0' }}>no decision rows</div>}
-            </div>
-          ))}
-        </Card>
-      )}
-      <SignalDetail signal={sel} onClose={() => setSel(null)} />
     </div>
   )
 }

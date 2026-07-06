@@ -1,8 +1,6 @@
 {
   "lstm_signals_dir": "/root/.openclaw/workspace/LSTM_AI_Stock_Predictor/signals",
   "intrinsic_signals_dir": "/root/.openclaw/workspace/Intrinsic-Value-Monitor/signals",
-  "arena_db": "/root/.openclaw/workspace/Trading-Bot-Arena/arena.sqlite3",
-  "arena_api_base": "http://127.0.0.1:8000/api",
   "host": "127.0.0.1",
   "port": 8010
 }

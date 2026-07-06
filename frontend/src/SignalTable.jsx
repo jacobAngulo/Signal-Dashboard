@@ -1,6 +1,6 @@
 import React from 'react'
 import { PRODUCER_META } from './api.js'
-import { fmtNum, fmtPx } from './format.js'
+import { fmtNum, fmtPx, fmtTime, fmtTs } from './format.js'
 import { DateLink, MiniSpark, Pct, PerfTag, ProducerTag, Table, TickerLink, Tag } from './ui.jsx'
 
 // The standard enriched-signal table used by Overview / Explore / Ticker / Day.
@@ -8,6 +8,13 @@ export default function SignalTable({ rows, onRow, empty, maxHeight, hide = [] }
   const H = new Set(hide)
   const columns = [
     !H.has('date') && { key: 'date', label: 'Date', render: (r) => <DateLink d={r.date} /> },
+    !H.has('created') && {
+      key: 'created_at', label: 'Created (PT)',
+      title: 'when the producer wrote the decision file',
+      render: (r) => r.created_at
+        ? <span className="muted" title={fmtTs(r.created_at)}>{fmtTime(r.created_at)}</span>
+        : '–',
+    },
     !H.has('producer') && {
       key: 'producer', label: 'Producer', render: (r) => <ProducerTag producer={r.producer} />,
     },

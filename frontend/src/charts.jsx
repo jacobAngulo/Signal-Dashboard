@@ -63,12 +63,14 @@ export function HistoryChart({ history, producer, threshold, height = 180 }) {
   )
 }
 
-// Signal strength vs what happened: click a point to open the ticker.
-export function PerfScatter({ points, height = 240, yKey = 'ret_5d', yLabel = '5-day return' }) {
-  const groups = { lstm: [], intrinsic: [] }
-  for (const p of points) {
-    if (p[yKey] !== null && p[yKey] !== undefined && groups[p.producer]) groups[p.producer].push(p)
-  }
+// One producer's signal strength vs what happened: click a point to open the
+// ticker. adj_prob and discount live on different scales, so each producer
+// gets its own chart and x-axis — never plot them on a shared metric axis.
+export function PerfScatter({ points, producer, height = 240, yKey = 'ret_5d', yLabel = '5-day return' }) {
+  const meta = PRODUCER_META[producer]
+  const pts = points.filter(
+    (p) => p.producer === producer && p[yKey] !== null && p[yKey] !== undefined)
+  if (!pts.length) return <div className="muted" style={{ padding: 16 }}>no scored signals yet</div>
   const open = (d) => {
     const p = d && (d.payload || d)
     if (p && p.ticker) navigate('ticker', p.ticker)
@@ -77,8 +79,10 @@ export function PerfScatter({ points, height = 240, yKey = 'ret_5d', yLabel = '5
     <ResponsiveContainer width="100%" height={height}>
       <ScatterChart margin={{ top: 8, right: 12, bottom: 4, left: 0 }}>
         <CartesianGrid stroke="#222b3a" />
-        <XAxis dataKey="metric" name="signal metric" type="number" tick={{ fontSize: 10 }}
-               domain={['auto', 'auto']} />
+        <XAxis dataKey="metric" name={meta?.metric || 'metric'} type="number"
+               tick={{ fontSize: 10 }} domain={['auto', 'auto']}
+               label={{ value: meta?.metric, position: 'insideBottomRight',
+                        offset: -2, fontSize: 10, fill: '#7a8699' }} />
         <YAxis dataKey={yKey} name={yLabel} type="number" tick={{ fontSize: 10 }} width={48}
                tickFormatter={(v) => `${(v * 100).toFixed(0)}%`} />
         <ZAxis range={[45, 46]} />
@@ -92,15 +96,14 @@ export function PerfScatter({ points, height = 240, yKey = 'ret_5d', yLabel = '5
             return (
               <div style={{ ...TOOLTIP_STYLE, padding: '6px 10px' }}>
                 <b>{p.ticker}</b> · {p.date}<br />
-                metric {Number(p.metric).toFixed(3)} · {yLabel} {fmtPct(p[yKey])}
+                {meta?.metric || 'metric'} {Number(p.metric).toFixed(3)} · {yLabel} {fmtPct(p[yKey])}
               </div>
             )
           }}
         />
         <ReferenceLine y={0} stroke="#556" />
-        <Legend />
-        <Scatter name="LSTM" data={groups.lstm} fill={C.lstm} onClick={open} cursor="pointer" />
-        <Scatter name="Intrinsic" data={groups.intrinsic} fill={C.intrinsic} onClick={open} cursor="pointer" />
+        <Scatter name={meta?.label || producer} data={pts} fill={meta?.color || '#888'}
+                 onClick={open} cursor="pointer" />
       </ScatterChart>
     </ResponsiveContainer>
   )

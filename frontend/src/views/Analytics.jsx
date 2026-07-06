@@ -60,25 +60,31 @@ export default function Analytics() {
       </div>
 
       <div className="grid-2">
-        <Card title="Signal strength vs outcome" right={<span className="muted small">each dot is a signal · click to open the ticker</span>}>
-          <PerfScatter points={data.scatter} />
+        <Card title="LSTM: signal strength (adj_prob) vs outcome"
+              right={<span className="muted small">each dot is a signal · click to open the ticker</span>}>
+          <PerfScatter points={data.scatter} producer="lstm" />
         </Card>
-        <Card title="Cumulative return — every BUY at close, equal weight, 1-day hold">
-          <ResponsiveContainer width="100%" height={240}>
-            <LineChart data={data.cumulative}>
-              <CartesianGrid stroke="#222b3a" vertical={false} />
-              <XAxis dataKey="date" tick={{ fontSize: 10 }} minTickGap={30} />
-              <YAxis tick={{ fontSize: 10 }} width={46} domain={['auto', 'auto']}
-                     tickFormatter={(v) => `${((v - 1) * 100).toFixed(0)}%`} />
-              <Tooltip contentStyle={TOOLTIP_STYLE} formatter={(v) => fmtPct(v - 1)} />
-              <Legend />
-              <ReferenceLine y={1} stroke="#556" />
-              <Line dataKey="lstm" name="LSTM" stroke={C.lstm} dot={false} connectNulls />
-              <Line dataKey="intrinsic" name="Intrinsic" stroke={C.intrinsic} dot={false} connectNulls />
-            </LineChart>
-          </ResponsiveContainer>
+        <Card title="Intrinsic: signal strength (discount) vs outcome"
+              right={<span className="muted small">each dot is a signal · click to open the ticker</span>}>
+          <PerfScatter points={data.scatter} producer="intrinsic" />
         </Card>
       </div>
+
+      <Card title="Cumulative return — every BUY at close, equal weight, 1-day hold">
+        <ResponsiveContainer width="100%" height={240}>
+          <LineChart data={data.cumulative}>
+            <CartesianGrid stroke="#222b3a" vertical={false} />
+            <XAxis dataKey="date" tick={{ fontSize: 10 }} minTickGap={30} />
+            <YAxis tick={{ fontSize: 10 }} width={46} domain={['auto', 'auto']}
+                   tickFormatter={(v) => `${((v - 1) * 100).toFixed(0)}%`} />
+            <Tooltip contentStyle={TOOLTIP_STYLE} formatter={(v) => fmtPct(v - 1)} />
+            <Legend />
+            <ReferenceLine y={1} stroke="#556" />
+            <Line dataKey="lstm" name="LSTM" stroke={C.lstm} dot={false} connectNulls />
+            <Line dataKey="intrinsic" name="Intrinsic" stroke={C.intrinsic} dot={false} connectNulls />
+          </LineChart>
+        </ResponsiveContainer>
+      </Card>
 
       <div className="grid-2">
         <Card title="Where LSTM signals sit in the scored universe (adj_prob)">

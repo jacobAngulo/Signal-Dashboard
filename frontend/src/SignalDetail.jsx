@@ -8,6 +8,7 @@ import { PriceChart } from './charts.jsx'
 const CORE_KEYS = new Set([
   'id', 'producer', 'date', 'ticker', 'decision', 'metric', 'status_perf', 'spark',
   'entry_px', 'last_px', 'last_date', 'ret_1d', 'ret_5d', 'ret_20d', 'ret_since',
+  'created_at',
 ])
 
 export default function SignalDetail({ signal, onClose }) {
@@ -46,6 +47,7 @@ export default function SignalDetail({ signal, onClose }) {
         </div>
         <div className="drawer-sub muted">
           signaled {signal.date}
+          {signal.created_at ? ` · created ${fmtTs(signal.created_at)}` : ''}
           {signal.as_of_timestamp ? ` · generated ${fmtTs(signal.as_of_timestamp)}` : ''}
           {signal.as_of_source ? ` · ${signal.as_of_source}` : ''}
         </div>

@@ -18,12 +18,26 @@ export const fmtMoney = (v) => {
 
 export const fmtDate = (d) => d || '–'
 
+// All timestamps display in Pacific time (Jacob's local tz — the host VM is
+// elsewhere, so never rely on the machine's local zone).
+export const TZ = 'America/Los_Angeles'
+
 export const fmtTs = (ts) => {
   if (!ts) return '–'
   try {
     return new Date(ts).toLocaleString('en-US', {
       month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit',
-      timeZone: 'America/New_York', timeZoneName: 'short',
+      timeZone: TZ, timeZoneName: 'short',
+    })
+  } catch { return ts }
+}
+
+// Time of day only ("7:14 AM") — pair with a date shown elsewhere in the row.
+export const fmtTime = (ts) => {
+  if (!ts) return '–'
+  try {
+    return new Date(ts).toLocaleTimeString('en-US', {
+      hour: 'numeric', minute: '2-digit', timeZone: TZ,
     })
   } catch { return ts }
 }

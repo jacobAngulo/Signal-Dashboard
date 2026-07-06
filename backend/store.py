@@ -8,6 +8,7 @@ import math
 import os
 import re
 from bisect import bisect_left
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
@@ -117,6 +118,10 @@ class ProducerData:
         for p in sorted(d.glob(self.spec["decision_glob"])):
             dt = file_date(p)
             df = _read_csv(p)
+            # Decision CSVs only carry dates; the file mtime is the actual
+            # creation time (matches LSTM's status finished_at to the second).
+            created = datetime.fromtimestamp(
+                p.stat().st_mtime, tz=timezone.utc).isoformat()
             for i, row in enumerate(df.to_dict("records")):
                 rec = {k: v for k, v in row.items()}
                 rec["producer"] = self.name
@@ -124,6 +129,7 @@ class ProducerData:
                 rec["ticker"] = str(row.get("ticker", "")).upper()
                 rec["decision"] = str(row.get("decision", "")).upper() or None
                 rec["metric"] = row.get(self.spec["metric"])
+                rec["created_at"] = created
                 rec["id"] = f"{self.name}:{dt}:{rec['ticker']}:{i}"
                 self.decisions.append(rec)
 
@@ -176,7 +182,9 @@ class ProducerData:
                 "n_buy": sum(1 for r in decs if r["decision"] == "BUY"),
                 "decision_summary": st.get("decision"),
                 "stale": sum(stale_rows.values()) if stale_rows else None,
-                "generated_at": st.get("finished_at") or st.get("generated_at"),
+                "generated_at": st.get("finished_at") or st.get("generated_at")
+                    or (datetime.fromtimestamp(st["_mtime"], tz=timezone.utc)
+                        .isoformat() if "_mtime" in st else None),
                 "as_of_date": st.get("as_of_date"),
                 "has_scores": dt in self.scores,
                 "has_status": dt in self.status,

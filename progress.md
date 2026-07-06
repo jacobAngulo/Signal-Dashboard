@@ -1,6 +1,22 @@
 # Progress
 
-## 2026-07-06 — decoupled from arena, explorable UI rebuild
+## 2026-07-06 — split per-producer scatters, signal creation times, PT display
+
+Jacob's feedback: adj_prob and discount aren't comparable, so don't plot the
+two producers on one metric axis; show when signals were created; display all
+times in Pacific (he's in PST — the host VM is elsewhere, never trust its tz).
+
+- Analytics: "Signal strength vs outcome" split into two charts (LSTM
+  adj_prob / Intrinsic discount), each with its own x-axis and producer color
+  (`charts.jsx` PerfScatter now takes a `producer` prop).
+- `created_at` on every decision record, from the decision file's mtime (the
+  CSVs only carry dates; mtime matches LSTM status `finished_at` to the
+  second). Shown as a "Created (PT)" column in SignalTable and in the signal
+  drawer. Run rows' `generated_at` falls back to the status file mtime, so
+  Intrinsic (whose status JSON has no timestamp) now shows one too.
+- All timestamps render in America/Los_Angeles (`format.js` fmtTs/fmtTime).
+- Deployed: `npm run build` + `systemctl restart signal-dashboard`; verified
+  created_at in /api/signals and new strings in the served bundle.
 
 Jacob's feedback: must be decoupled from Trading-Bot-Arena (signals only),
 and the UI was too basic for digging.

@@ -33,6 +33,12 @@ def enrich(rec, spark=False):
     has_fwd = last_px and entry and last_date and last_date > dt
     out["ret_since"] = (last_px / entry - 1) if has_fwd else None
 
+    # The ticker fell out of the producers' universe: its price series (and so
+    # ret_since / status_perf) is frozen at last_date, not current.
+    all_dates = STORE.all_dates
+    latest_run = all_dates[-1] if all_dates else None
+    out["px_stale"] = bool(last_date and latest_run and last_date < latest_run)
+
     if rec.get("decision") != "BUY":
         out["status_perf"] = "no_action"
     elif not has_fwd:

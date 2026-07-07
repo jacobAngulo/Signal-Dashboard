@@ -1,5 +1,26 @@
 # Progress
 
+## 2026-07-07 — surface dropped-ticker staleness (ASTI report)
+
+Jacob's report: ASTI's detail page has no recent history. Audit found the data
+is genuinely absent — the producers stopped scoring ~2,550 tickers on 6/24
+(universe collapse; root cause is an av-gateway filter vs Alpaca's
+`overnight_tradable` rollout — documented, NOT fixed here per Jacob:
+dashboard-only changes). ASTI itself was last scored 2026-05-22. The dashboard
+now says so instead of silently truncating:
+
+- `enrich()` adds `px_stale` (ticker's last price date < latest run date) and
+  `/api/ticker/{t}` adds `last_scored` / `latest_run`.
+- Ticker page: warning banner "Not scored since <date> — dropped out of the
+  producers' universe; price line / since returns / status frozen as of that
+  date". Price card labeled "producer pre-close snapshots (~12:15–12:30 PT),
+  not official closes".
+- SignalTable Since column and PerfTag get ⚠ + tooltip when `px_stale`;
+  signal drawer's last-px stat shows "· stale ⚠".
+- Deployed: `npm run build` + `systemctl restart signal-dashboard`; verified
+  ASTI (stale, banner data 2026-05-22 vs run 2026-07-07), ASTC (current, no
+  flags), and `px_stale` in /api/signals.
+
 ## 2026-07-06 — split per-producer scatters, signal creation times, PT display
 
 Jacob's feedback: adj_prob and discount aren't comparable, so don't plot the

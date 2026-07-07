@@ -23,7 +23,8 @@ export function StatusTag({ status }) {
 }
 
 // Performance status of a signal (price-based, since signal date).
-export function PerfTag({ status }) {
+// `stale`: the ticker is no longer scored, so the status is frozen in the past.
+export function PerfTag({ status, stale, asOf }) {
   const map = {
     pending: ['warn', '⧗ pending'],
     up: ['ok', '▲ up'],
@@ -32,7 +33,8 @@ export function PerfTag({ status }) {
     no_action: ['muted', 'no action'],
   }
   const [kind, label] = map[status] || ['muted', status || '–']
-  return <Tag kind={kind}>{label}</Tag>
+  const title = stale ? `frozen as of ${asOf || 'last scored day'} — ticker no longer scored` : undefined
+  return <Tag kind={kind} title={title}>{label}{stale ? ' ⚠' : ''}</Tag>
 }
 
 export function TickerLink({ t, bold = true }) {

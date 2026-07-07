@@ -24,6 +24,7 @@ export default function TickerPage({ ticker }) {
   const markers = data.signals.filter((x) => x.decision === 'BUY')
     .map((x) => ({ date: x.date, producer: x.producer }))
   const last = data.series[data.series.length - 1]
+  const stale = data.last_scored && data.latest_run && data.last_scored < data.latest_run
 
   return (
     <div>
@@ -32,6 +33,15 @@ export default function TickerPage({ ticker }) {
         <span className="crumb-title">{data.ticker}</span>
         {s.producers.map((p) => <ProducerTag key={p} producer={p} />)}
       </div>
+
+      {stale && (
+        <div className="stale-banner">
+          <b>Not scored since {data.last_scored}.</b>{' '}
+          {data.ticker} dropped out of the producers&apos; universe after that date, so
+          the price line, &ldquo;since&rdquo; returns and up/down status on this page are
+          frozen as of {data.last_scored} — not current. Latest producer run: {data.latest_run}.
+        </div>
+      )}
 
       <Card>
         <div className="stat-row">
@@ -46,7 +56,8 @@ export default function TickerPage({ ticker }) {
         </div>
       </Card>
 
-      <Card title="Price — every BUY signal marked">
+      <Card title="Price — every BUY signal marked"
+            right={<span className="muted small">producer pre-close snapshots (~12:15–12:30 PT), not official closes</span>}>
         <PriceChart series={data.series} signals={markers} height={280} />
       </Card>
 

@@ -8,7 +8,7 @@ import { PriceChart } from './charts.jsx'
 const CORE_KEYS = new Set([
   'id', 'producer', 'date', 'ticker', 'decision', 'metric', 'status_perf', 'spark',
   'entry_px', 'last_px', 'last_date', 'ret_1d', 'ret_5d', 'ret_20d', 'ret_since',
-  'created_at',
+  'created_at', 'px_stale',
 ])
 
 export default function SignalDetail({ signal, onClose }) {
@@ -54,7 +54,8 @@ export default function SignalDetail({ signal, onClose }) {
 
         <div className="stat-row">
           <MiniStat label="entry px" v={fmtPx(signal.entry_px)} />
-          <MiniStat label="last px" v={fmtPx(signal.last_px)} sub={signal.last_date} />
+          <MiniStat label="last px" v={fmtPx(signal.last_px)}
+                    sub={signal.px_stale ? `${signal.last_date} · stale ⚠` : signal.last_date} />
           <MiniStat label="1d" v={<Pct v={signal.ret_1d} />} />
           <MiniStat label="5d" v={<Pct v={signal.ret_5d} />} />
           <MiniStat label="20d" v={<Pct v={signal.ret_20d} />} />

@@ -37,12 +37,22 @@ export default function SignalTable({ rows, onRow, empty, maxHeight, hide = [] }
     { key: 'ret_1d', label: '1d', align: 'right', render: (r) => <Pct v={r.ret_1d} /> },
     { key: 'ret_5d', label: '5d', align: 'right', render: (r) => <Pct v={r.ret_5d} /> },
     { key: 'ret_20d', label: '20d', align: 'right', render: (r) => <Pct v={r.ret_20d} /> },
-    { key: 'ret_since', label: 'Since', align: 'right', render: (r) => <Pct v={r.ret_since} /> },
+    {
+      key: 'ret_since', label: 'Since', align: 'right',
+      render: (r) => (
+        <span title={r.px_stale ? `price data ends ${r.last_date} — ticker no longer scored` : undefined}>
+          <Pct v={r.ret_since} />{r.px_stale && r.ret_since != null ? <span className="warn"> ⚠</span> : null}
+        </span>
+      ),
+    },
     !H.has('spark') && {
       key: 'spark', label: 'Trend', sortVal: (r) => r.ret_since,
       render: (r) => <MiniSpark spark={r.spark} ret={r.ret_since} />,
     },
-    { key: 'status_perf', label: 'Status', render: (r) => <PerfTag status={r.status_perf} /> },
+    {
+      key: 'status_perf', label: 'Status',
+      render: (r) => <PerfTag status={r.status_perf} stale={r.px_stale} asOf={r.last_date} />,
+    },
   ].filter(Boolean)
 
   return (

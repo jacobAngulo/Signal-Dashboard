@@ -137,12 +137,20 @@ def ticker_view(ticker: str):
     if not sigs and t not in STORE.prices:
         raise HTTPException(404, f"no data for {t}")
     buys = [s for s in sigs if s.get("decision") == "BUY"]
+    series = STORE.series(t)
+    history = {name: prod.history.get(t, [])
+               for name, prod in STORE.producers.items()}
+    scored_dates = [r["date"] for r in series]
+    for rows in history.values():
+        scored_dates.extend(h["date"] for h in rows)
+    all_dates = STORE.all_dates
     return clean({
         "ticker": t,
         "signals": sorted(sigs, key=lambda r: r["date"], reverse=True),
-        "series": STORE.series(t),
-        "history": {name: prod.history.get(t, [])
-                    for name, prod in STORE.producers.items()},
+        "series": series,
+        "history": history,
+        "last_scored": max(scored_dates, default=None),
+        "latest_run": all_dates[-1] if all_dates else None,
         "stats": {
             "n_signals": len(buys),
             "first_signal": min((s["date"] for s in buys), default=None),

@@ -1,19 +1,20 @@
 # Signal-Dashboard
 
-Standalone read-only analytics UI over LSTM + Intrinsic signals.
+Standalone read-only analytics UI over LSTM + Intrinsic + Foundry signals.
 See README.md for architecture, routes, and run instructions.
 
 Rules:
 
-- **Strictly read-only** against the producer repos' `signals/` dirs. This
+- **Strictly read-only** against the producer repos' outputs. This
   repo must never write into the other projects.
 - **Decoupled from Trading-Bot-Arena by design** (Jacob's call, 2026-07-06):
   no arena DB, no arena API, no execution/bot state. Signal "status" is
   price-performance based (up/down/pending since signal). Don't re-add arena
   coupling without being asked.
-- Forward returns come from the producers' own daily score prices
+- Forward returns come from LSTM/Intrinsic daily score prices
   (`live_scores.close` / `intrinsic_scores.price`), not
-  `shared_market_data/ohlcv` (stale between provisioning runs).
+  `shared_market_data/ohlcv` (stale between provisioning runs). Foundry events
+  reuse those price series when a ticker/date overlaps.
 - Deployed as systemd `signal-dashboard` on 127.0.0.1:8010, exposed at
   `/signal-dashboard/` via nginx. Backend changes need
   `systemctl restart signal-dashboard`; frontend changes need

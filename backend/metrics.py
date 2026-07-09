@@ -190,13 +190,20 @@ def analytics(producer=None, date_from=None, date_to=None):
     sig_metric = {n: [r["metric"] for r in rows
                       if r["producer"] == n and r.get("metric") is not None]
                   for n in STORE.producers}
-    histograms = {
-        "lstm": _histogram(STORE.producers["lstm"].metric_values,
-                           sig_metric.get("lstm", []), 0.0, 0.35, 14),
-        "intrinsic": _histogram(
-            [v for v in STORE.producers["intrinsic"].metric_values if 0 <= v <= 1],
-            sig_metric.get("intrinsic", []), 0.0, 1.0, 20),
-    }
+    histograms = {}
+    buckets = {}
+    for name, prod in STORE.producers.items():
+        lo, hi = prod.spec.get("hist_range", (0.0, 1.0))
+        n_bins = prod.spec.get("hist_bins", 20)
+        universe = [v for v in prod.metric_values
+                    if isinstance(v, (int, float)) and lo <= v <= hi]
+        signals = [v for v in sig_metric.get(name, [])
+                   if isinstance(v, (int, float)) and lo <= v <= hi]
+        histograms[name] = _histogram(universe, signals, lo, hi, n_bins)
+        buckets[name] = _buckets(
+            [r for r in rows if r["producer"] == name],
+            prod.spec["metric"],
+        )
 
     weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri"]
     weekday = []
@@ -215,11 +222,7 @@ def analytics(producer=None, date_from=None, date_to=None):
     return {
         "timeline": sorted(timeline.values(), key=lambda t: t["date"] or ""),
         "by_producer": by_producer,
-        "buckets": {
-            "lstm": _buckets([r for r in rows if r["producer"] == "lstm"], "adj_prob"),
-            "intrinsic": _buckets([r for r in rows if r["producer"] == "intrinsic"],
-                                  "discount_to_intrinsic"),
-        },
+        "buckets": buckets,
         "cumulative": cumulative,
         "scatter": scatter,
         "histograms": histograms,

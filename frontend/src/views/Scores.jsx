@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { api } from '../api.js'
+import { api, PRODUCER_META } from '../api.js'
 import { fmtNum } from '../format.js'
 import { href } from '../nav.js'
 import { Card, ErrorBox, Spinner, TickerLink } from '../ui.jsx'
@@ -51,8 +51,9 @@ export default function Scores({ producer: p0, date: d0 }) {
       <Card>
         <div className="filter-row">
           <select value={producer} onChange={(e) => { setProducer(e.target.value); setDate('') }}>
-            <option value="lstm">LSTM scores</option>
-            <option value="intrinsic">Intrinsic scores</option>
+            {Object.entries(PRODUCER_META).map(([name, meta]) => (
+              <option key={name} value={name}>{meta.label} scores</option>
+            ))}
           </select>
           <select value={date} onChange={(e) => setDate(e.target.value)}>
             {(data?.dates || (date ? [date] : [])).slice().reverse().map((d) => (

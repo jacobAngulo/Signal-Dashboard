@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { api } from '../api.js'
+import { api, PRODUCER_META } from '../api.js'
 import { fmtPct } from '../format.js'
 import { Card, ErrorBox, Spinner } from '../ui.jsx'
 import SignalTable from '../SignalTable.jsx'
@@ -59,9 +59,10 @@ export default function Explore() {
           <div className="filter-col">
             <label>Producer
               <select value={producer} onChange={(e) => setProducer(e.target.value)}>
-                <option value="">both</option>
-                <option value="lstm">LSTM</option>
-                <option value="intrinsic">Intrinsic</option>
+                <option value="">all producers</option>
+                {Object.entries(PRODUCER_META).map(([name, meta]) => (
+                  <option key={name} value={name}>{meta.label}</option>
+                ))}
               </select>
             </label>
             <label>Ticker contains

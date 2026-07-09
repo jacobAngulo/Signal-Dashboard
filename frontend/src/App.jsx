@@ -26,7 +26,7 @@ export default function App() {
       <header>
         <div className="brand">
           <a href="#/" className="brand-link"><span className="brand-mark">◆</span> Signal Dashboard</a>
-          <span className="muted brand-sub">LSTM + Intrinsic</span>
+          <span className="muted brand-sub">LSTM + Intrinsic + Foundry</span>
         </div>
         <SearchBox />
         <nav>

@@ -1,8 +1,9 @@
-"""Load and cache signal files from the LSTM and Intrinsic producers.
+"""Load and cache signal files from the LSTM, Intrinsic, and Foundry producers.
 
-Reads are strictly read-only against the producer repos' signals/ dirs.
+Reads are strictly read-only against the producer repos' data outputs.
 Everything is cached in memory and reloaded when the source dirs change.
 """
+from collections import defaultdict
 import json
 import math
 import os
@@ -13,7 +14,18 @@ from pathlib import Path
 
 import pandas as pd
 
-from .config import LSTM_DIR, INTRINSIC_DIR
+try:
+    import duckdb
+except ImportError:  # pragma: no cover - exercised only in an incomplete env
+    duckdb = None
+
+from .config import (
+    FOUNDRY_DB,
+    FOUNDRY_MODEL,
+    FOUNDRY_PROMPT,
+    INTRINSIC_DIR,
+    LSTM_DIR,
+)
 
 DATE_RE = re.compile(r"(\d{4}-\d{2}-\d{2})")
 
@@ -25,6 +37,8 @@ PRODUCERS = {
         "status_glob": "premarket_status_*.json",
         "price_col": "close",
         "metric": "adj_prob",
+        "hist_range": (0.0, 0.35),
+        "hist_bins": 14,
         # per-ticker score history exposed on ticker pages
         "history_metric": "best_adj_prob",
         "history_extra": ("best_horizon", "status"),
@@ -36,6 +50,8 @@ PRODUCERS = {
         "status_glob": "premarket_status_*.json",
         "price_col": "price",
         "metric": "discount_to_intrinsic",
+        "hist_range": (0.0, 1.0),
+        "hist_bins": 20,
         "history_metric": "discount_to_intrinsic",
         "history_extra": ("intrinsic_value", "status"),
     },
@@ -75,6 +91,67 @@ def _fingerprint(d: Path):
                             for e in os.scandir(d) if e.is_file()))
     except FileNotFoundError:
         return ()
+
+
+def _file_fingerprint(path: Path):
+    try:
+        s = path.stat()
+        return (s.st_mtime_ns, s.st_size)
+    except FileNotFoundError:
+        return ()
+
+
+def _iso_ts(v):
+    if v is None:
+        return None
+    if isinstance(v, datetime):
+        dt = v if v.tzinfo else v.replace(tzinfo=timezone.utc)
+        return dt.isoformat()
+    s = str(v)
+    if not s:
+        return None
+    try:
+        dt = datetime.fromisoformat(s.replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.isoformat()
+    except ValueError:
+        return s
+
+
+def _date_from_ts(v):
+    iso = _iso_ts(v)
+    if not iso:
+        return None
+    try:
+        return datetime.fromisoformat(iso.replace("Z", "+00:00")).date().isoformat()
+    except ValueError:
+        m = DATE_RE.search(iso)
+        return m.group(1) if m else None
+
+
+def _json_list(raw):
+    if raw is None:
+        return []
+    if isinstance(raw, list):
+        return raw
+    try:
+        v = json.loads(raw)
+    except (TypeError, ValueError):
+        return []
+    return v if isinstance(v, list) else []
+
+
+def _foundry_decision(sentiment):
+    try:
+        s = int(sentiment)
+    except (TypeError, ValueError):
+        s = 0
+    if s > 0:
+        return "BUY"
+    if s < 0:
+        return "SELL"
+    return "WATCH"
 
 
 class ProducerData:
@@ -192,9 +269,213 @@ class ProducerData:
         return rows
 
 
+class FoundryData:
+    """Read Signal-Foundry events as dashboard decision rows.
+
+    Foundry emits event signals, not full daily score universes. For dashboard
+    compatibility, each event/ticker pair becomes one decision row while the
+    original event fields remain attached for the detail drawer and score view.
+    """
+
+    def __init__(self):
+        self.name = "foundry"
+        self.db = FOUNDRY_DB
+        self.spec = {
+            "metric": "signal_score",
+            "history_metric": "signal_score",
+            "history_extra": ("event_type", "sentiment", "source"),
+            "price_col": None,
+            "hist_range": (0.0, 1.0),
+            "hist_bins": 20,
+        }
+        self.fingerprint = None
+        self.decisions = []
+        self.scores = {}
+        self.status = {}
+        self.dates = []
+        self.history = {}
+        self.metric_values = []
+
+    def stale(self):
+        return _file_fingerprint(self.db) != self.fingerprint
+
+    def load(self):
+        self.fingerprint = _file_fingerprint(self.db)
+        self.decisions = []
+        self.scores = {}
+        self.status = {}
+        self.dates = []
+        self.history = {}
+        self.metric_values = []
+
+        if not self.db.exists() or duckdb is None:
+            return
+
+        where = ["e.is_signal", "e.tickers <> '[]'"]
+        params = []
+        if FOUNDRY_MODEL:
+            where.append("e.model = ?")
+            params.append(FOUNDRY_MODEL)
+        if FOUNDRY_PROMPT:
+            where.append("e.prompt_version = ?")
+            params.append(FOUNDRY_PROMPT)
+
+        con = duckdb.connect(str(self.db), read_only=True)
+        try:
+            rows = con.execute(
+                f"""
+                SELECT
+                    e.item_id, e.model, e.prompt_version, e.extracted_at,
+                    e.tickers, e.unknown_tickers, e.in_universe,
+                    e.company_mentions, e.event_type, e.sentiment,
+                    e.confidence, e.novelty, e.time_sensitivity,
+                    e.evidence_quote, e.why_it_matters, e.source_quality,
+                    e.signal_score, r.source, r.title, r.url, r.published_at
+                FROM events e
+                JOIN raw_items r ON r.id = e.item_id
+                WHERE {" AND ".join(where)}
+                ORDER BY r.published_at DESC, e.extracted_at DESC
+                """,
+                params,
+            ).fetchall()
+        finally:
+            con.close()
+
+        score_rows = defaultdict(list)
+        for row in rows:
+            (
+                item_id, model, prompt, extracted_at, tickers_raw,
+                unknown_raw, in_universe, mentions_raw, event_type, sentiment,
+                confidence, novelty, time_sensitivity, evidence_quote,
+                why_it_matters, source_quality, signal_score, source, title,
+                url, published_at,
+            ) = row
+            tickers = [str(t).upper() for t in _json_list(tickers_raw) if str(t).strip()]
+            if not tickers:
+                continue
+
+            signal_date = _date_from_ts(published_at) or _date_from_ts(extracted_at)
+            if not signal_date:
+                continue
+            created_at = _iso_ts(extracted_at)
+            published_iso = _iso_ts(published_at)
+            unknown = [str(t).upper() for t in _json_list(unknown_raw)]
+            mentions = [str(x) for x in _json_list(mentions_raw)]
+            decision = _foundry_decision(sentiment)
+            score = float(signal_score) if signal_score is not None else None
+
+            for i, ticker in enumerate(tickers):
+                rec = {
+                    "id": f"foundry:{item_id}:{ticker}:{i}",
+                    "producer": self.name,
+                    "date": signal_date,
+                    "ticker": ticker,
+                    "decision": decision,
+                    "metric": score,
+                    "signal_score": score,
+                    "created_at": created_at,
+                    "as_of_timestamp": published_iso,
+                    "as_of_source": source,
+                    "model": model,
+                    "prompt_version": prompt,
+                    "item_id": item_id,
+                    "source": source,
+                    "source_url": url,
+                    "title": title,
+                    "event_type": event_type,
+                    "sentiment": sentiment,
+                    "confidence": confidence,
+                    "novelty": novelty,
+                    "time_sensitivity": time_sensitivity,
+                    "horizon": time_sensitivity,
+                    "evidence_quote": evidence_quote,
+                    "why_it_matters": why_it_matters,
+                    "source_quality": source_quality,
+                    "unknown_tickers": unknown,
+                    "company_mentions": mentions,
+                    "in_universe": in_universe,
+                    "published_at": published_iso,
+                    "extracted_at": created_at,
+                }
+                self.decisions.append(rec)
+                score_rows[signal_date].append({
+                    "ticker": ticker,
+                    "decision": decision,
+                    "signal_score": score,
+                    "event_type": event_type,
+                    "sentiment": sentiment,
+                    "confidence": confidence,
+                    "novelty": novelty,
+                    "time_sensitivity": time_sensitivity,
+                    "source": source,
+                    "title": title,
+                    "published_at": published_iso,
+                    "extracted_at": created_at,
+                    "item_id": item_id,
+                })
+                self.history.setdefault(ticker, []).append({
+                    "date": signal_date,
+                    "metric": score,
+                    "px": None,
+                    "event_type": event_type,
+                    "sentiment": sentiment,
+                    "source": source,
+                })
+                if isinstance(score, float) and math.isfinite(score):
+                    self.metric_values.append(score)
+
+        self.decisions.sort(key=lambda r: (r["date"], r["ticker"], r["created_at"] or ""))
+        self.dates = sorted(score_rows)
+        self.scores = {dt: pd.DataFrame(rows) for dt, rows in score_rows.items()}
+
+        for dt, rows_for_dt in score_rows.items():
+            self.status[dt] = {
+                "status": "ok",
+                "events": len({r["item_id"] for r in rows_for_dt}),
+                "ticker_rows": len(rows_for_dt),
+                "buy": sum(1 for r in rows_for_dt if r["decision"] == "BUY"),
+                "sell": sum(1 for r in rows_for_dt if r["decision"] == "SELL"),
+                "watch": sum(1 for r in rows_for_dt if r["decision"] == "WATCH"),
+            }
+
+        for rows_for_ticker in self.history.values():
+            rows_for_ticker.sort(key=lambda r: r["date"])
+
+    def run_rows(self):
+        by_date = defaultdict(list)
+        for r in self.decisions:
+            by_date[r["date"]].append(r)
+
+        rows = []
+        for dt in sorted(set(self.dates) | set(by_date)):
+            decs = by_date.get(dt, [])
+            st = self.status.get(dt, {})
+            generated = max((r.get("created_at") for r in decs if r.get("created_at")),
+                            default=None)
+            rows.append({
+                "producer": self.name,
+                "date": dt,
+                "status": st.get("status", "ok") if decs else None,
+                "n_scores": len(self.scores[dt]) if dt in self.scores else 0,
+                "n_decisions": len(decs),
+                "n_buy": sum(1 for r in decs if r["decision"] == "BUY"),
+                "decision_summary": (
+                    f"{sum(1 for r in decs if r['decision'] == 'SELL')} sell / "
+                    f"{sum(1 for r in decs if r['decision'] == 'WATCH')} watch"
+                ) if decs else None,
+                "stale": None,
+                "generated_at": generated,
+                "as_of_date": None,
+                "has_scores": dt in self.scores,
+                "has_status": dt in self.status,
+            })
+        return rows
+
+
 class Store:
     def __init__(self):
         self.producers = {name: ProducerData(name) for name in PRODUCERS}
+        self.producers["foundry"] = FoundryData()
         self.prices = {}         # ticker -> (dates[], px[])
         self._price_src_fp = None
 

@@ -1,8 +1,9 @@
 # Signal Dashboard
 
-Standalone, read-only analytics UI over the **LSTM_AI_Stock_Predictor** and
-**Intrinsic-Value-Monitor** signal producers. Decoupled from the trading
-arena — it only exposes what the producers generated and how it moved.
+Standalone, read-only analytics UI over the **LSTM_AI_Stock_Predictor**,
+**Intrinsic-Value-Monitor**, and **Signal-Foundry** signal producers. Decoupled
+from the trading arena — it only exposes what the producers generated and how
+it moved.
 
 Answers:
 
@@ -27,10 +28,11 @@ anywhere in the UI is a link; the header has jump-to-ticker search.
 
 ## Architecture
 
-- `backend/` — FastAPI (port 8010). Reads the two `signals/` dirs strictly
-  read-only, caches in memory, auto-reloads when source files change
-  (mtime fingerprints). Serves the built frontend. `GET /api/signals` is a
-  clean JSON feed of enriched signals if anything else wants to consume it.
+- `backend/` — FastAPI (port 8010). Reads producer outputs strictly read-only:
+  LSTM/Intrinsic `signals/` dirs plus Signal-Foundry's DuckDB file. It caches in
+  memory and auto-reloads when source files change (mtime fingerprints). Serves
+  the built frontend. `GET /api/signals` is a clean JSON feed of enriched
+  signals if anything else wants to consume it.
 - `frontend/` — React 18 + Vite + recharts, tiny hash router (no deps).
 - `deploy/` — systemd unit + nginx location block
   (served at `/signal-dashboard/`).
@@ -39,7 +41,7 @@ anywhere in the UI is a link; the header has jump-to-ticker search.
 
 ```bash
 cp config.example.json config.json   # adjust paths if needed
-python3 -m venv .venv && .venv/bin/pip install fastapi uvicorn pandas
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 cd frontend && npm install && npm run build && cd ..
 .venv/bin/python -m uvicorn backend.main:app --host 127.0.0.1 --port 8010
 ```

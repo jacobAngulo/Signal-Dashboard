@@ -6,6 +6,7 @@ import { DateLink, MiniSpark, Pct, PerfTag, ProducerTag, Table, TickerLink, Tag 
 // The standard enriched-signal table used by Overview / Explore / Ticker / Day.
 export default function SignalTable({ rows, onRow, empty, maxHeight, hide = [] }) {
   const H = new Set(hide)
+  const decisionKind = (d) => d === 'BUY' ? 'ok' : d === 'SELL' ? 'err' : d === 'WATCH' ? 'info' : 'muted'
   const columns = [
     !H.has('date') && { key: 'date', label: 'Date', render: (r) => <DateLink d={r.date} /> },
     !H.has('created') && {
@@ -21,11 +22,11 @@ export default function SignalTable({ rows, onRow, empty, maxHeight, hide = [] }
     !H.has('ticker') && { key: 'ticker', label: 'Ticker', render: (r) => <TickerLink t={r.ticker} /> },
     !H.has('decision') && {
       key: 'decision', label: 'Decision',
-      render: (r) => <Tag kind={r.decision === 'BUY' ? 'ok' : 'muted'}>{r.decision}</Tag>,
+      render: (r) => <Tag kind={decisionKind(r.decision)}>{r.decision}</Tag>,
     },
     {
       key: 'metric', label: 'Metric', align: 'right',
-      title: 'LSTM: adjusted probability · Intrinsic: discount to intrinsic value',
+      title: 'LSTM: adjusted probability · Intrinsic: discount to intrinsic value · Foundry: event signal score',
       render: (r) => (
         <span>
           {fmtNum(r.metric, 3)} <span className="muted small">{PRODUCER_META[r.producer]?.metric}</span>

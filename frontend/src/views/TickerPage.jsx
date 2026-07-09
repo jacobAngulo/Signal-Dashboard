@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { api } from '../api.js'
+import { api, PRODUCER_META } from '../api.js'
 import { fmtPct, fmtPx } from '../format.js'
 import { Card, ErrorBox, ProducerTag, Spinner, Stat } from '../ui.jsx'
 import { HistoryChart, PriceChart } from '../charts.jsx'
@@ -25,6 +25,9 @@ export default function TickerPage({ ticker }) {
     .map((x) => ({ date: x.date, producer: x.producer }))
   const last = data.series[data.series.length - 1]
   const stale = data.last_scored && data.latest_run && data.last_scored < data.latest_run
+  const historyEntries = Object.entries(data.history || {}).filter(([, rows]) => rows?.length)
+  const scoredDays = Math.max(0, ...historyEntries.map(([, rows]) => rows.length))
+  const thresholds = { lstm: 0.2, intrinsic: 0.8 }
 
   return (
     <div>
@@ -52,7 +55,7 @@ export default function TickerPage({ ticker }) {
                 sub={s.ret_5d.n ? `n=${s.ret_5d.n}` : null} />
           <Stat label="5d avg" value={s.ret_5d.avg === null ? '–' : fmtPct(s.ret_5d.avg)}
                 cls={s.ret_5d.avg > 0 ? 'pos' : s.ret_5d.avg < 0 ? 'neg' : ''} />
-          <Stat label="scored days" value={Math.max(data.history.lstm.length, data.history.intrinsic.length)} />
+          <Stat label="scored days" value={scoredDays} />
         </div>
       </Card>
 
@@ -62,12 +65,14 @@ export default function TickerPage({ ticker }) {
       </Card>
 
       <div className="grid-2">
-        <Card title="LSTM adj. probability over time">
-          <HistoryChart history={data.history.lstm} producer="lstm" threshold={0.2} />
-        </Card>
-        <Card title="Intrinsic discount over time">
-          <HistoryChart history={data.history.intrinsic} producer="intrinsic" threshold={0.8} />
-        </Card>
+        {historyEntries.map(([name, rows]) => {
+          const meta = PRODUCER_META[name] || { label: name, metric: 'metric' }
+          return (
+            <Card key={name} title={`${meta.label} ${meta.metric} over time`}>
+              <HistoryChart history={rows} producer={name} threshold={thresholds[name]} />
+            </Card>
+          )
+        })}
       </div>
 
       <Card title={`Signals for ${data.ticker}`}>

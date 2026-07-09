@@ -58,20 +58,7 @@ export default function DayPage({ date }) {
               <h4 className="section-h">Top of the score file (by {p.metric_col})</h4>
               <Table
                 rows={p.top_scores.map((r, i) => ({ ...r, key: i }))}
-                columns={[
-                  { key: 'ticker', label: 'Ticker', render: (r) => <TickerLink t={String(r.ticker).toUpperCase()} /> },
-                  { key: p.metric_col, label: p.metric_col, align: 'right', render: (r) => fmtNum(r[p.metric_col], 4) },
-                  ...(name === 'lstm'
-                    ? [
-                        { key: 'best_horizon', label: 'Horizon' },
-                        { key: 'close', label: 'Close', align: 'right', render: (r) => fmtPx(r.close) },
-                      ]
-                    : [
-                        { key: 'price', label: 'Price', align: 'right', render: (r) => fmtPx(r.price) },
-                        { key: 'intrinsic_value', label: 'Intrinsic', align: 'right', render: (r) => fmtNum(r.intrinsic_value, 2) },
-                        { key: 'status', label: 'Status' },
-                      ]),
-                ]}
+                columns={scoreColumns(name, p.metric_col)}
               />
             </>
           )}
@@ -81,4 +68,34 @@ export default function DayPage({ date }) {
       <SignalDetail signal={sel} onClose={() => setSel(null)} />
     </div>
   )
+}
+
+function scoreColumns(name, metricCol) {
+  const base = [
+    { key: 'ticker', label: 'Ticker', render: (r) => <TickerLink t={String(r.ticker).toUpperCase()} /> },
+    { key: metricCol, label: metricCol, align: 'right', render: (r) => fmtNum(r[metricCol], 4) },
+  ]
+  if (name === 'lstm') {
+    return [
+      ...base,
+      { key: 'best_horizon', label: 'Horizon' },
+      { key: 'close', label: 'Close', align: 'right', render: (r) => fmtPx(r.close) },
+    ]
+  }
+  if (name === 'intrinsic') {
+    return [
+      ...base,
+      { key: 'price', label: 'Price', align: 'right', render: (r) => fmtPx(r.price) },
+      { key: 'intrinsic_value', label: 'Intrinsic', align: 'right', render: (r) => fmtNum(r.intrinsic_value, 2) },
+      { key: 'status', label: 'Status' },
+    ]
+  }
+  return [
+    ...base,
+    { key: 'decision', label: 'Decision' },
+    { key: 'event_type', label: 'Event' },
+    { key: 'sentiment', label: 'Sentiment', align: 'right' },
+    { key: 'confidence', label: 'Confidence', align: 'right', render: (r) => fmtNum(r.confidence, 3) },
+    { key: 'source', label: 'Source' },
+  ]
 }

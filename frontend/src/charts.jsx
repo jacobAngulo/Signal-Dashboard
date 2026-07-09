@@ -12,7 +12,6 @@ export const TOOLTIP_STYLE = {
   backgroundColor: '#1a2130', border: '1px solid #2c3648',
   borderRadius: 6, fontSize: 12,
 }
-const C = { lstm: PRODUCER_META.lstm.color, intrinsic: PRODUCER_META.intrinsic.color }
 
 // Price line with signal markers (gold dots, colored ring per producer).
 export function PriceChart({ series, signals = [], height = 260 }) {
@@ -30,7 +29,7 @@ export function PriceChart({ series, signals = [], height = 260 }) {
         {signals.map((s, i) =>
           byDate[s.date] !== undefined ? (
             <ReferenceDot key={s.date + s.producer + i} x={s.date} y={byDate[s.date]} r={5}
-                          fill="#f6c453" stroke={C[s.producer] || '#fff'} strokeWidth={2}
+                          fill="#f6c453" stroke={PRODUCER_META[s.producer]?.color || '#fff'} strokeWidth={2}
                           label={{ value: 'BUY', position: 'top', fontSize: 9, fill: '#f6c453' }} />
           ) : null
         )}

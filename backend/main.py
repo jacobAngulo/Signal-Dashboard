@@ -1,4 +1,4 @@
-"""Signal-Dashboard API: read-only analytics over LSTM + Intrinsic signals."""
+"""Signal-Dashboard API: read-only analytics over LSTM, Intrinsic, and Foundry signals."""
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException

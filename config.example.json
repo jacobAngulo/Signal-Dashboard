@@ -1,6 +1,9 @@
 {
   "lstm_signals_dir": "/root/.openclaw/workspace/LSTM_AI_Stock_Predictor/signals",
   "intrinsic_signals_dir": "/root/.openclaw/workspace/Intrinsic-Value-Monitor/signals",
+  "foundry_db": "/root/.openclaw/workspace/Signal-Foundry/data/foundry.duckdb",
+  "foundry_model": "gpt-oss:20b",
+  "foundry_prompt": "v2",
   "host": "127.0.0.1",
   "port": 8010
 }

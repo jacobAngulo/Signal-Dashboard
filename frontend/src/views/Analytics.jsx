@@ -8,8 +8,6 @@ import { fmtPct } from '../format.js'
 import { Card, DateLink, ErrorBox, Pct, PerfTag, ProducerTag, Spinner, Stat, Table, TickerLink } from '../ui.jsx'
 import { DistHist, PerfScatter, TOOLTIP_STYLE } from '../charts.jsx'
 
-const C = { lstm: PRODUCER_META.lstm.color, intrinsic: PRODUCER_META.intrinsic.color }
-
 export default function Analytics() {
   const [data, setData] = useState(null)
   const [err, setErr] = useState(null)
@@ -23,6 +21,7 @@ export default function Analytics() {
 
   if (err) return <ErrorBox err={err} />
   if (!data) return <Spinner />
+  const producers = Object.keys(data.by_producer || {})
 
   return (
     <div>
@@ -39,7 +38,9 @@ export default function Analytics() {
       </Card>
 
       <div className="grid-2">
-        {Object.entries(data.by_producer).map(([name, p]) => (
+        {producers.map((name) => {
+          const p = data.by_producer[name]
+          return (
           <Card key={name} title={<span><ProducerTag producer={name} /> <span className="muted">signal performance</span></span>}>
             <div className="stat-row">
               <Stat label="signals" value={p.n_signals}
@@ -56,18 +57,19 @@ export default function Analytics() {
                     cls={p.since.avg > 0 ? 'pos' : p.since.avg < 0 ? 'neg' : ''} />
             </div>
           </Card>
-        ))}
+        )})}
       </div>
 
       <div className="grid-2">
-        <Card title="LSTM: signal strength (adj_prob) vs outcome"
-              right={<span className="muted small">each dot is a signal · click to open the ticker</span>}>
-          <PerfScatter points={data.scatter} producer="lstm" />
-        </Card>
-        <Card title="Intrinsic: signal strength (discount) vs outcome"
-              right={<span className="muted small">each dot is a signal · click to open the ticker</span>}>
-          <PerfScatter points={data.scatter} producer="intrinsic" />
-        </Card>
+        {producers.map((name) => {
+          const meta = PRODUCER_META[name] || { label: name, metric: 'metric' }
+          return (
+            <Card key={name} title={`${meta.label}: signal strength (${meta.metric}) vs outcome`}
+                  right={<span className="muted small">each dot is a signal · click to open the ticker</span>}>
+              <PerfScatter points={data.scatter} producer={name} />
+            </Card>
+          )
+        })}
       </div>
 
       <Card title="Cumulative return — every BUY at close, equal weight, 1-day hold">
@@ -80,19 +82,23 @@ export default function Analytics() {
             <Tooltip contentStyle={TOOLTIP_STYLE} formatter={(v) => fmtPct(v - 1)} />
             <Legend />
             <ReferenceLine y={1} stroke="#556" />
-            <Line dataKey="lstm" name="LSTM" stroke={C.lstm} dot={false} connectNulls />
-            <Line dataKey="intrinsic" name="Intrinsic" stroke={C.intrinsic} dot={false} connectNulls />
+            {producers.map((name) => {
+              const meta = PRODUCER_META[name] || { label: name, color: '#888' }
+              return <Line key={name} dataKey={name} name={meta.label} stroke={meta.color} dot={false} connectNulls />
+            })}
           </LineChart>
         </ResponsiveContainer>
       </Card>
 
       <div className="grid-2">
-        <Card title="Where LSTM signals sit in the scored universe (adj_prob)">
-          <DistHist bins={data.histograms.lstm} color={C.lstm} />
-        </Card>
-        <Card title="Where Intrinsic signals sit in the scored universe (discount)">
-          <DistHist bins={data.histograms.intrinsic} color={C.intrinsic} />
-        </Card>
+        {producers.map((name) => {
+          const meta = PRODUCER_META[name] || { label: name, color: '#888', metric: 'metric' }
+          return (
+            <Card key={name} title={`Where ${meta.label} signals sit in ${meta.metric}`}>
+              <DistHist bins={data.histograms[name]} color={meta.color} />
+            </Card>
+          )
+        })}
       </div>
 
       <div className="grid-2">
@@ -104,8 +110,10 @@ export default function Analytics() {
               <YAxis allowDecimals={false} tick={{ fontSize: 10 }} width={26} />
               <Tooltip contentStyle={TOOLTIP_STYLE} />
               <Legend />
-              <Bar dataKey="lstm_buys" name="LSTM" stackId="a" fill={C.lstm} />
-              <Bar dataKey="intrinsic_buys" name="Intrinsic" stackId="a" fill={C.intrinsic} />
+              {producers.map((name) => {
+                const meta = PRODUCER_META[name] || { label: name, color: '#888' }
+                return <Bar key={name} dataKey={`${name}_buys`} name={meta.label} stackId="a" fill={meta.color} />
+              })}
             </BarChart>
           </ResponsiveContainer>
         </Card>
@@ -125,8 +133,10 @@ export default function Analytics() {
       </div>
 
       <div className="grid-2">
-        <BucketCard title="LSTM: fwd return by adj_prob quartile" buckets={data.buckets.lstm} color={C.lstm} />
-        <BucketCard title="Intrinsic: fwd return by discount quartile" buckets={data.buckets.intrinsic} color={C.intrinsic} />
+        {producers.map((name) => {
+          const meta = PRODUCER_META[name] || { label: name, color: '#888', metric: 'metric' }
+          return <BucketCard key={name} title={`${meta.label}: fwd return by ${meta.metric} quartile`} buckets={data.buckets[name]} color={meta.color} />
+        })}
       </div>
 
       <div className="grid-2">

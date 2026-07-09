@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { api } from '../api.js'
+import { api, PRODUCER_META } from '../api.js'
 import { fmtTs } from '../format.js'
 import { navigate } from '../nav.js'
 import { Card, DateLink, ErrorBox, ProducerTag, Spinner, StatusTag, Table } from '../ui.jsx'
@@ -30,9 +30,10 @@ export default function Runs() {
         title="All runs"
         right={
           <select value={producer} onChange={(e) => setProducer(e.target.value)}>
-            <option value="">both producers</option>
-            <option value="lstm">LSTM</option>
-            <option value="intrinsic">Intrinsic</option>
+            <option value="">all producers</option>
+            {Object.entries(PRODUCER_META).map(([name, meta]) => (
+              <option key={name} value={name}>{meta.label}</option>
+            ))}
           </select>
         }
       >

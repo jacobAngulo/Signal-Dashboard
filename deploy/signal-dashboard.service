@@ -1,5 +1,5 @@
 [Unit]
-Description=Signal Dashboard (LSTM + Intrinsic signal analytics UI)
+Description=Signal Dashboard (LSTM + Intrinsic + Foundry signal analytics UI)
 After=network.target
 
 [Service]

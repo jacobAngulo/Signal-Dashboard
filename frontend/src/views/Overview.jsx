@@ -60,6 +60,10 @@ export default function Overview() {
 function ProducerCard({ name, p }) {
   const run = p.latest_run
   const pipe = p.pipeline
+  // Market-day boundary is ET: after the 16:00 ET close, foundry events roll
+  // to the next session, so the card can legitimately show tomorrow's date.
+  const todayET = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+  const nextSession = pipe && run && run.date > todayET
   const winSub = p.totals.n_measurable === 0
     ? 'no measurable buys yet'
     : p.totals.avg_5d === null ? null : `avg ${fmtPct(p.totals.avg_5d)} · n=${p.totals.n_measurable}`
@@ -73,7 +77,8 @@ function ProducerCard({ name, p }) {
       ) : (
         <div className="stat-row">
           <Stat label="trade date" value={<DateLink d={run.date} />}
-                sub={run.as_of_date ? `as of close ${run.as_of_date}` : null} />
+                sub={nextSession ? 'next session — after-close events'
+                     : run.as_of_date ? `as of close ${run.as_of_date}` : null} />
           {pipe
             ? <Stat label="events" value={run.n_events ?? run.n_scores ?? '–'}
                     sub={`${run.n_decisions} tickers`} />

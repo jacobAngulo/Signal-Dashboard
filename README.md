@@ -13,10 +13,24 @@ Answers:
 2. **How are past signals doing?** Every BUY gets forward returns
    (1d / 5d / 20d / since-signal) and an up/down/pending status, computed
    from the producers' own daily score prices — the price series is aligned
-   with signal dates by construction.
+   with signal dates by construction. Tickers outside the scored universe get
+   an explicit `no_px` status instead of an eternal "pending".
 3. **Is the signal any good?** Analytics: win rates by horizon, signal
    strength vs outcome scatter, signal-vs-universe metric distributions,
    quartile buckets, cumulative take-every-BUY curves, weekday effects.
+
+## Foundry events are trading-day aligned
+
+Foundry emits events around the clock; the daily producers emit one batch per
+trading day. To live on the same calendar, each foundry event is bucketed by
+the **trading day it is actionable for**: publish timestamps convert to ET,
+anything at/after 16:00 ET (and weekends/holidays) rolls to the next session —
+the same convention as Signal-Foundry's own backtest, so the score-file entry
+price is the pre-event close by construction. The raw publish timestamp stays
+on the row (`published_at`, `event_date`) and is what the UI shows as the
+signal time. The overview card also surfaces the fetch/extract loop health
+(queue depth, per-source freshness) straight from the foundry DB, since a
+silent source otherwise looks like a quiet news day.
 
 ## Navigation model
 

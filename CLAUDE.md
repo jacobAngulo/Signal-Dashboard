@@ -15,6 +15,11 @@ Rules:
   (`live_scores.close` / `intrinsic_scores.price`), not
   `shared_market_data/ohlcv` (stale between provisioning runs). Foundry events
   reuse those price series when a ticker/date overlaps.
+- Foundry events are bucketed by the **trading day they're actionable for**
+  (ET, ≥16:00 → next session, weekends/holidays roll forward, snapped to the
+  LSTM/Intrinsic score-date calendar — see `_event_dates` in
+  `backend/store.py`). Signals whose ticker can never get an entry price show
+  status `no_px`, not `pending`.
 - Deployed as systemd `signal-dashboard` on 127.0.0.1:8010, exposed at
   `/signal-dashboard/` via nginx. Backend changes need
   `systemctl restart signal-dashboard`; frontend changes need

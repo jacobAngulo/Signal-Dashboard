@@ -31,9 +31,12 @@ export function PerfTag({ status, stale, asOf }) {
     down: ['err', '▼ down'],
     flat: ['muted', '— flat'],
     no_action: ['muted', 'no action'],
+    no_px: ['muted', '∅ no px'],
   }
   const [kind, label] = map[status] || ['muted', status || '–']
-  const title = stale ? `frozen as of ${asOf || 'last scored day'} — ticker no longer scored` : undefined
+  const title = status === 'no_px'
+    ? 'no price coverage — the ticker is outside the scored universe, so this signal can\'t be tracked'
+    : stale ? `frozen as of ${asOf || 'last scored day'} — ticker no longer scored` : undefined
   return <Tag kind={kind} title={title}>{label}{stale ? ' ⚠' : ''}</Tag>
 }
 

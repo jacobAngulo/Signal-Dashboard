@@ -9,8 +9,9 @@ import math
 import os
 import re
 from bisect import bisect_left
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 
@@ -28,6 +29,10 @@ from .config import (
 )
 
 DATE_RE = re.compile(r"(\d{4}-\d{2}-\d{2})")
+
+# Market timezone: foundry event timestamps are mapped to trading days in ET,
+# matching the convention of Signal-Foundry's own backtest.
+ET = ZoneInfo("America/New_York")
 
 PRODUCERS = {
     "lstm": {
@@ -119,6 +124,22 @@ def _iso_ts(v):
         return s
 
 
+def _as_dt(v):
+    """Parse to an aware datetime (naive values are taken as UTC)."""
+    if v is None:
+        return None
+    if isinstance(v, datetime):
+        return v if v.tzinfo else v.replace(tzinfo=timezone.utc)
+    s = str(v)
+    if not s:
+        return None
+    try:
+        dt = datetime.fromisoformat(s.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+
+
 def _date_from_ts(v):
     iso = _iso_ts(v)
     if not iso:
@@ -128,6 +149,49 @@ def _date_from_ts(v):
     except ValueError:
         m = DATE_RE.search(iso)
         return m.group(1) if m else None
+
+
+def _snap_trading(day, calendar):
+    """First trading day at/after `day`. `calendar` is the sorted trading dates
+    observed in producer score files; candidates beyond it (tonight's events
+    for tomorrow's session) advance past weekends only."""
+    iso = day.isoformat()
+    if calendar:
+        i = bisect_left(calendar, iso)
+        # Snap forward only across a plausible weekend/holiday gap; a bigger
+        # jump means the calendar simply doesn't cover this period.
+        if i < len(calendar) and (
+            datetime.fromisoformat(calendar[i]).date() - day).days <= 4:
+            return calendar[i]
+    while day.weekday() >= 5:
+        day += timedelta(days=1)
+    return day.isoformat()
+
+
+def _event_dates(ts, calendar):
+    """(event_date, trading_date) for an event timestamp, in market terms.
+
+    Timestamped values convert to ET; published at/after 16:00 ET means the
+    next session is the first one that can react. Date-only values (EDGAR
+    backfill) carry no intraday time and are taken at face value. Either way
+    the trading date lands on the daily producers' calendar, so foundry rows
+    line up with the other producers' dates and price series.
+    """
+    s = "" if ts is None else str(ts).strip()
+    if isinstance(ts, datetime) or len(s) > 10:
+        dt = _as_dt(ts)
+        if dt is None:
+            return None, None
+        loc = dt.astimezone(ET)
+        event = day = loc.date()
+        if loc.hour >= 16:
+            day += timedelta(days=1)
+    else:
+        try:
+            event = day = datetime.fromisoformat(s).date()
+        except ValueError:
+            return None, None
+    return event.isoformat(), _snap_trading(day, calendar)
 
 
 def _json_list(raw):
@@ -275,6 +339,9 @@ class FoundryData:
     Foundry emits event signals, not full daily score universes. For dashboard
     compatibility, each event/ticker pair becomes one decision row while the
     original event fields remain attached for the detail drawer and score view.
+    Events are bucketed by the trading day they are actionable for (see
+    `_trading_date`), so rows line up with the daily producers' dates and the
+    price series; the raw publish timestamp stays on the row.
     """
 
     def __init__(self):
@@ -289,24 +356,31 @@ class FoundryData:
             "hist_bins": 20,
         }
         self.fingerprint = None
+        self.calendar = ()
         self.decisions = []
         self.scores = {}
         self.status = {}
         self.dates = []
         self.history = {}
         self.metric_values = []
+        self.pipeline = {}
 
-    def stale(self):
-        return _file_fingerprint(self.db) != self.fingerprint
+    def stale(self, calendar=()):
+        # Future-dated events re-snap when new trading days appear, so a
+        # calendar change is as much a reload trigger as a DB write.
+        return (_file_fingerprint(self.db) != self.fingerprint
+                or tuple(calendar) != self.calendar)
 
-    def load(self):
+    def load(self, calendar=()):
         self.fingerprint = _file_fingerprint(self.db)
+        self.calendar = tuple(calendar)
         self.decisions = []
         self.scores = {}
         self.status = {}
         self.dates = []
         self.history = {}
         self.metric_values = []
+        self.pipeline = {}
 
         if not self.db.exists() or duckdb is None:
             return
@@ -338,6 +412,7 @@ class FoundryData:
                 """,
                 params,
             ).fetchall()
+            self.pipeline = self._load_pipeline(con)
         finally:
             con.close()
 
@@ -354,11 +429,16 @@ class FoundryData:
             if not tickers:
                 continue
 
-            signal_date = _date_from_ts(published_at) or _date_from_ts(extracted_at)
+            event_date, signal_date = _event_dates(published_at, self.calendar)
+            if not signal_date:
+                event_date, signal_date = _event_dates(extracted_at, self.calendar)
             if not signal_date:
                 continue
             created_at = _iso_ts(extracted_at)
-            published_iso = _iso_ts(published_at)
+            raw_pub = "" if published_at is None else str(published_at).strip()
+            # Date-only publish values (EDGAR backfill) stay date-only rather
+            # than masquerading as a midnight-UTC timestamp.
+            published_iso = raw_pub if len(raw_pub) == 10 else _iso_ts(published_at)
             unknown = [str(t).upper() for t in _json_list(unknown_raw)]
             mentions = [str(x) for x in _json_list(mentions_raw)]
             decision = _foundry_decision(sentiment)
@@ -369,6 +449,7 @@ class FoundryData:
                     "id": f"foundry:{item_id}:{ticker}:{i}",
                     "producer": self.name,
                     "date": signal_date,
+                    "event_date": event_date,
                     "ticker": ticker,
                     "decision": decision,
                     "metric": score,
@@ -441,6 +522,67 @@ class FoundryData:
         for rows_for_ticker in self.history.values():
             rows_for_ticker.sort(key=lambda r: r["date"])
 
+    def _load_pipeline(self, con):
+        """Fetch/extract loop health, read from the same DB the events come from.
+
+        Foundry has no premarket_status file; freshness per source is the
+        run-health signal for an event producer (a source that stops producing
+        looks exactly like a quiet news day otherwise).
+        """
+        pipe = {"sources": []}
+        try:
+            # epoch_ms because handing TIMESTAMPTZ values to Python needs pytz,
+            # which this venv doesn't ship.
+            for src, n, pub_ms, last_fetch in con.execute(
+                """
+                SELECT source, count(*),
+                       epoch_ms(max(TRY_CAST(published_at AS TIMESTAMPTZ))),
+                       max(fetched_at)
+                FROM raw_items GROUP BY source ORDER BY source
+                """
+            ).fetchall():
+                pipe["sources"].append({
+                    "source": src,
+                    "items": n,
+                    "last_published": _iso_ts(
+                        datetime.fromtimestamp(pub_ms / 1000, tz=timezone.utc)
+                    ) if pub_ms is not None else None,
+                    "last_fetched": _iso_ts(last_fetch),
+                })
+            pipe["last_fetch"] = _iso_ts(con.execute(
+                "SELECT max(fetched_at) FROM raw_items").fetchone()[0])
+            last_ext, n_events = con.execute(
+                "SELECT max(extracted_at), count(*) FROM events"
+                " WHERE model = ? AND prompt_version = ?",
+                [FOUNDRY_MODEL, FOUNDRY_PROMPT],
+            ).fetchone()
+            pipe["last_extracted"] = _iso_ts(last_ext)
+            pipe["events_extracted"] = n_events
+            # Same pending semantics as foundry's own queue: no event yet for
+            # the pinned model+prompt and not benched by repeated failures.
+            pipe["pending"], pipe["benched"] = con.execute(
+                """
+                WITH benched AS (
+                    SELECT item_id FROM failures
+                    WHERE model = ? AND prompt_version = ?
+                      AND error NOT LIKE '%429%' AND error NOT LIKE 'rate limited%'
+                    GROUP BY item_id HAVING count(*) >= 3
+                )
+                SELECT
+                    count(*) FILTER (WHERE e.item_id IS NULL
+                                     AND r.id NOT IN (SELECT item_id FROM benched)),
+                    (SELECT count(*) FROM benched)
+                FROM raw_items r
+                LEFT JOIN events e ON e.item_id = r.id
+                     AND e.model = ? AND e.prompt_version = ?
+                """,
+                [FOUNDRY_MODEL, FOUNDRY_PROMPT, FOUNDRY_MODEL, FOUNDRY_PROMPT],
+            ).fetchone()
+        except Exception:
+            # Never let health introspection break signal loading.
+            pass
+        return pipe
+
     def run_rows(self):
         by_date = defaultdict(list)
         for r in self.decisions:
@@ -457,6 +599,7 @@ class FoundryData:
                 "date": dt,
                 "status": st.get("status", "ok") if decs else None,
                 "n_scores": len(self.scores[dt]) if dt in self.scores else 0,
+                "n_events": st.get("events", 0),
                 "n_decisions": len(decs),
                 "n_buy": sum(1 for r in decs if r["decision"] == "BUY"),
                 "decision_summary": (
@@ -481,13 +624,28 @@ class Store:
 
     def refresh(self):
         changed = False
-        for p in self.producers.values():
+        for name in PRODUCERS:
+            p = self.producers[name]
             if p.stale():
                 p.load()
                 changed = True
+        # Foundry loads last: it snaps events onto the trading calendar the
+        # daily producers just established.
+        cal = self.trading_calendar()
+        foundry = self.producers["foundry"]
+        if foundry.stale(cal):
+            foundry.load(cal)
+            changed = True
         if changed or not self.prices:
             self._build_prices()
             self._build_ticker_index()
+
+    def trading_calendar(self):
+        """Sorted trading dates observed in the daily producers' score files."""
+        ds = set()
+        for name in PRODUCERS:
+            ds.update(self.producers[name].dates)
+        return tuple(sorted(ds))
 
     def _build_ticker_index(self):
         idx = {}

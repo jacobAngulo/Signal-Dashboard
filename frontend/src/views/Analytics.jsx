@@ -44,7 +44,8 @@ export default function Analytics() {
           <Card key={name} title={<span><ProducerTag producer={name} /> <span className="muted">signal performance</span></span>}>
             <div className="stat-row">
               <Stat label="signals" value={p.n_signals}
-                    sub={`${p.n_up} up · ${p.n_down} down · ${p.n_pending} pending`} />
+                    sub={`${p.n_up} up · ${p.n_down} down · ${p.n_pending} pending`
+                         + (p.n_no_px ? ` · ${p.n_no_px} no px` : '')} />
               {['1d', '5d', '20d'].map((h) => (
                 <Stat key={h} label={`win ${h}`}
                       value={p.horizons[h].win_rate === null ? '–' : fmtPct(p.horizons[h].win_rate, 0)}

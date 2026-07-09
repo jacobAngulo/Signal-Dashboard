@@ -9,7 +9,13 @@ const CORE_KEYS = new Set([
   'id', 'producer', 'date', 'ticker', 'decision', 'metric', 'status_perf', 'spark',
   'entry_px', 'last_px', 'last_date', 'ret_1d', 'ret_5d', 'ret_20d', 'ret_since',
   'created_at', 'px_stale',
+  // shown in the header line instead of the raw field dump
+  'event_date', 'published_at', 'extracted_at', 'as_of_timestamp', 'as_of_source',
+  'source', 'n_grouped',
 ])
+
+// Date-only publish values (no time known) pass through untouched.
+const fmtPub = (ts) => (String(ts).length === 10 ? ts : fmtTs(ts))
 
 export default function SignalDetail({ signal, onClose }) {
   const [tickerData, setTickerData] = useState(null)
@@ -45,12 +51,23 @@ export default function SignalDetail({ signal, onClose }) {
             <button className="btn" onClick={onClose}>✕</button>
           </div>
         </div>
-        <div className="drawer-sub muted">
-          signaled {signal.date}
-          {signal.created_at ? ` · created ${fmtTs(signal.created_at)}` : ''}
-          {signal.as_of_timestamp ? ` · generated ${fmtTs(signal.as_of_timestamp)}` : ''}
-          {signal.as_of_source ? ` · ${signal.as_of_source}` : ''}
-        </div>
+        {signal.producer === 'foundry' ? (
+          <div className="drawer-sub muted">
+            trade day {signal.date}
+            {signal.event_date && signal.event_date !== signal.date ? ` (event on ${signal.event_date})` : ''}
+            {signal.published_at ? ` · published ${fmtPub(signal.published_at)}` : ''}
+            {signal.created_at ? ` · extracted ${fmtTs(signal.created_at)}` : ''}
+            {signal.source ? ` · ${signal.source}` : ''}
+            {signal.n_grouped > 1 ? ` · 1 of ${signal.n_grouped} events this day` : ''}
+          </div>
+        ) : (
+          <div className="drawer-sub muted">
+            signaled {signal.date}
+            {signal.created_at ? ` · created ${fmtTs(signal.created_at)}` : ''}
+            {signal.as_of_timestamp ? ` · generated ${fmtTs(signal.as_of_timestamp)}` : ''}
+            {signal.as_of_source ? ` · ${signal.as_of_source}` : ''}
+          </div>
+        )}
 
         <div className="stat-row">
           <MiniStat label="entry px" v={fmtPx(signal.entry_px)} />
@@ -70,7 +87,12 @@ export default function SignalDetail({ signal, onClose }) {
           {raw.map(([k, v]) => (
             <React.Fragment key={k}>
               <span>{k}</span>
-              <b>{typeof v === 'number' ? fmtNum(v, 6) : String(v)}</b>
+              <b>
+                {typeof v === 'number' ? fmtNum(v, 6)
+                  : /^https?:\/\//.test(String(v))
+                    ? <a className="dlink" href={v} target="_blank" rel="noreferrer">{String(v)}</a>
+                    : String(v)}
+              </b>
             </React.Fragment>
           ))}
         </div>

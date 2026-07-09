@@ -79,7 +79,8 @@ export default function Explore() {
                 <option value="">any</option>
                 <option value="up">up since signal</option>
                 <option value="down">down since signal</option>
-                <option value="pending">pending (no data yet)</option>
+                <option value="pending">pending (awaiting next close)</option>
+                <option value="no_px">no price coverage</option>
               </select>
             </label>
             <label>Min metric

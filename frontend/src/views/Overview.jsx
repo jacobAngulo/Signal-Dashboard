@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { api } from '../api.js'
-import { fmtPct, fmtTs } from '../format.js'
+import { fmtAgo, fmtPct, fmtTs } from '../format.js'
 import { href } from '../nav.js'
-import { Card, DateLink, ErrorBox, Pct, PerfTag, ProducerTag, Spinner, Stat, StatusTag, TickerLink } from '../ui.jsx'
+import { Card, DateLink, ErrorBox, Pct, PerfTag, ProducerTag, Spinner, Stat, StatusTag, Tag, TickerLink } from '../ui.jsx'
 import Heatmap from '../Heatmap.jsx'
 import SignalTable from '../SignalTable.jsx'
 import SignalDetail from '../SignalDetail.jsx'
@@ -59,9 +59,13 @@ export default function Overview() {
 
 function ProducerCard({ name, p }) {
   const run = p.latest_run
+  const pipe = p.pipeline
+  const winSub = p.totals.n_measurable === 0
+    ? 'no measurable buys yet'
+    : p.totals.avg_5d === null ? null : `avg ${fmtPct(p.totals.avg_5d)} · n=${p.totals.n_measurable}`
   return (
     <Card
-      title={<span><ProducerTag producer={name} /> <span className="muted">latest run</span></span>}
+      title={<span><ProducerTag producer={name} /> <span className="muted">{pipe ? 'event stream' : 'latest run'}</span></span>}
       right={run ? <StatusTag status={run.status} /> : null}
     >
       {!run ? (
@@ -70,20 +74,55 @@ function ProducerCard({ name, p }) {
         <div className="stat-row">
           <Stat label="trade date" value={<DateLink d={run.date} />}
                 sub={run.as_of_date ? `as of close ${run.as_of_date}` : null} />
-          <Stat label="scores" value={run.n_scores ?? '–'}
-                sub={run.stale ? `${run.stale} stale rows` : 'fresh'} />
+          {pipe
+            ? <Stat label="events" value={run.n_events ?? run.n_scores ?? '–'}
+                    sub={`${run.n_decisions} ticker rows`} />
+            : <Stat label="scores" value={run.n_scores ?? '–'}
+                    sub={run.stale ? `${run.stale} stale rows` : 'fresh'} />}
           <Stat label="buys" value={run.n_buy}
                 sub={run.decision_summary && run.n_buy === 0 ? run.decision_summary : null}
                 cls={run.n_buy > 0 ? 'pos' : ''} />
-          <Stat label="generated" value={run.generated_at ? fmtTs(run.generated_at) : '–'} />
-          <Stat label="all-time" value={`${p.totals.signals} signals`}
-                sub={`${p.totals.days} run days`} />
+          <Stat label={pipe ? 'last extracted' : 'generated'}
+                value={run.generated_at ? fmtTs(run.generated_at) : '–'} />
+          <Stat label="all-time"
+                value={pipe ? `${p.totals.events} events` : `${p.totals.signals} signals`}
+                sub={pipe ? `${p.totals.signals} buys · ${p.totals.days} days` : `${p.totals.days} run days`} />
           <Stat label="5d win rate" value={p.totals.win_5d === null ? '–' : fmtPct(p.totals.win_5d, 0)}
-                sub={p.totals.avg_5d === null ? null : `avg ${fmtPct(p.totals.avg_5d)}`}
+                sub={winSub}
                 cls={p.totals.avg_5d > 0 ? 'pos' : p.totals.avg_5d < 0 ? 'neg' : ''} />
         </div>
       )}
+      {pipe && <PipelineRow pipe={pipe} />}
     </Card>
+  )
+}
+
+const SRC_LABEL = { sec_edgar: 'edgar', hackernews: 'hn', stocktwits: 'stocktwits' }
+
+// Freshness per source: an event producer with a silent source looks exactly
+// like a quiet news day unless the staleness is shown outright.
+function PipelineRow({ pipe }) {
+  const ageKind = (iso) => {
+    if (!iso) return 'err'
+    const h = (Date.now() - new Date(iso).getTime()) / 3600000
+    return h <= 2 ? 'ok' : h <= 24 ? 'warn' : 'err'
+  }
+  return (
+    <div className="pipe-row">
+      <span className="muted small">
+        queue {pipe.pending ?? '–'}
+        {pipe.benched > 0 ? ` · ${pipe.benched} benched` : ''}
+        {' · fetched '}{fmtAgo(pipe.last_fetch)} ago
+      </span>
+      <span className="pipe-srcs">
+        {(pipe.sources || []).map((s) => (
+          <Tag key={s.source} kind={ageKind(s.last_published)}
+               title={`${s.source}: ${s.items} items · newest ${fmtTs(s.last_published)} · fetched ${fmtTs(s.last_fetched)}`}>
+            {SRC_LABEL[s.source] || s.source} {fmtAgo(s.last_published)}
+          </Tag>
+        ))}
+      </span>
+    </div>
   )
 }
 

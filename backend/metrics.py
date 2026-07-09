@@ -41,6 +41,14 @@ def enrich(rec, spark=False):
 
     if rec.get("decision") != "BUY":
         out["status_perf"] = "no_action"
+    elif entry is None:
+        # "pending" must mean "resolves on a future close". If the ticker has
+        # no price series, dropped out of the scored universe (px_stale), or
+        # its series already moved past the signal date, no entry price can
+        # ever appear — surface that instead of pending.
+        resolvable = (last_date is not None and dt > last_date
+                      and not out["px_stale"])
+        out["status_perf"] = "pending" if resolvable else "no_px"
     elif not has_fwd:
         out["status_perf"] = "pending"
     elif out["ret_since"] > 0.001:
@@ -158,6 +166,7 @@ def analytics(producer=None, date_from=None, date_to=None):
         by_producer[name] = {
             "n_signals": len(prows),
             "n_pending": sum(1 for r in prows if r["status_perf"] == "pending"),
+            "n_no_px": sum(1 for r in prows if r["status_perf"] == "no_px"),
             "n_up": sum(1 for r in prows if r["status_perf"] == "up"),
             "n_down": sum(1 for r in prows if r["status_perf"] == "down"),
             "horizons": {f"{h}d": _stats([r.get(f"ret_{h}d") for r in prows])

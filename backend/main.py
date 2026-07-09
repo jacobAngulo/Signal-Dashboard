@@ -27,22 +27,42 @@ def overview():
         runs = prod.run_rows()
         latest = runs[-1] if runs else None
         all_buys = enriched_decisions(producer=name, buys_only=True)
-        out["producers"][name] = {
+        stats_5d = _stats([r.get("ret_5d") for r in all_buys])
+        entry = {
             "latest_run": latest,
             "totals": {
                 "days": len(runs),
                 "signals": len(all_buys),
-                "win_5d": _stats([r.get("ret_5d") for r in all_buys])["win_rate"],
-                "avg_5d": _stats([r.get("ret_5d") for r in all_buys])["avg"],
+                "win_5d": stats_5d["win_rate"],
+                "avg_5d": stats_5d["avg"],
+                "n_measurable": stats_5d["n"],
             },
         }
+        pipeline = getattr(prod, "pipeline", None)
+        if pipeline:
+            entry["pipeline"] = pipeline
+            entry["totals"]["events"] = len({r.get("item_id") for r in prod.decisions})
+        out["producers"][name] = entry
         out["calendar"].extend(runs)
         if latest and (out["latest_date"] is None or latest["date"] > out["latest_date"]):
             out["latest_date"] = latest["date"]
 
     latest_signals = enriched_decisions(buys_only=True, spark=True)
-    latest_signals.sort(key=lambda r: (r["date"], r["producer"]), reverse=True)
-    out["latest_signals"] = latest_signals[:12]
+    latest_signals.sort(
+        key=lambda r: (r["date"], r.get("created_at") or "", r["producer"]),
+        reverse=True)
+    # Bursty event producers can emit many near-identical rows for one ticker
+    # in one day (bot chatter reposts); collapse them here so a single story
+    # can't crowd everything else out of the recent list.
+    deduped, seen = [], {}
+    for r in latest_signals:
+        key = (r["producer"], r["ticker"], r["date"], r.get("decision"))
+        if key in seen:
+            seen[key]["n_grouped"] = seen[key].get("n_grouped", 1) + 1
+            continue
+        seen[key] = r
+        deduped.append(r)
+    out["latest_signals"] = deduped[:12]
 
     ranked = [r for r in latest_signals if r.get("ret_since") is not None]
     ranked.sort(key=lambda r: r["ret_since"])

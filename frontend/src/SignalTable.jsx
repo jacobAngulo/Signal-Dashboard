@@ -1,25 +1,51 @@
 import React from 'react'
 import { PRODUCER_META } from './api.js'
-import { fmtNum, fmtPx, fmtTime, fmtTs } from './format.js'
+import { fmtDayTime, fmtNum, fmtPx, fmtTime, fmtTs } from './format.js'
 import { DateLink, MiniSpark, Pct, PerfTag, ProducerTag, Table, TickerLink, Tag } from './ui.jsx'
+
+// Foundry rows: the moment the source item was published is the signal time
+// (its calendar day can differ from the trade date the event maps to).
+function EventTime({ r }) {
+  if (!r.published_at) return '–'
+  const tip = `published ${fmtTs(r.published_at)}${r.created_at ? ` · extracted ${fmtTs(r.created_at)}` : ''}`
+  return <span className="muted" title={tip}>{fmtDayTime(r.published_at)}</span>
+}
 
 // The standard enriched-signal table used by Overview / Explore / Ticker / Day.
 export default function SignalTable({ rows, onRow, empty, maxHeight, hide = [] }) {
   const H = new Set(hide)
   const decisionKind = (d) => d === 'BUY' ? 'ok' : d === 'SELL' ? 'err' : d === 'WATCH' ? 'info' : 'muted'
   const columns = [
-    !H.has('date') && { key: 'date', label: 'Date', render: (r) => <DateLink d={r.date} /> },
+    !H.has('date') && {
+      key: 'date', label: 'Date',
+      title: 'trading day the signal applies to',
+      render: (r) => <DateLink d={r.date} />,
+    },
     !H.has('created') && {
-      key: 'created_at', label: 'Created (PT)',
-      title: 'when the producer wrote the decision file',
-      render: (r) => r.created_at
-        ? <span className="muted" title={fmtTs(r.created_at)}>{fmtTime(r.created_at)}</span>
-        : '–',
+      key: 'created_at', label: 'Time (PT)',
+      title: 'daily producers: when the decision file was written · foundry: when the source item was published',
+      sortVal: (r) => r.producer === 'foundry' ? (r.published_at || r.created_at) : r.created_at,
+      render: (r) => r.producer === 'foundry'
+        ? <EventTime r={r} />
+        : r.created_at
+          ? <span className="muted" title={fmtTs(r.created_at)}>{fmtTime(r.created_at)}</span>
+          : '–',
     },
     !H.has('producer') && {
       key: 'producer', label: 'Producer', render: (r) => <ProducerTag producer={r.producer} />,
     },
-    !H.has('ticker') && { key: 'ticker', label: 'Ticker', render: (r) => <TickerLink t={r.ticker} /> },
+    !H.has('ticker') && {
+      key: 'ticker', label: 'Ticker',
+      render: (r) => (
+        <span>
+          <TickerLink t={r.ticker} />
+          {r.n_grouped > 1 && (
+            <span className="muted small" title={`${r.n_grouped} events for this ticker on this day — showing the latest`}
+            > ×{r.n_grouped}</span>
+          )}
+        </span>
+      ),
+    },
     !H.has('decision') && {
       key: 'decision', label: 'Decision',
       render: (r) => <Tag kind={decisionKind(r.decision)}>{r.decision}</Tag>,
@@ -30,6 +56,7 @@ export default function SignalTable({ rows, onRow, empty, maxHeight, hide = [] }
       render: (r) => (
         <span>
           {fmtNum(r.metric, 3)} <span className="muted small">{PRODUCER_META[r.producer]?.metric}</span>
+          {r.event_type ? <span className="muted small"> · {r.event_type}</span> : null}
           {r.horizon ? <span className="muted small"> · {r.horizon}</span> : null}
         </span>
       ),

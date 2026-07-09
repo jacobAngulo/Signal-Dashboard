@@ -41,7 +41,7 @@ def overview():
         pipeline = getattr(prod, "pipeline", None)
         if pipeline:
             entry["pipeline"] = pipeline
-            entry["totals"]["events"] = len({r.get("item_id") for r in prod.decisions})
+            entry["totals"]["events"] = getattr(prod, "n_signal_events", 0)
         out["producers"][name] = entry
         out["calendar"].extend(runs)
         if latest and (out["latest_date"] is None or latest["date"] > out["latest_date"]):

@@ -9,9 +9,10 @@ const CORE_KEYS = new Set([
   'id', 'producer', 'date', 'ticker', 'decision', 'metric', 'status_perf', 'spark',
   'entry_px', 'last_px', 'last_date', 'ret_1d', 'ret_5d', 'ret_20d', 'ret_since',
   'created_at', 'px_stale',
-  // shown in the header line instead of the raw field dump
+  // shown in the header/gate lines instead of the raw field dump
   'event_date', 'published_at', 'extracted_at', 'as_of_timestamp', 'as_of_source',
-  'source', 'n_grouped',
+  'source', 'n_grouped', 'n_events', 'gate_reason', 'w_pos', 'w_neg',
+  'last_published_at',
 ])
 
 // Date-only publish values (no time known) pass through untouched.
@@ -54,11 +55,15 @@ export default function SignalDetail({ signal, onClose }) {
         {signal.producer === 'foundry' ? (
           <div className="drawer-sub muted">
             trade day {signal.date}
-            {signal.event_date && signal.event_date !== signal.date ? ` (event on ${signal.event_date})` : ''}
-            {signal.published_at ? ` · published ${fmtPub(signal.published_at)}` : ''}
-            {signal.created_at ? ` · extracted ${fmtTs(signal.created_at)}` : ''}
-            {signal.source ? ` · ${signal.source}` : ''}
-            {signal.n_grouped > 1 ? ` · 1 of ${signal.n_grouped} events this day` : ''}
+            {signal.event_date && signal.event_date !== signal.date ? ` (first event on ${signal.event_date})` : ''}
+            {signal.published_at ? ` · news from ${fmtPub(signal.published_at)}` : ''}
+            {signal.n_events > 1 && signal.last_published_at ? ` to ${fmtPub(signal.last_published_at)}` : ''}
+            {signal.gate_reason ? (
+              <div className="gate-line">
+                gate: {signal.gate_reason}
+                {(signal.w_pos > 0 || signal.w_neg > 0) ? ` · weight +${signal.w_pos} / −${signal.w_neg}` : ''}
+              </div>
+            ) : null}
           </div>
         ) : (
           <div className="drawer-sub muted">
@@ -70,7 +75,8 @@ export default function SignalDetail({ signal, onClose }) {
         )}
 
         <div className="stat-row">
-          <MiniStat label="entry px" v={fmtPx(signal.entry_px)} />
+          <MiniStat label="entry px" v={fmtPx(signal.entry_px)}
+                    sub={signal.producer === 'foundry' ? 'prev close basis' : undefined} />
           <MiniStat label="last px" v={fmtPx(signal.last_px)}
                     sub={signal.px_stale ? `${signal.last_date} · stale ⚠` : signal.last_date} />
           <MiniStat label="1d" v={<Pct v={signal.ret_1d} />} />
@@ -81,6 +87,26 @@ export default function SignalDetail({ signal, onClose }) {
 
         <h4>Price — signal dates marked</h4>
         <PriceChart series={tickerData?.series || []} signals={markers} height={200} />
+
+        {signal.events?.length > 0 && (
+          <>
+            <h4>Contributing events ({signal.events.length})</h4>
+            <div className="ev-list">
+              {signal.events.map((e, i) => (
+                <div key={i} className="ev-row">
+                  <span className="muted small ev-time">{fmtPub(e.published_at)}</span>
+                  <Tag kind="muted">{e.source}</Tag>
+                  <Tag kind={e.sentiment > 0 ? 'ok' : e.sentiment < 0 ? 'err' : 'muted'}>
+                    {e.sentiment > 0 ? `+${e.sentiment}` : e.sentiment ?? 0}
+                  </Tag>
+                  <span className="muted small">{fmtNum(e.signal_score, 3)}</span>
+                  <a className="dlink ev-title" href={e.url} target="_blank" rel="noreferrer"
+                     title={e.title}>{e.title || e.item_id}</a>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
 
         <h4>All signal fields</h4>
         <div className="kv-grid">

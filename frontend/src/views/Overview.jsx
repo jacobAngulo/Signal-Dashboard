@@ -76,7 +76,7 @@ function ProducerCard({ name, p }) {
                 sub={run.as_of_date ? `as of close ${run.as_of_date}` : null} />
           {pipe
             ? <Stat label="events" value={run.n_events ?? run.n_scores ?? '–'}
-                    sub={`${run.n_decisions} ticker rows`} />
+                    sub={`${run.n_decisions} tickers`} />
             : <Stat label="scores" value={run.n_scores ?? '–'}
                     sub={run.stale ? `${run.stale} stale rows` : 'fresh'} />}
           <Stat label="buys" value={run.n_buy}

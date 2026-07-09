@@ -19,7 +19,7 @@ Answers:
    strength vs outcome scatter, signal-vs-universe metric distributions,
    quartile buckets, cumulative take-every-BUY curves, weekday effects.
 
-## Foundry events are trading-day aligned
+## Foundry events are trading-day aligned and gated
 
 Foundry emits events around the clock; the daily producers emit one batch per
 trading day. To live on the same calendar, each foundry event is bucketed by
@@ -31,6 +31,16 @@ on the row (`published_at`, `event_date`) and is what the UI shows as the
 signal time. The overview card also surfaces the fetch/extract loop health
 (queue depth, per-source freshness) straight from the foundry DB, since a
 silent source otherwise looks like a quiet news day.
+
+**One signal per ticker per trading day.** All of a ticker-day's events roll
+up into a single decision row (contributing events are listed in the detail
+drawer). Extracted sentiment alone never triggers a BUY/SELL: direction
+weight is `signal_score × |sentiment|`, and the gate (`foundry_gate` in
+config.json) requires either one event past `score_floor` (in practice a
+primary-source EDGAR filing the LLM scored with conviction) or ≥2 aligned
+events whose net weight passes `net_floor`, with a `dominance` share that
+turns mixed-direction chatter days into WATCH. Every row carries a
+`gate_reason` explaining the outcome.
 
 ## Navigation model
 

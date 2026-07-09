@@ -4,6 +4,11 @@
   "foundry_db": "/root/.openclaw/workspace/Signal-Foundry/data/foundry.duckdb",
   "foundry_model": "gpt-oss:20b",
   "foundry_prompt": "v2",
+  "foundry_gate": {
+    "score_floor": 0.45,
+    "net_floor": 0.5,
+    "dominance": 0.67
+  },
   "host": "127.0.0.1",
   "port": 8010
 }

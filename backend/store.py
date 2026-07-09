@@ -22,6 +22,7 @@ except ImportError:  # pragma: no cover - exercised only in an incomplete env
 
 from .config import (
     FOUNDRY_DB,
+    FOUNDRY_GATE,
     FOUNDRY_MODEL,
     FOUNDRY_PROMPT,
     INTRINSIC_DIR,
@@ -206,16 +207,51 @@ def _json_list(raw):
     return v if isinstance(v, list) else []
 
 
-def _foundry_decision(sentiment):
-    try:
-        s = int(sentiment)
-    except (TypeError, ValueError):
-        s = 0
-    if s > 0:
-        return "BUY"
-    if s < 0:
-        return "SELL"
-    return "WATCH"
+def _foundry_gate(events, unknown_ticker):
+    """Roll one ticker-day's events into a single decision.
+
+    Extracted sentiment alone never triggers: direction weight is
+    signal_score × |sentiment| (source quality, LLM confidence, novelty and
+    sentiment strength all count), and a BUY/SELL needs either one event past
+    `score_floor` (in practice a primary-source EDGAR filing) or aligned
+    corroboration past `net_floor` — with `dominance` filtering out
+    mixed-direction chatter days. Returns (decision, reason, w_pos, w_neg).
+    """
+    weight = lambda e: (e["signal_score"] or 0.0) * abs(e["sentiment"] or 0)
+    pos = [e for e in events if (e["sentiment"] or 0) > 0]
+    neg = [e for e in events if (e["sentiment"] or 0) < 0]
+    w_pos = sum(weight(e) for e in pos)
+    w_neg = sum(weight(e) for e in neg)
+    gross = w_pos + w_neg
+    if gross <= 0:
+        return "WATCH", "no directional events", w_pos, w_neg
+    if unknown_ticker:
+        return ("WATCH", "ticker not in listing_status — possible hallucination",
+                w_pos, w_neg)
+    dom = max(w_pos, w_neg) / gross
+    if dom < FOUNDRY_GATE["dominance"]:
+        return ("WATCH",
+                f"mixed direction: {len(pos)} pos / {len(neg)} neg events, "
+                f"{dom:.0%} dominance < {FOUNDRY_GATE['dominance']:.0%}",
+                w_pos, w_neg)
+    side, decision = (pos, "BUY") if w_pos > w_neg else (neg, "SELL")
+    net = abs(w_pos - w_neg)
+    top = max((e["signal_score"] or 0.0) for e in side)
+    if top >= FOUNDRY_GATE["score_floor"]:
+        return (decision,
+                f"high-conviction event: score {top:.2f} ≥ "
+                f"{FOUNDRY_GATE['score_floor']:.2f}", w_pos, w_neg)
+    # Corroboration means corroboration: a single event only ever triggers
+    # via score_floor, no matter how strong its sentiment.
+    if len(side) >= 2 and net >= FOUNDRY_GATE["net_floor"]:
+        return (decision,
+                f"corroborated: {len(side)} aligned events, net weight "
+                f"{net:.2f} ≥ {FOUNDRY_GATE['net_floor']:.2f}", w_pos, w_neg)
+    return ("WATCH",
+            f"below conviction floor: top score {top:.2f} < "
+            f"{FOUNDRY_GATE['score_floor']:.2f}"
+            + (f", net weight {net:.2f} < {FOUNDRY_GATE['net_floor']:.2f}"
+               if len(side) >= 2 else " (single event)"), w_pos, w_neg)
 
 
 class ProducerData:
@@ -364,6 +400,7 @@ class FoundryData:
         self.history = {}
         self.metric_values = []
         self.pipeline = {}
+        self.n_signal_events = 0
 
     def stale(self, calendar=()):
         # Future-dated events re-snap when new trading days appear, so a
@@ -381,6 +418,7 @@ class FoundryData:
         self.history = {}
         self.metric_values = []
         self.pipeline = {}
+        self.n_signal_events = 0
 
         if not self.db.exists() or duckdb is None:
             return
@@ -417,6 +455,7 @@ class FoundryData:
             con.close()
 
         score_rows = defaultdict(list)
+        groups = defaultdict(list)  # (trading day, ticker) -> contributing events
         for row in rows:
             (
                 item_id, model, prompt, extracted_at, tickers_raw,
@@ -439,49 +478,29 @@ class FoundryData:
             # Date-only publish values (EDGAR backfill) stay date-only rather
             # than masquerading as a midnight-UTC timestamp.
             published_iso = raw_pub if len(raw_pub) == 10 else _iso_ts(published_at)
-            unknown = [str(t).upper() for t in _json_list(unknown_raw)]
+            unknown = {str(t).upper() for t in _json_list(unknown_raw)}
             mentions = [str(x) for x in _json_list(mentions_raw)]
-            decision = _foundry_decision(sentiment)
             score = float(signal_score) if signal_score is not None else None
 
-            for i, ticker in enumerate(tickers):
-                rec = {
-                    "id": f"foundry:{item_id}:{ticker}:{i}",
-                    "producer": self.name,
-                    "date": signal_date,
-                    "event_date": event_date,
-                    "ticker": ticker,
-                    "decision": decision,
-                    "metric": score,
-                    "signal_score": score,
-                    "created_at": created_at,
-                    "as_of_timestamp": published_iso,
-                    "as_of_source": source,
-                    "model": model,
-                    "prompt_version": prompt,
-                    "item_id": item_id,
-                    "source": source,
-                    "source_url": url,
-                    "title": title,
-                    "event_type": event_type,
-                    "sentiment": sentiment,
-                    "confidence": confidence,
-                    "novelty": novelty,
-                    "time_sensitivity": time_sensitivity,
-                    "horizon": time_sensitivity,
+            for ticker in tickers:
+                groups[(signal_date, ticker)].append({
+                    "item_id": item_id, "model": model, "prompt_version": prompt,
+                    "source": source, "title": title, "url": url,
+                    "published_at": published_iso, "event_date": event_date,
+                    "extracted_at": created_at, "event_type": event_type,
+                    "sentiment": sentiment, "confidence": confidence,
+                    "novelty": novelty, "time_sensitivity": time_sensitivity,
                     "evidence_quote": evidence_quote,
                     "why_it_matters": why_it_matters,
-                    "source_quality": source_quality,
-                    "unknown_tickers": unknown,
-                    "company_mentions": mentions,
+                    "source_quality": source_quality, "signal_score": score,
+                    "unknown": ticker in unknown,
                     "in_universe": in_universe,
-                    "published_at": published_iso,
-                    "extracted_at": created_at,
-                }
-                self.decisions.append(rec)
+                    "company_mentions": mentions,
+                })
+                # The per-date "score file" stays event-level: it's the raw
+                # browsable record, one row per event/ticker.
                 score_rows[signal_date].append({
                     "ticker": ticker,
-                    "decision": decision,
                     "signal_score": score,
                     "event_type": event_type,
                     "sentiment": sentiment,
@@ -493,30 +512,88 @@ class FoundryData:
                     "published_at": published_iso,
                     "extracted_at": created_at,
                     "item_id": item_id,
-                })
-                self.history.setdefault(ticker, []).append({
-                    "date": signal_date,
-                    "metric": score,
-                    "px": None,
-                    "event_type": event_type,
-                    "sentiment": sentiment,
-                    "source": source,
                 })
                 if isinstance(score, float) and math.isfinite(score):
                     self.metric_values.append(score)
 
+        # One decision per ticker per trading day — the events are evidence,
+        # the roll-up is the signal. The gate decides BUY/SELL/WATCH.
+        for (signal_date, ticker), evs in groups.items():
+            evs.sort(key=lambda e: e["published_at"] or "")
+            unknown_ticker = any(e["unknown"] for e in evs)
+            decision, reason, w_pos, w_neg = _foundry_gate(evs, unknown_ticker)
+            top = max(evs, key=lambda e: (e["signal_score"] or 0.0,
+                                          e["published_at"] or ""))
+            first, last = evs[0], evs[-1]
+            self.decisions.append({
+                "id": f"foundry:{signal_date}:{ticker}",
+                "producer": self.name,
+                "date": signal_date,
+                "event_date": first["event_date"],
+                "ticker": ticker,
+                "decision": decision,
+                "gate_reason": reason,
+                "w_pos": round(w_pos, 3),
+                "w_neg": round(w_neg, 3),
+                "n_events": len({e["item_id"] for e in evs}),
+                "sources": sorted({e["source"] for e in evs}),
+                "metric": top["signal_score"],
+                "signal_score": top["signal_score"],
+                "created_at": max((e["extracted_at"] or "" for e in evs)) or None,
+                "published_at": first["published_at"],
+                "last_published_at": last["published_at"],
+                "as_of_timestamp": first["published_at"],
+                "as_of_source": top["source"],
+                "item_id": top["item_id"],
+                "model": top["model"],
+                "prompt_version": top["prompt_version"],
+                "source": top["source"],
+                "source_url": top["url"],
+                "title": top["title"],
+                "event_type": top["event_type"],
+                "sentiment": top["sentiment"],
+                "confidence": top["confidence"],
+                "novelty": top["novelty"],
+                "time_sensitivity": top["time_sensitivity"],
+                "horizon": top["time_sensitivity"],
+                "evidence_quote": top["evidence_quote"],
+                "why_it_matters": top["why_it_matters"],
+                "source_quality": top["source_quality"],
+                "unknown_ticker": unknown_ticker,
+                "in_universe": any(e["in_universe"] for e in evs),
+                "extracted_at": top["extracted_at"],
+                "events": [{k: e[k] for k in (
+                    "source", "title", "url", "published_at", "sentiment",
+                    "confidence", "signal_score", "event_type", "item_id")}
+                    for e in evs],
+            })
+            self.history.setdefault(ticker, []).append({
+                "date": signal_date,
+                "metric": top["signal_score"],
+                "px": None,
+                "event_type": top["event_type"],
+                "sentiment": top["sentiment"],
+                "source": top["source"],
+            })
+
+        self.n_signal_events = len(
+            {e["item_id"] for evs in groups.values() for e in evs})
         self.decisions.sort(key=lambda r: (r["date"], r["ticker"], r["created_at"] or ""))
         self.dates = sorted(score_rows)
         self.scores = {dt: pd.DataFrame(rows) for dt, rows in score_rows.items()}
 
+        by_date = defaultdict(list)
+        for r in self.decisions:
+            by_date[r["date"]].append(r)
         for dt, rows_for_dt in score_rows.items():
+            decs = by_date.get(dt, [])
             self.status[dt] = {
                 "status": "ok",
                 "events": len({r["item_id"] for r in rows_for_dt}),
-                "ticker_rows": len(rows_for_dt),
-                "buy": sum(1 for r in rows_for_dt if r["decision"] == "BUY"),
-                "sell": sum(1 for r in rows_for_dt if r["decision"] == "SELL"),
-                "watch": sum(1 for r in rows_for_dt if r["decision"] == "WATCH"),
+                "tickers": len(decs),
+                "buy": sum(1 for r in decs if r["decision"] == "BUY"),
+                "sell": sum(1 for r in decs if r["decision"] == "SELL"),
+                "watch": sum(1 for r in decs if r["decision"] == "WATCH"),
             }
 
         for rows_for_ticker in self.history.values():

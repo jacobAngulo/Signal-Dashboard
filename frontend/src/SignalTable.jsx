@@ -37,15 +37,18 @@ export default function SignalTable({ rows, onRow, empty, maxHeight, hide = [] }
     },
     !H.has('ticker') && {
       key: 'ticker', label: 'Ticker',
-      render: (r) => (
-        <span>
-          <TickerLink t={r.ticker} />
-          {r.n_grouped > 1 && (
-            <span className="muted small" title={`${r.n_grouped} events for this ticker on this day — showing the latest`}
-            > ×{r.n_grouped}</span>
-          )}
-        </span>
-      ),
+      render: (r) => {
+        const n = r.n_events || r.n_grouped
+        return (
+          <span>
+            <TickerLink t={r.ticker} />
+            {n > 1 && (
+              <span className="muted small" title={`${n} events rolled into this one signal — open the row to see them`}
+              > ×{n}</span>
+            )}
+          </span>
+        )
+      },
     },
     !H.has('decision') && {
       key: 'decision', label: 'Decision',

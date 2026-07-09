@@ -17,5 +17,18 @@ FOUNDRY_DB = Path(CFG.get(
 ))
 FOUNDRY_MODEL = CFG.get("foundry_model", "gpt-oss:20b")
 FOUNDRY_PROMPT = CFG.get("foundry_prompt", "v2")
+
+# Gate for rolling a ticker-day's foundry events into one BUY/SELL decision.
+# Weights are signal_score × |sentiment|, so source quality, LLM confidence,
+# novelty and sentiment strength all count. Defaults calibrated on the v2
+# event distribution (2026-07): a directional EDGAR filing (score .5–.7)
+# clears score_floor alone; HN/stocktwits (≤.43/.25) need aligned
+# corroboration to reach net_floor; mixed chatter fails dominance.
+FOUNDRY_GATE = {
+    "score_floor": 0.45,   # one primary-source event with this score triggers
+    "net_floor": 0.50,     # or accumulated aligned weight reaches this
+    "dominance": 0.67,     # majority side must carry ≥ this share of weight
+    **CFG.get("foundry_gate", {}),
+}
 HOST = CFG.get("host", "127.0.0.1")
 PORT = int(CFG.get("port", 8010))

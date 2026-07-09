@@ -20,6 +20,13 @@ Rules:
   LSTM/Intrinsic score-date calendar — see `_event_dates` in
   `backend/store.py`). Signals whose ticker can never get an entry price show
   status `no_px`, not `pending`.
+- Foundry decisions are **one row per ticker per trading day**, gated by
+  `_foundry_gate` (weights = signal_score × |sentiment|; single event needs
+  `score_floor`, corroboration needs ≥2 aligned events past `net_floor`,
+  mixed chatter fails `dominance` → WATCH; thresholds in config.json
+  `foundry_gate`). Sentiment alone must never map straight to BUY/SELL
+  (Jacob's call, 2026-07-09). Raw per-event rows stay in the foundry
+  "scores" view.
 - Deployed as systemd `signal-dashboard` on 127.0.0.1:8010, exposed at
   `/signal-dashboard/` via nginx. Backend changes need
   `systemctl restart signal-dashboard`; frontend changes need

@@ -174,6 +174,16 @@ select, input {
 .mover-list { display: flex; flex-direction: column; gap: 6px; }
 .mover { display: flex; align-items: center; gap: 8px; }
 
+/* contributing events inside the signal drawer */
+.ev-list { display: flex; flex-direction: column; }
+.ev-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 4px 0; border-bottom: 1px solid #1d2534; min-width: 0;
+}
+.ev-time { flex: 0 0 auto; }
+.ev-title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gate-line { margin-top: 3px; color: var(--muted); font-size: 12px; }
+
 /* foundry fetch/extract loop health strip (Overview producer card) */
 .pipe-row {
   display: flex; align-items: center; justify-content: space-between;

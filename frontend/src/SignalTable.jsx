@@ -7,7 +7,8 @@ import { DateLink, MiniSpark, Pct, PerfTag, ProducerTag, Table, TickerLink, Tag 
 // (its calendar day can differ from the trade date the event maps to).
 function EventTime({ r }) {
   if (!r.published_at) return '–'
-  const tip = `published ${fmtTs(r.published_at)}${r.created_at ? ` · extracted ${fmtTs(r.created_at)}` : ''}`
+  const pub = String(r.published_at).length === 10 ? r.published_at : fmtTs(r.published_at)
+  const tip = `published ${pub}${r.created_at ? ` · extracted ${fmtTs(r.created_at)}` : ''}`
   return <span className="muted" title={tip}>{fmtDayTime(r.published_at)}</span>
 }
 

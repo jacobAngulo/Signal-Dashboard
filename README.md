@@ -23,12 +23,12 @@ Answers:
 
 Foundry emits events around the clock; the daily producers emit one batch per
 trading day. To live on the same calendar, each foundry event is bucketed by
-the **trading day it is actionable for**: publish timestamps convert to ET,
-anything at/after 16:00 ET (and weekends/holidays) rolls to the next session —
-the same convention as Signal-Foundry's own backtest, so the score-file entry
-price is the pre-event close by construction. The raw publish timestamp stays
-on the row (`published_at`, `event_date`) and is what the UI shows as the
-signal time. The overview card also surfaces the fetch/extract loop health
+the **trading day it is actionable for** using causal `extracted_at`, not a
+historical publication date. Extraction timestamps convert to ET; anything
+at/after 16:00 ET (and weekends/holidays) rolls to the next session. The raw
+publish timestamp stays on the row (`published_at`, `event_date`) as source
+context, while `as_of_timestamp` records actual extraction availability. The
+overview card also surfaces the fetch/extract loop health
 (queue depth, per-source freshness) straight from the foundry DB, since a
 silent source otherwise looks like a quiet news day.
 
@@ -41,6 +41,15 @@ primary-source EDGAR filing the LLM scored with conviction) or ≥2 aligned
 events whose net weight passes `net_floor`, with a `dominance` share that
 turns mixed-direction chatter days into WATCH. Every row carries a
 `gate_reason` explaining the outcome.
+
+## Attention and coverage states
+
+The production BUY/SELL contracts remain unchanged. Additive WATCH rows expose
+the tested research candidates: LSTM `p > 0.18` with a 1.5x prior-volume surge,
+Intrinsic's shadow-only `0.075-0.65` ratio extension, and Foundry's fixed top-five
+event-type-prior queue. Score browsers retain the underlying attention/shadow
+columns. Run rows also merge each producer's coverage manifest, including ready
+counts, ready fractions, valuation readiness, and fail-closed guard status.
 
 ## Navigation model
 

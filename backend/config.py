@@ -30,5 +30,15 @@ FOUNDRY_GATE = {
     "dominance": 0.67,     # majority side must carry ≥ this share of weight
     **CFG.get("foundry_gate", {}),
 }
+FOUNDRY_ATTENTION = {
+    "top_k": 5,
+    "type_priors": {
+        "earnings": 0.356855,
+        "mna": 0.193548,
+        "regulatory": 0.172326,
+        "other": 0.127283,
+    },
+    **CFG.get("foundry_attention", {}),
+}
 HOST = CFG.get("host", "127.0.0.1")
 PORT = int(CFG.get("port", 8010))

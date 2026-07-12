@@ -1,5 +1,21 @@
 # Progress
 
+## 2026-07-12 - additive attention tiers and causal Foundry dates
+
+- Added backend-only support for LSTM attention and Intrinsic shadow rows as
+  WATCH decisions. Existing BUY analytics and counts remain unchanged.
+- Merged producer coverage manifests into Runs/API rows, including readiness,
+  valuation coverage, and guard pass/fail fields.
+- Foundry now uses `extracted_at` for actionable dates and `as_of_timestamp`,
+  preserving publication date only as source context. Retrospective SEC
+  backfill no longer appears as a causal historical signal.
+- Added fixed top-five/day Foundry event-type attention ranks without changing
+  directional gates. Dynamic score APIs expose all new fields, so no active
+  frontend files needed modification.
+- Validation: backend `py_compile` passed; 4 focused `unittest` cases passed;
+  real-data refresh produced five Foundry attention rows for 2026-07-13 and
+  kept LSTM/Intrinsic production decisions unchanged.
+
 ## 2026-07-07 — surface dropped-ticker staleness (ASTI report)
 
 Jacob's report: ASTI's detail page has no recent history. Audit found the data

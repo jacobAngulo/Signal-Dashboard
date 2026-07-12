@@ -21,6 +21,7 @@ except ImportError:  # pragma: no cover - exercised only in an incomplete env
     duckdb = None
 
 from .config import (
+    FOUNDRY_ATTENTION,
     FOUNDRY_DB,
     FOUNDRY_GATE,
     FOUNDRY_MODEL,
@@ -41,25 +42,47 @@ PRODUCERS = {
         "decision_glob": "live_decision_*.csv",
         "scores_glob": "live_scores_*.csv",
         "status_glob": "premarket_status_*.json",
+        "coverage_glob": "live_coverage_*.json",
         "price_col": "close",
         "metric": "adj_prob",
         "hist_range": (0.0, 0.35),
         "hist_bins": 14,
         # per-ticker score history exposed on ticker pages
         "history_metric": "best_adj_prob",
-        "history_extra": ("best_horizon", "status"),
+        "history_extra": (
+            "best_horizon",
+            "status",
+            "volume_ratio_20",
+            "attention_candidate",
+            "attention_status",
+            "attention_horizon_sessions",
+        ),
+        "attention_col": "attention_candidate",
+        "attention_reason_col": "attention_reason",
+        "attention_tier": "lstm_attention",
     },
     "intrinsic": {
         "dir": INTRINSIC_DIR,
         "decision_glob": "intrinsic_decision_*.csv",
         "scores_glob": "intrinsic_scores_*.csv",
         "status_glob": "premarket_status_*.json",
+        "coverage_glob": "intrinsic_coverage_*.json",
         "price_col": "price",
         "metric": "discount_to_intrinsic",
         "hist_range": (0.0, 1.0),
         "hist_bins": 20,
         "history_metric": "discount_to_intrinsic",
-        "history_extra": ("intrinsic_value", "status"),
+        "history_extra": (
+            "intrinsic_value",
+            "status",
+            "shadow_candidate",
+            "shadow_only_candidate",
+            "production_only_candidate",
+            "shadow_status",
+        ),
+        "attention_col": "shadow_only_candidate",
+        "attention_reason_col": "shadow_reason",
+        "attention_tier": "intrinsic_shadow",
     },
 }
 
@@ -254,6 +277,88 @@ def _foundry_gate(events, unknown_ticker):
                if len(side) >= 2 else " (single event)"), w_pos, w_neg)
 
 
+def _truthy(value):
+    if isinstance(value, bool):
+        return value
+    if value is None or (isinstance(value, float) and math.isnan(value)):
+        return False
+    return str(value).strip().lower() in {"1", "true", "yes", "y"}
+
+
+def _score_attention_decisions(producer, dt, df, spec):
+    """Convert additive score flags into WATCH rows without changing BUYs."""
+    attention_col = spec.get("attention_col")
+    if not attention_col or attention_col not in df.columns or "ticker" not in df.columns:
+        return []
+    reason_col = spec.get("attention_reason_col")
+    metric_col = spec["history_metric"]
+    rows = []
+    for index, raw in enumerate(df.to_dict("records")):
+        if not _truthy(raw.get(attention_col)):
+            continue
+        ticker = str(raw.get("ticker") or "").strip().upper()
+        if not ticker:
+            continue
+        reason_value = raw.get(reason_col) if reason_col else None
+        reason = (
+            spec["attention_tier"]
+            if reason_value is None or pd.isna(reason_value) or not str(reason_value).strip()
+            else str(reason_value)
+        )
+        row = dict(raw)
+        row.update({
+            "id": f"{producer}:{spec['attention_tier']}:{dt}:{ticker}:{index}",
+            "producer": producer,
+            "date": dt,
+            "ticker": ticker,
+            "decision": "WATCH",
+            "tier": spec["attention_tier"],
+            "gate_reason": reason,
+            "reason": reason,
+            "metric": raw.get(metric_col),
+            "created_at": raw.get("as_of_timestamp") or None,
+        })
+        rows.append(row)
+    return rows
+
+
+def _foundry_type_group(value):
+    event_type = str(value or "other").strip().lower()
+    priors = FOUNDRY_ATTENTION.get("type_priors") or {}
+    return event_type if event_type in priors else "other"
+
+
+def _assign_foundry_attention(decisions):
+    """Assign fixed-budget non-directional ranks to causal ticker-day rows."""
+    priors = {
+        "earnings": 0.356855,
+        "mna": 0.193548,
+        "regulatory": 0.172326,
+        "other": 0.127283,
+        **(FOUNDRY_ATTENTION.get("type_priors") or {}),
+    }
+    top_k = max(int(FOUNDRY_ATTENTION.get("top_k", 5)), 0)
+    by_date = defaultdict(list)
+    for row in decisions:
+        event_type = _foundry_type_group(row.get("event_type"))
+        row["attention_type_group"] = event_type
+        row["attention_type_prior"] = float(priors.get(event_type, priors["other"]))
+        by_date[row["date"]].append(row)
+    for day_rows in by_date.values():
+        day_rows.sort(key=lambda row: (
+            -row["attention_type_prior"],
+            -float(row.get("signal_score") or 0.0),
+            row["ticker"],
+        ))
+        for rank, row in enumerate(day_rows, start=1):
+            row["attention_rank"] = rank
+            row["attention_candidate"] = bool(top_k and rank <= top_k)
+            row["attention_status"] = (
+                "attention_candidate" if row["attention_candidate"] else ""
+            )
+    return decisions
+
+
 class ProducerData:
     def __init__(self, name: str):
         self.name = name
@@ -262,6 +367,7 @@ class ProducerData:
         self.decisions = []          # list[dict], normalized + raw fields
         self.scores = {}             # date -> DataFrame
         self.status = {}             # date -> raw status json (+ _mtime)
+        self.coverage = {}           # date -> producer coverage/readiness json
         self.dates = []              # sorted trading dates seen in scores
         self.history = {}            # ticker -> [{date, metric, px, ...}]
         self.metric_values = []      # metric across the whole score universe
@@ -274,6 +380,7 @@ class ProducerData:
         self.fingerprint = _fingerprint(d)
         self.scores = {}
         self.status = {}
+        self.coverage = {}
         self.decisions = []
 
         for p in sorted(d.glob(self.spec["scores_glob"])):
@@ -292,6 +399,18 @@ class ProducerData:
             raw["_mtime"] = p.stat().st_mtime
             self.status[dt] = raw
 
+        for p in sorted(d.glob(self.spec.get("coverage_glob", "__none__"))):
+            dt = file_date(p)
+            if not dt:
+                continue
+            try:
+                raw = json.loads(p.read_text())
+            except Exception:
+                raw = {"passed": False, "status": "unreadable"}
+            raw["_mtime"] = p.stat().st_mtime
+            self.coverage[dt] = raw
+            self.status.setdefault(dt, {})["coverage"] = raw
+
         for p in sorted(d.glob(self.spec["decision_glob"])):
             dt = file_date(p)
             df = _read_csv(p)
@@ -309,6 +428,11 @@ class ProducerData:
                 rec["created_at"] = created
                 rec["id"] = f"{self.name}:{dt}:{rec['ticker']}:{i}"
                 self.decisions.append(rec)
+
+        for dt, frame in self.scores.items():
+            self.decisions.extend(
+                _score_attention_decisions(self.name, dt, frame, self.spec)
+            )
 
         self.dates = sorted(self.scores.keys())
         self._build_history()
@@ -350,6 +474,7 @@ class ProducerData:
             decs = by_date.get(dt, [])
             n_scores = len(self.scores[dt]) if dt in self.scores else None
             stale_rows = st.get("stale_rows") or {}
+            coverage = self.coverage.get(dt, {})
             rows.append({
                 "producer": self.name,
                 "date": dt,
@@ -357,6 +482,7 @@ class ProducerData:
                 "n_scores": n_scores,
                 "n_decisions": len(decs),
                 "n_buy": sum(1 for r in decs if r["decision"] == "BUY"),
+                "n_attention": sum(1 for r in decs if r.get("tier")),
                 "decision_summary": st.get("decision"),
                 "stale": sum(stale_rows.values()) if stale_rows else None,
                 "generated_at": st.get("finished_at") or st.get("generated_at")
@@ -365,6 +491,12 @@ class ProducerData:
                 "as_of_date": st.get("as_of_date"),
                 "has_scores": dt in self.scores,
                 "has_status": dt in self.status,
+                "coverage_passed": coverage.get("passed"),
+                "universe_count": coverage.get("universe_count"),
+                "ready_count": coverage.get("ready_count"),
+                "ready_fraction": coverage.get("ready_fraction"),
+                "valuation_ready_count": coverage.get("valuation_ready_count"),
+                "valuation_ready_fraction": coverage.get("valuation_ready_fraction"),
             })
         return rows
 
@@ -386,7 +518,14 @@ class FoundryData:
         self.spec = {
             "metric": "signal_score",
             "history_metric": "signal_score",
-            "history_extra": ("event_type", "sentiment", "source"),
+            "history_extra": (
+                "event_type",
+                "sentiment",
+                "source",
+                "attention_type_prior",
+                "attention_rank",
+                "attention_candidate",
+            ),
             "price_col": None,
             "hist_range": (0.0, 1.0),
             "hist_bins": 20,
@@ -468,9 +607,10 @@ class FoundryData:
             if not tickers:
                 continue
 
-            event_date, signal_date = _event_dates(published_at, self.calendar)
-            if not signal_date:
-                event_date, signal_date = _event_dates(extracted_at, self.calendar)
+            event_date, _published_signal_date = _event_dates(published_at, self.calendar)
+            _extracted_event_date, signal_date = _event_dates(extracted_at, self.calendar)
+            if not event_date:
+                event_date = _extracted_event_date
             if not signal_date:
                 continue
             created_at = _iso_ts(extracted_at)
@@ -525,6 +665,7 @@ class FoundryData:
             top = max(evs, key=lambda e: (e["signal_score"] or 0.0,
                                           e["published_at"] or ""))
             first, last = evs[0], evs[-1]
+            available_at = max((e["extracted_at"] or "" for e in evs)) or None
             self.decisions.append({
                 "id": f"foundry:{signal_date}:{ticker}",
                 "producer": self.name,
@@ -539,11 +680,11 @@ class FoundryData:
                 "sources": sorted({e["source"] for e in evs}),
                 "metric": top["signal_score"],
                 "signal_score": top["signal_score"],
-                "created_at": max((e["extracted_at"] or "" for e in evs)) or None,
+                "created_at": available_at,
                 "published_at": first["published_at"],
                 "last_published_at": last["published_at"],
-                "as_of_timestamp": first["published_at"],
-                "as_of_source": top["source"],
+                "as_of_timestamp": available_at,
+                "as_of_source": "foundry_extraction",
                 "item_id": top["item_id"],
                 "model": top["model"],
                 "prompt_version": top["prompt_version"],
@@ -567,13 +708,30 @@ class FoundryData:
                     "confidence", "signal_score", "event_type", "item_id")}
                     for e in evs],
             })
-            self.history.setdefault(ticker, []).append({
-                "date": signal_date,
-                "metric": top["signal_score"],
+        _assign_foundry_attention(self.decisions)
+        decision_lookup = {(row["date"], row["ticker"]): row for row in self.decisions}
+        for signal_date, rows_for_date in score_rows.items():
+            for score_row in rows_for_date:
+                ranked = decision_lookup.get((signal_date, score_row["ticker"]), {})
+                for field in (
+                    "attention_type_group",
+                    "attention_type_prior",
+                    "attention_rank",
+                    "attention_candidate",
+                    "attention_status",
+                ):
+                    score_row[field] = ranked.get(field)
+        for row in self.decisions:
+            self.history.setdefault(row["ticker"], []).append({
+                "date": row["date"],
+                "metric": row["signal_score"],
                 "px": None,
-                "event_type": top["event_type"],
-                "sentiment": top["sentiment"],
-                "source": top["source"],
+                "event_type": row["event_type"],
+                "sentiment": row["sentiment"],
+                "source": row["source"],
+                "attention_type_prior": row["attention_type_prior"],
+                "attention_rank": row["attention_rank"],
+                "attention_candidate": row["attention_candidate"],
             })
 
         self.n_signal_events = len(
@@ -594,6 +752,7 @@ class FoundryData:
                 "buy": sum(1 for r in decs if r["decision"] == "BUY"),
                 "sell": sum(1 for r in decs if r["decision"] == "SELL"),
                 "watch": sum(1 for r in decs if r["decision"] == "WATCH"),
+                "attention": sum(1 for r in decs if r.get("attention_candidate")),
             }
 
         for rows_for_ticker in self.history.values():
@@ -679,6 +838,7 @@ class FoundryData:
                 "n_events": st.get("events", 0),
                 "n_decisions": len(decs),
                 "n_buy": sum(1 for r in decs if r["decision"] == "BUY"),
+                "n_attention": sum(1 for r in decs if r.get("attention_candidate")),
                 "decision_summary": (
                     f"{sum(1 for r in decs if r['decision'] == 'SELL')} sell / "
                     f"{sum(1 for r in decs if r['decision'] == 'WATCH')} watch"

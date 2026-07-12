@@ -9,6 +9,15 @@
     "net_floor": 0.5,
     "dominance": 0.67
   },
+  "foundry_attention": {
+    "top_k": 5,
+    "type_priors": {
+      "earnings": 0.356855,
+      "mna": 0.193548,
+      "regulatory": 0.172326,
+      "other": 0.127283
+    }
+  },
   "host": "127.0.0.1",
   "port": 8010
 }

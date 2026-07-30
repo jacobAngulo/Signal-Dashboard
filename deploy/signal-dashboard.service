@@ -1,12 +1,14 @@
 [Unit]
 Description=Signal Dashboard (LSTM + Intrinsic + Foundry signal analytics UI)
-After=network.target
+After=network.target av-gateway.service
+Wants=av-gateway.service
 
 [Service]
 Type=simple
-WorkingDirectory=/root/.openclaw/workspace/Signal-Dashboard
+WorkingDirectory=/projects/Signal-Dashboard
 Environment=PYTHONUNBUFFERED=1
-ExecStart=/root/.openclaw/workspace/Signal-Dashboard/.venv/bin/python -m uvicorn backend.main:app --host 127.0.0.1 --port 8010
+Environment=AV_GATEWAY_URL=http://127.0.0.1:8765
+ExecStart=/projects/Signal-Dashboard/.venv/bin/python -m uvicorn backend.main:app --host 127.0.0.1 --port 8010
 Restart=always
 RestartSec=5
 User=root

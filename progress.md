@@ -1,5 +1,13 @@
 # Progress
 
+## 2026-07-30 - deployment migrated out of OpenClaw
+
+- Moved the live checkout and Python environment to `/projects/Signal-Dashboard`.
+  Updated producer/database paths and the systemd unit, added an explicit
+  `av-gateway.service` dependency, and re-enabled the service for reboot.
+  Verified `/api/health` and the Nginx `/signal-dashboard/` route from the new
+  location.
+
 ## 2026-07-12 - additive attention tiers and causal Foundry dates
 
 - Added backend-only support for LSTM attention and Intrinsic shadow rows as

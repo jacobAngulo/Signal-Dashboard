@@ -65,12 +65,19 @@ export default function SignalTable({ rows, onRow, empty, maxHeight, hide = [] }
         </span>
       ),
     },
-    { key: 'entry_px', label: 'Entry', align: 'right', render: (r) => fmtPx(r.entry_px) },
-    { key: 'ret_1d', label: '1d', align: 'right', render: (r) => <Pct v={r.ret_1d} /> },
-    { key: 'ret_5d', label: '5d', align: 'right', render: (r) => <Pct v={r.ret_5d} /> },
-    { key: 'ret_20d', label: '20d', align: 'right', render: (r) => <Pct v={r.ret_20d} /> },
+    {
+      key: 'entry_px', label: 'Entry', align: 'right',
+      title: 'price at signal time — gateway close of the last session at/before the signal (foundry: the close before its actionable session); producer value is retained as signal_price',
+      render: (r) => <span title={`entry session ${r.entry_date || 'unavailable'} · basis: ${r.price_basis || 'unavailable'} · action: ${r.action_status || 'unavailable'}`}>
+        {fmtPx(r.entry_px)}
+      </span>,
+    },
+    { key: 'ret_1d', label: '1d', align: 'right', title: 'close-to-close from the actionable session', render: (r) => <Pct v={r.ret_1d} /> },
+    { key: 'ret_5d', label: '5d', align: 'right', title: 'close-to-close from the actionable session', render: (r) => <Pct v={r.ret_5d} /> },
+    { key: 'ret_20d', label: '20d', align: 'right', title: 'close-to-close from the actionable session', render: (r) => <Pct v={r.ret_20d} /> },
     {
       key: 'ret_since', label: 'Since', align: 'right',
+      title: 'change from the signal-time entry to the last close — includes the overnight gap for foundry events',
       render: (r) => (
         <span title={r.px_stale ? `price data ends ${r.last_date} — ticker no longer scored` : undefined}>
           <Pct v={r.ret_since} />{r.px_stale && r.ret_since != null ? <span className="warn"> ⚠</span> : null}
@@ -83,12 +90,16 @@ export default function SignalTable({ rows, onRow, empty, maxHeight, hide = [] }
     },
     {
       key: 'status_perf', label: 'Status',
-      render: (r) => <PerfTag status={r.status_perf} stale={r.px_stale} asOf={r.last_date} />,
+      render: (r) => (
+        <PerfTag status={r.status_perf} stale={r.px_stale} asOf={r.last_date}
+                 actionWarning={r.has_action_warning} actionIds={r.action_warning_ids}
+                 statusBasis={r.status_basis} />
+      ),
     },
   ].filter(Boolean)
 
   return (
     <Table columns={columns} rows={rows} initSort="date" onRow={onRow}
-           empty={empty} maxHeight={maxHeight} />
+           empty={empty} maxHeight={maxHeight} tableClassName="signal-table" />
   )
 }

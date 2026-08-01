@@ -2,7 +2,7 @@
 
 Standalone, read-only analytics UI over the **LSTM_AI_Stock_Predictor**,
 **Intrinsic-Value-Monitor**, and **Signal-Foundry** signal producers. Decoupled
-from the trading arena — it only exposes what the producers generated and how
+from execution systems — it only exposes what the producers generated and how
 it moved.
 
 Answers:
@@ -12,8 +12,8 @@ Answers:
    calendar heatmap into per-day pages and the full ~1.3k-row score files.
 2. **How are past signals doing?** Every BUY gets forward returns
    (1d / 5d / 20d / since-signal) and an up/down/pending status, computed
-   from the producers' own daily score prices — the price series is aligned
-   with signal dates by construction. Tickers outside the scored universe get
+   from corporate-action-aware continuous gateway prices, anchored to each
+   signal's causal entry session. Tickers outside price coverage get
    an explicit `no_px` status instead of an eternal "pending".
 3. **Is the signal any good?** Analytics: win rates by horizon, signal
    strength vs outcome scatter, signal-vs-universe metric distributions,
@@ -53,19 +53,35 @@ counts, ready fractions, valuation readiness, and fail-closed guard status.
 
 ## Navigation model
 
-Hash-routed and deep-linkable: `#/` overview · `#/explore` filterable signal
-explorer · `#/analytics` · `#/runs` · `#/scores/<producer>/<date>` raw score
-browser · `#/ticker/<T>` per-ticker page (price with signal markers, metric
-history, all signals) · `#/day/<date>` per-day page. Every ticker and date
-anywhere in the UI is a link; the header has jump-to-ticker search.
+Hash-routed and deep-linkable: `#/` overview · `#/explore` server-filtered,
+paginated signal explorer · `#/lstm-windows` all published above-threshold
+LSTM candidates grouped by each ticker's strongest horizon/day, with the final
+daily pick highlighted · `#/analytics` · `#/runs` ·
+`#/scores/<producer>/<date>` curated raw score browser · `#/ticker/<T>`
+per-ticker page (default 5-day/5-minute Alpaca IEX candlesticks with independent
+lookback, 1m/5m/15m/1h/1D bar interval, Candles/OHLC/Line/Area style controls,
+volume, timestamped signal markers, non-blocking descriptive insights, metric
+history, and all signals) ·
+`#/day/<date>` per-day page. Every ticker and date anywhere in the UI is a
+link; the header has jump-to-ticker search.
+
+Price snapshots refresh asynchronously every five minutes by default
+(`price_refresh_seconds` or `PRICE_REFRESH_SECONDS`). Unresolved corporate
+actions remain visible as compact `CA` flags: chart/model/signal insights still
+render, same-basis post-action returns remain usable, and only return windows
+that cross uncertain action evidence are excluded. Analytics eligibility is
+evaluated separately for each return horizon rather than dropping the signal.
+Intraday chart requests use a separate 45-second gateway cache and never alter
+the daily SIP performance book.
 
 ## Architecture
 
 - `backend/` — FastAPI (port 8010). Reads producer outputs strictly read-only:
   LSTM/Intrinsic `signals/` dirs plus Signal-Foundry's DuckDB file. It caches in
   memory and auto-reloads when source files change (mtime fingerprints). Serves
-  the built frontend. `GET /api/signals` is a clean JSON feed of enriched
-  signals if anything else wants to consume it.
+  the built frontend. `GET /api/signals` is a filterable, optionally paginated
+  JSON feed; list rows use a compact contract and `GET /api/signal?id=...`
+  exposes full detail on demand.
 - `frontend/` — React 18 + Vite + recharts, tiny hash router (no deps).
 - `deploy/` — systemd unit + nginx location block
   (served at `/signal-dashboard/`).

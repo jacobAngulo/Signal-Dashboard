@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { api } from '../api.js'
 import { fmtNum, fmtPx } from '../format.js'
 import { href } from '../nav.js'
-import { Card, ErrorBox, ProducerTag, Spinner, StatusTag, Table, Tag, TickerLink } from '../ui.jsx'
+import { Card, EmptyState, ErrorBox, ProducerTag, Spinner, StatusTag, Table, Tag, TickerLink } from '../ui.jsx'
 import SignalTable from '../SignalTable.jsx'
 import SignalDetail from '../SignalDetail.jsx'
 
@@ -13,8 +13,11 @@ export default function DayPage({ date }) {
   const [sel, setSel] = useState(null)
 
   useEffect(() => {
+    const controller = new AbortController()
     setData(null); setErr(null)
-    api(`day/${date}`).then(setData).catch(setErr)
+    api(`day/${date}`, null, { signal: controller.signal }).then(setData)
+      .catch((nextErr) => { if (nextErr.name !== 'AbortError') setErr(nextErr) })
+    return () => controller.abort()
   }, [date])
 
   if (err) return <ErrorBox err={err} />
@@ -24,21 +27,22 @@ export default function DayPage({ date }) {
     <div>
       <div className="crumb">
         {data.prev ? <a className="dlink" href={href('day', data.prev)}>‹ {data.prev}</a> : <span />}
-        <span className="crumb-title">{data.date}</span>
+        <h1 className="crumb-title">{data.date}</h1>
         {data.next ? <a className="dlink" href={href('day', data.next)}>{data.next} ›</a> : <span />}
       </div>
 
       {Object.entries(data.producers).map(([name, p]) => (
-        <Card
+        <Card className={`day-producer producer-${name}`}
           key={name}
-          title={<span><ProducerTag producer={name} /> {p.run ? <StatusTag status={p.run.status} /> : <Tag kind="muted">no run</Tag>}</span>}
+          title={<span><ProducerTag producer={name} /> {p.run ? <StatusTag status={p.run.status} title={p.run.failure_reason} /> : <Tag kind="muted">no run</Tag>}</span>}
           right={p.scores_available && (
             <a className="dlink" href={href('scores', name, data.date)}>
               browse all {p.n_scores} scores →
             </a>
           )}
         >
-          {p.status_raw && (
+          {p.status_raw && <details className="detail-disclosure run-metadata">
+            <summary>Run metadata</summary>
             <div className="kv-grid small">
               {Object.entries(p.status_raw)
                 .filter(([k, v]) => !k.startsWith('_') && typeof v !== 'object')
@@ -46,16 +50,24 @@ export default function DayPage({ date }) {
                   <React.Fragment key={k}><span>{k}</span><b>{String(v)}</b></React.Fragment>
                 ))}
             </div>
-          )}
+          </details>}
 
-          <h4 className="section-h">Decisions</h4>
+          <h3 className="section-h">Decisions · {p.n_decisions_total}</h3>
           {p.decisions.length > 0
             ? <SignalTable rows={p.decisions} onRow={setSel} hide={['date', 'producer']} />
-            : <div className="muted" style={{ padding: '4px 0 10px' }}>no decision rows for this date</div>}
+            : <EmptyState title="No decision rows" detail="This producer did not emit a ticker-level decision for the day." />}
+          {p.decisions_truncated && (
+            <div className="inline-notice">
+              Showing the 75 highest-priority decisions of {p.n_decisions_total.toLocaleString()}.
+              {' '}<a className="dlink" href={`${href('explore')}?producer=${name}&from=${data.date}&to=${data.date}&buys=0`}>
+                Open the full day in Explore →
+              </a>
+            </div>
+          )}
 
           {p.top_scores.length > 0 && (
             <>
-              <h4 className="section-h">Top of the score file (by {p.metric_col})</h4>
+              <h3 className="section-h">Top scores · {p.metric_col}</h3>
               <Table
                 rows={p.top_scores.map((r, i) => ({ ...r, key: i }))}
                 columns={scoreColumns(name, p.metric_col)}

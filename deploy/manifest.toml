@@ -1,0 +1,66 @@
+schema_version = 1
+
+[deployment]
+slug        = "signal-dashboard"
+name        = "Signal Dashboard"
+description = "Read-only analytics UI over LSTM, Intrinsic, and Foundry signals. Strictly never writes into the producer repos."
+kind        = "service"
+repo        = "https://github.com/jacobAngulo/Signal-Dashboard.git"
+root        = "/projects/Signal-Dashboard"
+depends_on  = ["av-gateway", "signal-foundry", "lstm", "intrinsic"]
+
+[runtime]
+systemd_unit = "signal-dashboard.service"
+unit_file    = "deploy/signal-dashboard.service"
+venv         = ".venv"
+host         = "127.0.0.1"
+port         = 8010
+
+[health]
+url       = "http://127.0.0.1:8010/api/health"
+timeout_s = 5
+
+[[routes]]
+path        = "/signal-dashboard/"
+public      = false
+description = "Proxied by nginx; the app serves its own Vite build from frontend/dist."
+
+# Consumes other deployments' outputs read-only and owns no store of its own.
+[data]
+root = "/projects/Signal-Dashboard"
+
+[logs]
+dir    = "/projects/Signal-Dashboard/logs"
+rotate = { size = "20M", keep = 5, compress = true }
+
+[[config.keys]]
+name = "lstm_signals_dir"
+secret = false
+
+[[config.keys]]
+name = "intrinsic_signals_dir"
+secret = false
+
+[[config.keys]]
+name = "foundry_db"
+secret = false
+
+[[config.keys]]
+name = "foundry_model"
+secret = false
+required = false
+
+[[config.keys]]
+name = "foundry_prompt"
+secret = false
+required = false
+
+[[config.keys]]
+name = "host"
+secret = false
+required = false
+
+[[config.keys]]
+name = "port"
+secret = false
+required = false

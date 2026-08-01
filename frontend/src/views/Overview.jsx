@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { api } from '../api.js'
 import { fmtAgo, fmtPct, fmtTs } from '../format.js'
 import { href } from '../nav.js'
-import { Card, DateLink, ErrorBox, Pct, PerfTag, ProducerTag, Spinner, Stat, StatusTag, Tag, TickerLink } from '../ui.jsx'
+import { Card, DateLink, ErrorBox, Pct, ProducerTag, Spinner, Stat, StatusTag, Tag, TickerLink } from '../ui.jsx'
 import Heatmap from '../Heatmap.jsx'
 import SignalTable from '../SignalTable.jsx'
 import SignalDetail from '../SignalDetail.jsx'
@@ -12,18 +12,23 @@ export default function Overview() {
   const [err, setErr] = useState(null)
   const [sel, setSel] = useState(null)
 
-  const load = () => api('overview').then(setData).catch(setErr)
+  const load = () => api('overview')
+    .then((next) => { setData(next); setErr(null) })
+    .catch(setErr)
   useEffect(() => {
     load()
     const t = setInterval(load, 60000)
     return () => clearInterval(t)
   }, [])
 
-  if (err) return <ErrorBox err={err} />
+  if (err && !data) return <ErrorBox err={err} />
   if (!data) return <Spinner />
 
   return (
     <div>
+      <h1 className="sr-only">Signal overview</h1>
+      {err && <ErrorBox err={err} />}
+
       <div className="grid-2">
         {Object.entries(data.producers).map(([name, p]) => (
           <ProducerCard key={name} name={name} p={p} />
@@ -36,17 +41,17 @@ export default function Overview() {
 
       <div className="grid-31">
         <Card
-          title={`Recent signals (latest first)`}
+          title="Latest BUY signals"
           right={<a className="dlink" href={href('explore')}>explore all →</a>}
         >
-          <SignalTable rows={data.latest_signals} onRow={setSel} maxHeight="52vh"
-                       empty="No signals yet" />
+          <SignalTable rows={data.latest_signals} onRow={setSel} maxHeight="48vh"
+                       empty="No BUY signals yet" />
         </Card>
         <div>
-          <Card title="Best since signal">
+          <Card title="Best 5-day moves">
             <MoverList rows={data.recent.best} />
           </Card>
-          <Card title="Worst since signal">
+          <Card title="Worst 5-day moves">
             <MoverList rows={data.recent.worst} />
           </Card>
         </div>
@@ -68,9 +73,9 @@ function ProducerCard({ name, p }) {
     ? 'no measurable buys yet'
     : p.totals.avg_5d === null ? null : `avg ${fmtPct(p.totals.avg_5d)} · n=${p.totals.n_measurable}`
   return (
-    <Card
+    <Card className={`producer-card producer-${name}`}
       title={<span><ProducerTag producer={name} /> <span className="muted">{pipe ? 'event stream' : 'latest run'}</span></span>}
-      right={run ? <StatusTag status={run.status} /> : null}
+      right={run ? <StatusTag status={run.status} title={run.failure_reason} /> : null}
     >
       {!run ? (
         <div className="muted">no runs found</div>
@@ -140,7 +145,7 @@ function MoverList({ rows }) {
           <TickerLink t={r.ticker} />
           <ProducerTag producer={r.producer} />
           <DateLink d={r.date} />
-          <span style={{ marginLeft: 'auto' }}><Pct v={r.ret_since} /></span>
+          <span style={{ marginLeft: 'auto' }}><Pct v={r.ret_5d} /></span>
         </div>
       ))}
     </div>

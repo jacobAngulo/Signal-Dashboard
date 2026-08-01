@@ -8,6 +8,46 @@
   Verified `/api/health` and the Nginx `/signal-dashboard/` route from the new
   location.
 
+## 2026-07-21 - dashboard-wide UX, LSTM audit, and reliability pass
+
+- Preserved the original compact dashboard layout, navigation language, and
+  flat visual system while adding responsive navigation/tables, accessible
+  sorting and heatmap links, focus-managed signal details, and clearer
+  errors/empty states.
+- Rebuilt Explore as a server-filtered, summarized, paginated surface. The
+  prior BUY-off path returned 4,015 rows/~10 MB and mounted every spark; it now
+  returns a compact 75-row page while preserving full-slice outcome stats.
+- Made raw scores usable by defaulting to decision-driving columns with an
+  explicit all-fields toggle. The LSTM horizon audit now reads the published
+  score universe instead of the one-row final-decision files: every
+  above-threshold candidate is grouped under its strongest retained horizon,
+  the final daily selection is highlighted, and the UI states that the other
+  three per-ticker head values are not persisted by the producer.
+- Added compact signal list DTOs plus a full-detail endpoint, capped crowded day
+  views with an explicit full-results link, corrected date-scoped analytics
+  universes, literal score search, score-only ticker routes, blank-ticker
+  normalization, cold-start snapshot consistency, and visible price readiness.
+  Price refreshes now retain the last confirmed snapshot and resume through a
+  brief gateway snapshot restart instead of blanking or restarting from zero.
+- Validation: 21 backend unit tests pass, touched Python compiles, production
+  Vite build succeeds, and isolated live-data smoke tests cover concurrent cold
+  load, Explore pagination, LSTM horizons, score search bounds, score-only
+  ticker pages, one-day analytics universes, crowded day payloads, and gateway
+  restart resilience. Deployed health reports 2,370 price-covered tickers with
+  no load error; overview, LSTM horizons, nginx, and both services return healthy.
+
+## 2026-07-13 - authoritative corporate-action performance
+
+- Replaced producer-CSV performance prices with gateway continuous entry/exit
+  sessions while preserving producer prices as `signal_price`.
+- Added price/action provenance and structured blocked-return reasons. Rows
+  crossing unresolved actions remain countable but are excluded from return
+  stats, buckets, cumulative curves, scatterplots, weekday views, and rankings.
+- Added a small HTTP client for the gateway service so the deployed Dashboard
+  venv does not need the `av_gateway` package. Validation: 9 backend tests
+  passed, touched Python compiled cleanly, and the frontend production build
+  succeeded. No restart or deployment was run.
+
 ## 2026-07-12 - additive attention tiers and causal Foundry dates
 
 - Added backend-only support for LSTM attention and Intrinsic shadow rows as

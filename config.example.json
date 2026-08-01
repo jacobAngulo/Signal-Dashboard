@@ -1,7 +1,7 @@
 {
-  "lstm_signals_dir": "/projects/LSTM_AI_Stock_Predictor/signals",
-  "intrinsic_signals_dir": "/projects/Intrinsic-Value-Monitor/signals",
-  "foundry_db": "/projects/Signal-Foundry/data/foundry.duckdb",
+  "lstm_signals_dir": "/srv/data/lstm/artifacts/signals",
+  "intrinsic_signals_dir": "/srv/data/intrinsic/artifacts/signals",
+  "foundry_db": "/srv/data/signal-foundry/db/foundry.duckdb",
   "foundry_model": "gpt-oss:20b",
   "foundry_prompt": "v2",
   "av_gateway_url": "http://127.0.0.1:8765",

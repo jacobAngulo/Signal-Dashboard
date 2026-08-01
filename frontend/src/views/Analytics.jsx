@@ -11,32 +11,64 @@ import { DistHist, PerfScatter, TOOLTIP_STYLE } from '../charts.jsx'
 export default function Analytics() {
   const [data, setData] = useState(null)
   const [err, setErr] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [producer, setProducer] = useState('')
   const [from, setFrom] = useState('')
   const [to, setTo] = useState('')
 
+  // Keep the previous window's charts (dimmed) while the new one loads.
   useEffect(() => {
-    setData(null)
-    api('analytics', { date_from: from, date_to: to }).then(setData).catch(setErr)
-  }, [from, to])
+    const controller = new AbortController()
+    setLoading(true)
+    api('analytics', { producer, date_from: from, date_to: to }, { signal: controller.signal })
+      .then((d) => { setData(d); setErr(null) })
+      .catch((nextErr) => { if (nextErr.name !== 'AbortError') setErr(nextErr) })
+      .finally(() => { if (!controller.signal.aborted) setLoading(false) })
+    return () => controller.abort()
+  }, [producer, from, to])
 
   if (err) return <ErrorBox err={err} />
   if (!data) return <Spinner />
   const producers = Object.keys(data.by_producer || {})
 
+  const presetFrom = (days) =>
+    new Date(Date.now() - days * 86400000).toISOString().slice(0, 10)
+  const preset = (days) => { setFrom(days === null ? '' : presetFrom(days)); setTo('') }
+  const activePreset = to !== '' ? undefined : from === '' ? null
+    : [30, 90].find((d) => presetFrom(d) === from)
+
   return (
     <div>
+      <h1 className="sr-only">Signal performance</h1>
       <Card>
         <div className="filter-row">
-          <span className="muted">window</span>
-          <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
-          <span className="muted">to</span>
-          <input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
+          <label>Producer
+            <select value={producer} onChange={(e) => setProducer(e.target.value)}>
+              <option value="">all producers</option>
+              {Object.entries(PRODUCER_META).map(([name, meta]) => (
+                <option key={name} value={name}>{meta.label}</option>
+              ))}
+            </select>
+          </label>
+          <span className="muted">Window</span>
+          {[[30, '30d'], [90, '90d'], [null, 'all']].map(([days, label]) => (
+            <button key={label} className="btn" aria-pressed={activePreset === days}
+                    style={activePreset === days ? { borderColor: 'var(--accent)', color: 'var(--accent)' } : null}
+                    onClick={() => preset(days)}>{label}</button>
+          ))}
+          <label className="inline-label">From
+            <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
+          </label>
+          <label className="inline-label">To
+            <input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
+          </label>
           <span className="muted" style={{ marginLeft: 'auto' }}>
-            returns are close-to-close from producer score files
+            score universe matches this window
           </span>
         </div>
       </Card>
 
+      <div className={loading ? 'refetching' : ''} aria-busy={loading}>
       <div className="grid-2">
         {producers.map((name) => {
           const p = data.by_producer[name]
@@ -75,7 +107,7 @@ export default function Analytics() {
 
       <Card title="Cumulative return — every BUY at close, equal weight, 1-day hold">
         <ResponsiveContainer width="100%" height={240}>
-          <LineChart data={data.cumulative}>
+          <LineChart data={data.cumulative} accessibilityLayer>
             <CartesianGrid stroke="#222b3a" vertical={false} />
             <XAxis dataKey="date" tick={{ fontSize: 10 }} minTickGap={30} />
             <YAxis tick={{ fontSize: 10 }} width={46} domain={['auto', 'auto']}
@@ -105,7 +137,7 @@ export default function Analytics() {
       <div className="grid-2">
         <Card title="BUY signals per day">
           <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={data.timeline}>
+            <BarChart data={data.timeline} accessibilityLayer>
               <CartesianGrid stroke="#222b3a" vertical={false} />
               <XAxis dataKey="date" tick={{ fontSize: 10 }} minTickGap={30} />
               <YAxis allowDecimals={false} tick={{ fontSize: 10 }} width={26} />
@@ -120,7 +152,7 @@ export default function Analytics() {
         </Card>
         <Card title="5-day performance by signal weekday">
           <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={data.weekday}>
+            <BarChart data={data.weekday} accessibilityLayer>
               <CartesianGrid stroke="#222b3a" vertical={false} />
               <XAxis dataKey="day" tick={{ fontSize: 11 }} />
               <YAxis tick={{ fontSize: 10 }} width={40} tickFormatter={(v) => `${(v * 100).toFixed(0)}%`} />
@@ -144,6 +176,7 @@ export default function Analytics() {
         <LeaderCard title="Best signals (since signal)" rows={data.best} />
         <LeaderCard title="Worst signals (since signal)" rows={data.worst} />
       </div>
+      </div>
     </div>
   )
 }
@@ -156,7 +189,7 @@ function BucketCard({ title, buckets, color }) {
   return (
     <Card title={title} right={<span className="muted small">avg 5-day fwd return</span>}>
       <ResponsiveContainer width="100%" height={180}>
-        <BarChart data={chart}>
+        <BarChart data={chart} accessibilityLayer>
           <CartesianGrid stroke="#222b3a" vertical={false} />
           <XAxis dataKey="label" tick={{ fontSize: 9 }} interval={0} />
           <YAxis tick={{ fontSize: 10 }} width={40} tickFormatter={(v) => `${(v * 100).toFixed(0)}%`} />
@@ -180,7 +213,12 @@ function LeaderCard({ title, rows }) {
           { key: 'producer', label: 'Producer', render: (r) => <ProducerTag producer={r.producer} /> },
           { key: 'ticker', label: 'Ticker', render: (r) => <TickerLink t={r.ticker} /> },
           { key: 'ret_since', label: 'Since', align: 'right', render: (r) => <Pct v={r.ret_since} /> },
-          { key: 'status_perf', label: 'Status', render: (r) => <PerfTag status={r.status_perf} /> },
+          { key: 'status_perf', label: 'Status', render: (r) => (
+            <PerfTag status={r.status_perf}
+                     actionWarning={r.has_action_warning}
+                     actionIds={r.action_warning_ids}
+                     statusBasis={r.status_basis} />
+          ) },
         ]}
       />
     </Card>

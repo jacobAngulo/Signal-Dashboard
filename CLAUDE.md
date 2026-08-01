@@ -7,14 +7,27 @@ Rules:
 
 - **Strictly read-only** against the producer repos' outputs. This
   repo must never write into the other projects.
-- **Decoupled from Trading-Bot-Arena by design** (Jacob's call, 2026-07-06):
-  no arena DB, no arena API, no execution/bot state. Signal "status" is
-  price-performance based (up/down/pending since signal). Don't re-add arena
+- **Decoupled from execution systems by design** (Jacob's call, 2026-07-06):
+  no execution DB, execution API, or bot state. Signal "status" is
+  price-performance based (up/down/pending since signal). Don't re-add execution
   coupling without being asked.
-- Forward returns come from LSTM/Intrinsic daily score prices
-  (`live_scores.close` / `intrinsic_scores.price`), not
-  `shared_market_data/ohlcv` (stale between provisioning runs). Foundry events
-  reuse those price series when a ticker/date overlaps.
+- Daily performance prices come from av-gateway `POST /continuous-ohlcv/bulk`
+  (policy `dashboard`). Ticker-chart intraday prices come from gateway-owned
+  `/market-data/intraday`, use Alpaca IEX raw bars transformed by the same
+  dashboard corporate-action policy, and never enter performance calculations.
+  Ticker pages expose independent lookback, bar interval, and visualization
+  controls. Historical `observed` actions are compact `CA` audit flags:
+  same-continuity-segment returns are valid, while boundary-crossing windows,
+  conflicts, unsupported states, and coverage failures remain fail-closed.
+  Producer CSV prices survive only as `signal_price`, never as a fallback.
+  **Entry anchors at the signal, not the actionable
+  session** (Jacob's call, 2026-07-13): close of the last session at/before
+  the signal — for foundry, strictly before its actionable `date`, so
+  `ret_since` includes the overnight gap the event traded on. The
+  actionable-session view is kept alongside (`ret_1d/5d/20d`,
+  `ret_since_actionable`, `actionable_entry_px`) and stays pending until that
+  session trades. The Trend spark is pure ticker data and renders whenever
+  the gateway has bars.
 - Foundry events are bucketed by the **trading day they're actionable for**
   (ET, ≥16:00 → next session, weekends/holidays roll forward, snapped to the
   LSTM/Intrinsic score-date calendar — see `_event_dates` in

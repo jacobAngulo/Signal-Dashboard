@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { api } from './api.js'
 import { fmtNum, fmtPx, fmtTs } from './format.js'
 import { navigate } from './nav.js'
-import { Pct, PerfTag, ProducerTag, Tag } from './ui.jsx'
+import { Pct, PerfTag, ProducerTag, Spinner, Tag } from './ui.jsx'
 import { PriceChart } from './charts.jsx'
 
 const CORE_KEYS = new Set([
   'id', 'producer', 'date', 'ticker', 'decision', 'metric', 'status_perf', 'spark',
-  'entry_px', 'last_px', 'last_date', 'ret_1d', 'ret_5d', 'ret_20d', 'ret_since',
+  'entry_px', 'entry_date', 'last_px', 'last_date', 'ret_1d', 'ret_5d', 'ret_20d',
+  'ret_since', 'ret_since_actionable', 'actionable_entry_px',
   'created_at', 'px_stale',
   // shown in the header/gate lines instead of the raw field dump
   'event_date', 'published_at', 'extracted_at', 'as_of_timestamp', 'as_of_source',
@@ -20,36 +21,89 @@ const fmtPub = (ts) => (String(ts).length === 10 ? ts : fmtTs(ts))
 
 export default function SignalDetail({ signal, onClose }) {
   const [tickerData, setTickerData] = useState(null)
+  const [detail, setDetail] = useState(null)
+  const drawerRef = useRef(null)
+  const closeRef = useRef(null)
+  const previousFocus = useRef(null)
+  const onCloseRef = useRef(onClose)
+  onCloseRef.current = onClose
 
   useEffect(() => {
     setTickerData(null)
+    setDetail(null)
+    const controller = new AbortController()
     if (signal) {
-      api(`ticker/${signal.ticker}`).then(setTickerData).catch(() => setTickerData({ series: [] }))
+      api(`ticker/${signal.ticker}`, null, { signal: controller.signal })
+        .then(setTickerData)
+        .catch((err) => { if (err.name !== 'AbortError') setTickerData({ series: [] }) })
+      if (signal.id && !signal.detail_inline) {
+        api('signal', { id: signal.id }, { signal: controller.signal })
+          .then((data) => setDetail(data.signal))
+          .catch((err) => { if (err.name !== 'AbortError') setDetail(signal) })
+      } else if (signal.detail_inline) {
+        setDetail(signal)
+      }
+    }
+    return () => controller.abort()
+  }, [signal?.id, signal?.ticker])
+
+  // Keep focus inside the modal, Escape closes, and restore focus to the row
+  // that opened it. The page behind the overlay should not scroll.
+  useEffect(() => {
+    if (!signal) return
+    previousFocus.current = document.activeElement
+    const frame = requestAnimationFrame(() => closeRef.current?.focus())
+    const onKey = (e) => {
+      if (e.key === 'Escape') { e.preventDefault(); onCloseRef.current() }
+      if (e.key !== 'Tab' || !drawerRef.current) return
+      const focusable = [...drawerRef.current.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )]
+      if (!focusable.length) return
+      const first = focusable[0], last = focusable[focusable.length - 1]
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus() }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus() }
+    }
+    document.addEventListener('keydown', onKey)
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      cancelAnimationFrame(frame)
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = previousOverflow
+      previousFocus.current?.focus?.()
     }
   }, [signal?.id])
 
   if (!signal) return null
-  const raw = Object.entries(signal)
+  const full = detail || signal
+  const raw = Object.entries(full)
     .filter(([k, v]) => !CORE_KEYS.has(k) && v !== null && v !== undefined && typeof v !== 'object')
   const markers = (tickerData?.signals || [signal])
-    .filter((s) => s.decision === 'BUY')
-    .map((s) => ({ date: s.date, producer: s.producer }))
+    .map((s) => ({ date: s.date, producer: s.producer, decision: s.decision }))
 
   return (
-    <div className="drawer-overlay" onClick={onClose}>
-      <div className="drawer" onClick={(e) => e.stopPropagation()}>
+    <div className="drawer-overlay" onMouseDown={(e) => {
+      if (e.target === e.currentTarget) onClose()
+    }}>
+      <section className="drawer" ref={drawerRef} role="dialog" aria-modal="true"
+               aria-labelledby="signal-detail-title">
         <div className="drawer-head">
           <div>
-            <span className="drawer-ticker">{signal.ticker}</span>{' '}
+            <span className="drawer-ticker" id="signal-detail-title">{signal.ticker}</span>{' '}
             <ProducerTag producer={signal.producer} />{' '}
             <Tag kind="info">{signal.decision}</Tag>{' '}
-            <PerfTag status={signal.status_perf} />
+            <PerfTag status={signal.status_perf}
+                     actionWarning={signal.has_action_warning}
+                     actionIds={signal.action_warning_ids}
+                     statusBasis={signal.status_basis} />
           </div>
           <div>
             <button className="btn" onClick={() => { onClose(); navigate('ticker', signal.ticker) }}>
               open ticker page →
             </button>
-            <button className="btn" onClick={onClose}>✕</button>
+            <button ref={closeRef} className="btn icon-btn" onClick={onClose}
+                    aria-label="Close signal details" title="close (Esc)">✕</button>
           </div>
         </div>
         {signal.producer === 'foundry' ? (
@@ -76,23 +130,27 @@ export default function SignalDetail({ signal, onClose }) {
 
         <div className="stat-row">
           <MiniStat label="entry px" v={fmtPx(signal.entry_px)}
-                    sub={signal.producer === 'foundry' ? 'prev close basis' : undefined} />
+                    sub={signal.entry_date || (signal.producer === 'foundry' ? 'prev close basis' : undefined)} />
           <MiniStat label="last px" v={fmtPx(signal.last_px)}
                     sub={signal.px_stale ? `${signal.last_date} · stale ⚠` : signal.last_date} />
           <MiniStat label="1d" v={<Pct v={signal.ret_1d} />} />
           <MiniStat label="5d" v={<Pct v={signal.ret_5d} />} />
           <MiniStat label="20d" v={<Pct v={signal.ret_20d} />} />
-          <MiniStat label="since" v={<Pct v={signal.ret_since} />} />
+          <MiniStat label="since" v={<Pct v={signal.ret_since} />}
+                    sub={signal.ret_since_actionable != null
+                      ? `session basis ${(signal.ret_since_actionable * 100).toFixed(1)}%`
+                      : undefined} />
         </div>
 
         <h4>Price — signal dates marked</h4>
-        <PriceChart series={tickerData?.series || []} signals={markers} height={200} />
+        {tickerData ? <PriceChart series={tickerData.series || []} signals={markers} height={200} />
+          : <Spinner />}
 
-        {signal.events?.length > 0 && (
+        {full.events?.length > 0 && (
           <>
-            <h4>Contributing events ({signal.events.length})</h4>
+            <h4>Contributing events ({full.events.length})</h4>
             <div className="ev-list">
-              {signal.events.map((e, i) => (
+              {full.events.map((e, i) => (
                 <div key={i} className="ev-row">
                   <span className="muted small ev-time">{fmtPub(e.published_at)}</span>
                   <Tag kind="muted">{e.source}</Tag>
@@ -108,21 +166,23 @@ export default function SignalDetail({ signal, onClose }) {
           </>
         )}
 
-        <h4>All signal fields</h4>
-        <div className="kv-grid">
-          {raw.map(([k, v]) => (
-            <React.Fragment key={k}>
-              <span>{k}</span>
-              <b>
-                {typeof v === 'number' ? fmtNum(v, 6)
-                  : /^https?:\/\//.test(String(v))
-                    ? <a className="dlink" href={v} target="_blank" rel="noreferrer">{String(v)}</a>
-                    : String(v)}
-              </b>
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
+        <details className="detail-disclosure">
+          <summary>All signal fields <span className="muted">({raw.length})</span></summary>
+          <div className="kv-grid">
+            {raw.map(([k, v]) => (
+              <React.Fragment key={k}>
+                <span>{k}</span>
+                <b>
+                  {typeof v === 'number' ? fmtNum(v, 6)
+                    : /^https?:\/\//.test(String(v))
+                      ? <a className="dlink" href={v} target="_blank" rel="noreferrer">{String(v)}</a>
+                      : String(v)}
+                </b>
+              </React.Fragment>
+            ))}
+          </div>
+        </details>
+      </section>
     </div>
   )
 }

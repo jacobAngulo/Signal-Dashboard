@@ -4,9 +4,14 @@ import { useEffect, useState } from 'react'
 // #/  #/explore  #/analytics  #/runs  #/scores/lstm/2026-07-02
 // #/ticker/GAMB  #/day/2026-07-02
 export function parseHash() {
-  const h = (window.location.hash || '#/').replace(/^#\/?/, '')
-  const parts = h.split('/').filter(Boolean).map(decodeURIComponent)
-  return { page: parts[0] || 'overview', args: parts.slice(1) }
+  const raw = (window.location.hash || '#/').replace(/^#\/?/, '')
+  const [path, queryString = ''] = raw.split('?', 2)
+  const parts = path.split('/').filter(Boolean).map(decodeURIComponent)
+  return {
+    page: parts[0] || 'overview',
+    args: parts.slice(1),
+    query: Object.fromEntries(new URLSearchParams(queryString)),
+  }
 }
 
 export function useRoute() {

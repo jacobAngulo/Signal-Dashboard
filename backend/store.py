@@ -8,6 +8,8 @@ import json
 import math
 import os
 import re
+import threading
+import time
 from bisect import bisect_left
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -28,7 +30,10 @@ from .config import (
     FOUNDRY_PROMPT,
     INTRINSIC_DIR,
     LSTM_DIR,
+    PRICE_REFRESH_SECONDS,
 )
+from .corporate_actions import ContinuousPriceBook, HTTPGateway
+from .config import AV_GATEWAY_URL
 
 DATE_RE = re.compile(r"(\d{4}-\d{2}-\d{2})")
 
@@ -285,6 +290,45 @@ def _truthy(value):
     return str(value).strip().lower() in {"1", "true", "yes", "y"}
 
 
+def _clean_ticker(value):
+    """Normalize a ticker without turning pandas' missing value into 'NAN'."""
+    if value is None or pd.isna(value):
+        return ""
+    return str(value).strip().upper()
+
+
+def _coverage_failure_reason(coverage):
+    """Return a compact operator-facing reason for a failed coverage gate."""
+    error = coverage.get("error") or coverage.get("reason")
+    if error:
+        message = " ".join(str(error).split())
+        # Producer errors sometimes append an absolute artifact path. The
+        # exception and message are useful in a tooltip; the deployment path
+        # is not.
+        path_at = message.find(": /")
+        if path_at >= 0:
+            message = message[:path_at]
+        return message[:177] + "..." if len(message) > 180 else message
+
+    if coverage.get("technical_failure") is True:
+        return "coverage generation failed"
+
+    ready = coverage.get("ready_count")
+    universe = coverage.get("universe_count")
+    if ready is not None and universe is not None:
+        reason = f"{ready} of {universe} ready"
+        counts = coverage.get("status_counts")
+        if isinstance(counts, dict) and counts:
+            dominant = max(counts, key=counts.get).replace("_", " ")
+            reason += f"; mostly {dominant}"
+        return reason
+
+    coverage_status = coverage.get("status")
+    if coverage_status:
+        return f"coverage {coverage_status}"
+    return "coverage requirements not met"
+
+
 def _score_attention_decisions(producer, dt, df, spec):
     """Convert additive score flags into WATCH rows without changing BUYs."""
     attention_col = spec.get("attention_col")
@@ -296,7 +340,7 @@ def _score_attention_decisions(producer, dt, df, spec):
     for index, raw in enumerate(df.to_dict("records")):
         if not _truthy(raw.get(attention_col)):
             continue
-        ticker = str(raw.get("ticker") or "").strip().upper()
+        ticker = _clean_ticker(raw.get("ticker"))
         if not ticker:
             continue
         reason_value = raw.get(reason_col) if reason_col else None
@@ -409,7 +453,10 @@ class ProducerData:
                 raw = {"passed": False, "status": "unreadable"}
             raw["_mtime"] = p.stat().st_mtime
             self.coverage[dt] = raw
-            self.status.setdefault(dt, {})["coverage"] = raw
+            # Coverage is a separate producer artifact. Only merge it into a
+            # real status manifest; otherwise `has_status` must remain false.
+            if dt in self.status:
+                self.status[dt]["coverage"] = raw
 
         for p in sorted(d.glob(self.spec["decision_glob"])):
             dt = file_date(p)
@@ -422,9 +469,24 @@ class ProducerData:
                 rec = {k: v for k, v in row.items()}
                 rec["producer"] = self.name
                 rec["date"] = dt
-                rec["ticker"] = str(row.get("ticker", "")).upper()
+                rec["ticker"] = _clean_ticker(row.get("ticker"))
                 rec["decision"] = str(row.get("decision", "")).upper() or None
+                # NO_BUY sentinel rows describe the run, not a security. Keep
+                # them out of signal tables and the global ticker index.
+                if not rec["ticker"]:
+                    continue
                 rec["metric"] = row.get(self.spec["metric"])
+                signal_price = row.get(self.spec["price_col"])
+                if signal_price is None and dt in self.scores and rec["ticker"]:
+                    score_frame = self.scores[dt]
+                    price_col = self.spec["price_col"]
+                    if price_col in score_frame and "ticker" in score_frame:
+                        match = score_frame[
+                            score_frame["ticker"].astype(str).str.upper().eq(rec["ticker"])
+                        ]
+                        if not match.empty:
+                            signal_price = match.iloc[-1].get(price_col)
+                rec["signal_price"] = signal_price
                 rec["created_at"] = created
                 rec["id"] = f"{self.name}:{dt}:{rec['ticker']}:{i}"
                 self.decisions.append(rec)
@@ -451,7 +513,9 @@ class ProducerData:
             cols = [c for c in (metric_col, px_col, *extra) if c in df.columns]
             for row in df[["ticker", *cols]].itertuples(index=False):
                 rec = dict(zip(("ticker", *cols), row))
-                t = str(rec.pop("ticker")).upper()
+                t = _clean_ticker(rec.pop("ticker"))
+                if not t:
+                    continue
                 h = {"date": dt, "metric": rec.get(metric_col), "px": rec.get(px_col)}
                 for e in extra:
                     if e in rec:
@@ -463,7 +527,7 @@ class ProducerData:
 
     def run_rows(self):
         """One row per known date: run health + volumes."""
-        dates = sorted(set(self.dates) | set(self.status) |
+        dates = sorted(set(self.dates) | set(self.status) | set(self.coverage) |
                        {r["date"] for r in self.decisions})
         by_date = {}
         for r in self.decisions:
@@ -475,10 +539,18 @@ class ProducerData:
             n_scores = len(self.scores[dt]) if dt in self.scores else None
             stale_rows = st.get("stale_rows") or {}
             coverage = self.coverage.get(dt, {})
+            has_status = dt in self.status
+            coverage_failed = (
+                not has_status
+                and (coverage.get("technical_failure") is True
+                     or coverage.get("passed") is False)
+            )
+            status = st.get("status") or ("failed" if coverage_failed else None)
+            generated_mtime = st.get("_mtime") or coverage.get("_mtime")
             rows.append({
                 "producer": self.name,
                 "date": dt,
-                "status": st.get("status"),
+                "status": status,
                 "n_scores": n_scores,
                 "n_decisions": len(decs),
                 "n_buy": sum(1 for r in decs if r["decision"] == "BUY"),
@@ -486,12 +558,15 @@ class ProducerData:
                 "decision_summary": st.get("decision"),
                 "stale": sum(stale_rows.values()) if stale_rows else None,
                 "generated_at": st.get("finished_at") or st.get("generated_at")
-                    or (datetime.fromtimestamp(st["_mtime"], tz=timezone.utc)
-                        .isoformat() if "_mtime" in st else None),
+                    or (datetime.fromtimestamp(generated_mtime, tz=timezone.utc)
+                        .isoformat() if generated_mtime is not None else None),
                 "as_of_date": st.get("as_of_date"),
                 "has_scores": dt in self.scores,
-                "has_status": dt in self.status,
+                "has_status": has_status,
                 "coverage_passed": coverage.get("passed"),
+                "failure_reason": (
+                    _coverage_failure_reason(coverage) if coverage_failed else None
+                ),
                 "universe_count": coverage.get("universe_count"),
                 "ready_count": coverage.get("ready_count"),
                 "ready_fraction": coverage.get("ready_fraction"),
@@ -548,7 +623,21 @@ class FoundryData:
                 or tuple(calendar) != self.calendar)
 
     def load(self, calendar=()):
-        self.fingerprint = _file_fingerprint(self.db)
+        fingerprint = _file_fingerprint(self.db)
+        con = None
+        if self.db.exists() and duckdb is not None:
+            try:
+                con = duckdb.connect(str(self.db), read_only=True)
+            except duckdb.IOException:
+                # Foundry's fetch/extract cycle holds the DuckDB write lock for
+                # a few minutes; DuckDB then refuses even read-only attaches.
+                # Keep serving the previously loaded events (fingerprint stays
+                # unchanged, so the next request retries) instead of failing
+                # every API call until the cycle finishes. Report "not loaded"
+                # so callers don't treat a skipped attempt as a data change.
+                return False
+
+        self.fingerprint = fingerprint
         self.calendar = tuple(calendar)
         self.decisions = []
         self.scores = {}
@@ -559,8 +648,8 @@ class FoundryData:
         self.pipeline = {}
         self.n_signal_events = 0
 
-        if not self.db.exists() or duckdb is None:
-            return
+        if con is None:
+            return True
 
         where = ["e.is_signal", "e.tickers <> '[]'"]
         params = []
@@ -570,8 +659,6 @@ class FoundryData:
         if FOUNDRY_PROMPT:
             where.append("e.prompt_version = ?")
             params.append(FOUNDRY_PROMPT)
-
-        con = duckdb.connect(str(self.db), read_only=True)
         try:
             rows = con.execute(
                 f"""
@@ -757,6 +844,7 @@ class FoundryData:
 
         for rows_for_ticker in self.history.values():
             rows_for_ticker.sort(key=lambda r: r["date"])
+        return True
 
     def _load_pipeline(self, con):
         """Fetch/extract loop health, read from the same DB the events come from.
@@ -853,13 +941,41 @@ class FoundryData:
 
 
 class Store:
-    def __init__(self):
+    def __init__(self, gateway_factory=None):
         self.producers = {name: ProducerData(name) for name in PRODUCERS}
         self.producers["foundry"] = FoundryData()
-        self.prices = {}         # ticker -> (dates[], px[])
+        self.price_book = ContinuousPriceBook()
+        self.prices = {}         # compatibility index; values come only from gateway
+        self.price_max_date = None  # latest traded session anywhere in the book
         self._price_src_fp = None
+        self.gateway_factory = gateway_factory
+        self.price_load_error = None
+        self._refresh_lock = threading.Lock()
+        self._snapshot_ready = False
+        self._next_price_attempt = 0.0
+        self._price_inputs_built = None
+        self._price_thread = None
 
     def refresh(self):
+        # Single-flight: a cold price build fires one continuous-ohlcv/bulk
+        # call that the gateway computes per ticker. Letting every request
+        # stack its own refresh starves the gateway until no call can finish,
+        # so latecomers serve the current snapshot instead of piling on.
+        if not self._refresh_lock.acquire(blocking=False):
+            # On a cold start there is no prior snapshot to serve. Concurrent
+            # first requests wait for the one loader instead of receiving an
+            # authoritative-looking empty dashboard.
+            if not self._snapshot_ready:
+                self._refresh_lock.acquire()
+                self._refresh_lock.release()
+            return
+        try:
+            self._refresh_locked()
+            self._snapshot_ready = True
+        finally:
+            self._refresh_lock.release()
+
+    def _refresh_locked(self):
         changed = False
         for name in PRODUCERS:
             p = self.producers[name]
@@ -870,11 +986,60 @@ class Store:
         # daily producers just established.
         cal = self.trading_calendar()
         foundry = self.producers["foundry"]
-        if foundry.stale(cal):
-            foundry.load(cal)
+        if foundry.stale(cal) and foundry.load(cal):
             changed = True
-        if changed or not self.prices:
-            self._build_prices()
+        now = time.monotonic()
+        if changed or not self.prices or now >= self._next_price_attempt:
+            # The gateway price build takes minutes for a cold book, so it
+            # runs in a background thread — API requests always serve the
+            # current snapshot (signals visible, returns pending) instead of
+            # blocking. Producer reloads only force a rebuild when they change
+            # the price universe (tickers/start date): foundry event refreshes
+            # land every cycle without moving the universe, and rebuilding the
+            # whole book each time is ~20 gateway bulk calls of self-made load.
+            # Same-universe refreshes wait out the TTL in _next_price_attempt,
+            # which also refreshes the book when producers are quiet so new
+            # gateway bars still land.
+            if (
+                (self._price_inputs() != self._price_inputs_built
+                 or now >= self._next_price_attempt)
+                and not self._price_build_busy()
+            ):
+                thread = threading.Thread(
+                    target=self._price_build_worker,
+                    daemon=True,
+                    name="dashboard-price-build",
+                )
+                self._price_thread = thread
+                thread.start()
+            self._build_ticker_index()
+
+    def _price_build_busy(self):
+        thread = self._price_thread
+        return thread is not None and thread.is_alive()
+
+    def _price_inputs(self):
+        """The decision universe the price book is built from."""
+        tickers = frozenset(
+            row["ticker"] for row in self.all_decisions if row.get("ticker")
+        )
+        dates = [row["date"] for row in self.all_decisions if row.get("date")]
+        return (tickers, min(dates) if dates else None)
+
+    def _price_build_worker(self):
+        inputs = self._price_inputs()
+        try:
+            self._build_prices(inputs)
+        finally:
+            # Record the attempted inputs even on failure — retries are paced
+            # by the TTL below, not by input mismatch, so one bad build can't
+            # refire on every request.
+            self._price_inputs_built = inputs
+            self._next_price_attempt = time.monotonic() + (
+                min(300.0, float(PRICE_REFRESH_SECONDS))
+                if self.price_load_error
+                else float(PRICE_REFRESH_SECONDS)
+            )
             self._build_ticker_index()
 
     def trading_calendar(self):
@@ -894,6 +1059,14 @@ class Store:
                 e["producers"].add(rec["producer"])
                 if e["last_signal"] is None or rec["date"] > e["last_signal"]:
                     e["last_signal"] = rec["date"]
+        for producer in self.producers.values():
+            for ticker in getattr(producer, "history", {}):
+                idx.setdefault(ticker, {
+                    "ticker": ticker,
+                    "n_signals": 0,
+                    "last_signal": None,
+                    "producers": set(),
+                })["producers"].add(producer.name)
         for t in self.prices:
             idx.setdefault(t, {"ticker": t, "n_signals": 0, "last_signal": None,
                                "producers": set()})
@@ -909,29 +1082,42 @@ class Store:
                                  -e["n_signals"], e["ticker"]))
         return hits[:limit]
 
-    def _build_prices(self):
-        # Daily per-ticker prices reconstructed from the producers' own score
-        # files (LSTM `close` preferred, then intrinsic `price`), so the price
-        # series is aligned with signal dates by construction.
-        px = {}  # ticker -> {date: price}
-        for name, col_pref in (("intrinsic", "price"), ("lstm", "close")):
-            prod = self.producers[name]
-            col = prod.spec["price_col"]
-            for dt, df in prod.scores.items():
-                if col not in df.columns or "ticker" not in df.columns:
-                    continue
-                sub = df[["ticker", col]].dropna()
-                for t, v in zip(sub["ticker"].astype(str).str.upper(), sub[col]):
-                    try:
-                        v = float(v)
-                    except (TypeError, ValueError):
-                        continue
-                    if math.isfinite(v) and v > 0:
-                        px.setdefault(t, {})[dt] = v
-        self.prices = {}
-        for t, series in px.items():
-            dates = sorted(series)
-            self.prices[t] = (dates, [series[d] for d in dates])
+    def _build_prices(self, inputs=None):
+        tickers, start = inputs if inputs is not None else self._price_inputs()
+        gateway = None
+        try:
+            if self.gateway_factory is not None:
+                gateway = self.gateway_factory()
+            else:
+                gateway = HTTPGateway(AV_GATEWAY_URL)
+            # Build off to the side and only swap after every gateway chunk
+            # succeeds. A transient refresh failure must not discard the last
+            # confirmed snapshot that is already serving the dashboard.
+            next_book = ContinuousPriceBook()
+            next_book.load(gateway, tickers, start=start)
+            self.price_book = next_book
+            self.price_load_error = None
+        except Exception as exc:
+            # Fail closed: an unavailable/malformed gateway never introduces
+            # reconstructed or partially loaded returns. The last fully
+            # confirmed snapshot remains safe to serve, if one exists.
+            self.price_load_error = str(exc)
+        finally:
+            if gateway is not None and hasattr(gateway, "close"):
+                gateway.close()
+        self.prices = {
+            ticker: (
+                [row["date"] for row in rows],
+                [row["px"] for row in rows],
+            )
+            for ticker, rows in self.price_book.points.items()
+        }
+        # Staleness reference: a ticker is only "frozen" if it stops before the
+        # rest of the book, never because a signal targets a future session.
+        self.price_max_date = max(
+            (rows[-1]["date"] for rows in self.price_book.points.values()),
+            default=None,
+        )
 
     # ---- price helpers ----
 
@@ -967,14 +1153,37 @@ class Store:
         return px[-1], dates[-1]
 
     def series(self, ticker, start=None):
-        s = self.prices.get(ticker)
-        if not s:
-            return []
-        dates, px = s
-        out = [{"date": d, "px": p} for d, p in zip(dates, px)]
-        if start:
-            out = [r for r in out if r["date"] >= start]
-        return out
+        return self.price_book.series(ticker, start=start)
+
+    def performance(self, ticker, date, *, sessions=None, through_last=False,
+                    entry_snap=None):
+        return self.price_book.performance(
+            ticker, date, sessions=sessions, through_last=through_last,
+            entry_snap=entry_snap,
+        )
+
+    def intraday_series(self, ticker, *, timeframe, start, end=None):
+        gateway = (
+            self.gateway_factory()
+            if self.gateway_factory is not None
+            else HTTPGateway(AV_GATEWAY_URL)
+        )
+        try:
+            method = getattr(gateway, "intraday_ohlcv", None)
+            if method is None:
+                raise RuntimeError("intraday_ohlcv is required")
+            payload = method(
+                ticker,
+                start=start,
+                end=end,
+                timeframe=timeframe,
+                feed="iex",
+                policy="dashboard",
+            )
+            return payload if isinstance(payload, list) else []
+        finally:
+            if hasattr(gateway, "close"):
+                gateway.close()
 
     # ---- convenience ----
 

@@ -2,3 +2,7 @@ fastapi
 uvicorn
 pandas
 duckdb
+
+# Shared deployment toolkit -- health envelope, gate, manifests.
+# Editable install from the sibling repo; see /projects/DEPLOYMENT_STANDARD.md
+-e /projects/ops-kit

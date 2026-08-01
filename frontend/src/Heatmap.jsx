@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { navigate } from './nav.js'
+import { href } from './nav.js'
 
 const DAY_MS = 86400000
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
@@ -33,6 +33,9 @@ export default function Heatmap({ calendar }) {
 
   if (!weeks.length) return <div className="muted">no runs yet</div>
 
+  // Market days are ET — same convention as the producers' trade dates.
+  const todayET = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+
   return (
     <div className="hm">
       <div className="hm-rows">
@@ -46,7 +49,7 @@ export default function Heatmap({ calendar }) {
           <div className="hm-cells">
             {weeks.map((w, i) => (
               <div key={i} className="hm-col">
-                {w.days.map((d) => <Cell key={d} date={d} cell={byDate[d]} />)}
+                {w.days.map((d) => <Cell key={d} date={d} cell={byDate[d]} today={d === todayET} />)}
               </div>
             ))}
           </div>
@@ -58,23 +61,26 @@ export default function Heatmap({ calendar }) {
         <span className="hm-cell lvl-1" /> 1 buy
         <span className="hm-cell lvl-2" /> 2+ buys
         <span className="hm-cell lvl-fail" /> failed / missing status
+        <span className="hm-cell lvl-none today" /> today
         · click a day to inspect it
       </div>
     </div>
   )
 }
 
-function Cell({ date, cell }) {
-  if (!cell) return <div className="hm-cell lvl-empty" title={date} />
+function Cell({ date, cell, today }) {
+  const todayCls = today ? ' today' : ''
+  if (!cell) return <div className={`hm-cell lvl-empty${todayCls}`} title={today ? `${date} (today)` : date} />
   const runs = Object.values(cell.producers)
   const buys = runs.reduce((a, r) => a + (r.n_buy || 0), 0)
   const failed = runs.some((r) => r.status && r.status !== 'ok')
   const lvl = failed ? 'fail' : buys >= 2 ? '2' : buys === 1 ? '1' : '0'
-  const tip = [date, ...runs.map((r) =>
+  const tip = [today ? `${date} (today)` : date, ...runs.map((r) =>
     `${r.producer}: ${r.status || 'no status'} · ${r.n_buy} buy${r.n_buy === 1 ? '' : 's'} · ${r.n_scores ?? '?'} scores`)]
     .join('\n')
+  const accessible = tip.replaceAll('\n', '. ')
   return (
-    <div className={`hm-cell lvl-${lvl} clickable`} title={tip}
-         onClick={() => navigate('day', date)} />
+    <a className={`hm-cell lvl-${lvl} clickable${todayCls}`} title={tip}
+       aria-label={`Open ${accessible}`} href={href('day', date)} />
   )
 }

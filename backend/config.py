@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -13,7 +14,7 @@ LSTM_DIR = Path(CFG["lstm_signals_dir"])
 INTRINSIC_DIR = Path(CFG["intrinsic_signals_dir"])
 FOUNDRY_DB = Path(CFG.get(
     "foundry_db",
-    "/projects/Signal-Foundry/data/foundry.duckdb",
+    "/srv/data/signal-foundry/db/foundry.duckdb",
 ))
 FOUNDRY_MODEL = CFG.get("foundry_model", "gpt-oss:20b")
 FOUNDRY_PROMPT = CFG.get("foundry_prompt", "v2")
@@ -42,3 +43,13 @@ FOUNDRY_ATTENTION = {
 }
 HOST = CFG.get("host", "127.0.0.1")
 PORT = int(CFG.get("port", 8010))
+AV_GATEWAY_URL = os.environ.get(
+    "AV_GATEWAY_URL", CFG.get("av_gateway_url", "http://127.0.0.1:8765")
+).rstrip("/")
+PRICE_REFRESH_SECONDS = max(
+    60,
+    int(os.environ.get(
+        "PRICE_REFRESH_SECONDS",
+        CFG.get("price_refresh_seconds", 300),
+    )),
+)

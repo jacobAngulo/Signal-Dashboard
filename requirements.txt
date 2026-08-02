@@ -4,5 +4,5 @@ pandas
 duckdb
 
 # Shared deployment toolkit -- health envelope, gate, manifests.
-# Editable install from the sibling repo; see /projects/DEPLOYMENT_STANDARD.md
--e /projects/ops-kit
+# Editable install from the consolidated ops-console repository.
+-e /projects/ops-console/ops-kit

@@ -17,6 +17,17 @@ export async function api(path, params, options = {}) {
     err.cause = cause
     throw err
   }
+  // A session that expired while the app was open turns every subsequent fetch
+  // into a 401. Surfacing that as thirteen identical error panels tells the user
+  // nothing, so send them to the login page instead. 'login' is relative for the
+  // same reason 'api/' above is: it has to resolve under the /signal-dashboard/
+  // prefix and at the root without knowing which one it is.
+  if (res.status === 401) {
+    window.location.assign('login')
+    // Never settles -- the navigation is already underway, and resolving would
+    // let callers render an error state during the redirect.
+    return new Promise(() => {})
+  }
   if (!res.ok) {
     let detail = `Request failed (${res.status})`
     try {

@@ -20,14 +20,81 @@ port         = 8010
 url       = "http://127.0.0.1:8010/api/health"
 timeout_s = 5
 
+# `origin` because this deployment answers on its own hostname as of the
+# 2026-08-03 cutover. Without it the console builds links against whatever
+# origin it is being viewed from, which is the private plane.
+#
+# `public = true` means the hostname answers the internet -- not that the data
+# does. Every route requires an approved access request; what a stranger
+# reaches is the login page and, after sign-in, the access-request page.
+[[routes]]
+path        = "/"
+origin      = "https://signals.angulo-solutions.com"
+public      = true
+description = "Public hostname; sign-in required on every route. The app serves its own Vite build from frontend/dist."
+
+# The private plane keeps serving the same app at angulo-solutions.com/signal-dashboard/.
+# Not a second deployment -- the same process, reachable over WireGuard, kept as
+# the way back in when something about the public hostname breaks.
 [[routes]]
 path        = "/signal-dashboard/"
 public      = false
-description = "Proxied by nginx; the app serves its own Vite build from frontend/dist."
+description = "VPN-only path to the same process. Requires the X-Forwarded-Prefix header; see deploy/nginx-location.conf."
 
-# Consumes other deployments' outputs read-only and owns no store of its own.
+# Opt-in to Ops Console credential operations. These credentials are live now:
+# `backend/auth.py` runs a Google sign-in gate in front of the whole
+# application, so a botched rotation locks people out rather than merely
+# failing a readiness probe.
+[google_auth]
+env_file          = ".env.local"
+client_id_key     = "AUTH_GOOGLE_ID"
+client_secret_key = "AUTH_GOOGLE_SECRET"
+# Public hostname first: Ops Console builds its login link and live URL from
+# authorized_origins[0], and the public one is the address that should appear
+# there. The private-plane origin stays because that path stays live -- it is
+# the way back in when a certificate, a DNS record, or an nginx edit breaks the
+# public one.
+authorized_origins = [
+    "https://signals.angulo-solutions.com",
+    "https://angulo-solutions.com",
+]
+# The callback is built from the incoming request, not from configuration, so
+# that the app can answer on both origins. Whatever it builds must appear here
+# verbatim, and be registered on the Google client, or Google returns
+# redirect_uri_mismatch. The prefixed form is what `mount_prefix` produces
+# behind the private plane's /signal-dashboard/ location.
+redirect_uris = [
+    "https://signals.angulo-solutions.com/api/auth/callback/google",
+    "https://angulo-solutions.com/signal-dashboard/api/auth/callback/google",
+]
+login_path = "/login"
+
+# Consumes other deployments' outputs read-only and owns no store of its own,
+# apart from the sign-in sessions below.
 [data]
 root = "/projects/Signal-Dashboard"
+
+[[data.stores]]
+name        = "auth"
+kind        = "sqlite"
+path        = "/srv/data/signal-dashboard/db/auth.sqlite3"
+description = "Google sign-in sessions and in-flight OAuth handshakes. No analytics data."
+# Deliberately not backed up. Every row is a live credential with a 30-minute
+# life; restoring yesterday's copy would resurrect sessions that should be gone
+# and recover nothing anyone wants. Losing the file signs everyone out, which
+# costs one re-login.
+backup      = { enabled = false }
+
+[product_ops]
+store = "auth"
+
+[product_ops.admin_api]
+base_url  = "http://127.0.0.1:8010/api/admin"
+token_key = "ADMIN_API_TOKEN"
+
+[product_ops.access_requests]
+table         = "access_request"
+status_column = "status"
 
 [logs]
 dir    = "/projects/Signal-Dashboard/logs"
@@ -64,3 +131,58 @@ required = false
 name = "port"
 secret = false
 required = false
+
+# Environment keys, not config.json keys. Ops Console publishes the names and
+# the secret flag, never the values.
+#
+# All three are `required = false` because the service must start without them:
+# a unit that refuses to boot on a missing credential cannot serve the page that
+# explains the credential is missing. Absent them the gate refuses everyone --
+# see AUTH_CONFIGURED in backend/config.py.
+[[config.keys]]
+name = "AUTH_GOOGLE_ID"
+secret = true
+required = false
+description = "Google OAuth client ID. Written by Ops Console -> Google Cloud."
+
+[[config.keys]]
+name = "AUTH_GOOGLE_SECRET"
+secret = true
+required = false
+description = "Google OAuth client secret. Written by Ops Console -> Google Cloud."
+
+[[config.keys]]
+name = "AUTH_ALLOWED_EMAILS"
+secret = false
+required = false
+description = "Retained for the fail-closed boot check; the actual authorization gate is the access_request table. An unset value is fine once at least one access request is approved."
+
+[[config.keys]]
+name = "ADMIN_API_TOKEN"
+secret = true
+required = true
+description = "Bearer token for the loopback-only /api/admin surface the ops console calls to approve or deny access requests. An unset or short value disables the surface entirely."
+
+[[config.keys]]
+name = "AUTH_SESSION_TTL_S"
+secret = false
+required = false
+description = "Session lifetime in seconds. Defaults to 1800, floored at 300."
+
+[[config.keys]]
+name = "TICKET_BOARD_INTAKE_TOKEN"
+secret = true
+required = true
+description = "Project-scoped Ticket Board intake credential used only by the same-origin feedback relay."
+
+[[config.keys]]
+name = "TICKET_BOARD_URL"
+secret = false
+required = false
+description = "Loopback Ticket Board origin; defaults to http://127.0.0.1:8040."
+
+[[config.keys]]
+name = "TICKET_BOARD_PROJECT_SLUG"
+secret = false
+required = false
+description = "Ticket Board destination project; defaults to signal-dashboard."

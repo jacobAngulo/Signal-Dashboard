@@ -6,11 +6,28 @@ from typing import Literal
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.staticfiles import StaticFiles
 
-from .config import FOUNDRY_DB, HOST, PORT, PRICE_REFRESH_SECONDS
+from . import auth
+from .admin_api import router as admin_router
+from .feedback import router as feedback_router
+from .config import (
+    FOUNDRY_DB,
+    HOST,
+    PORT,
+    PRICE_REFRESH_SECONDS,
+)
 from .metrics import analytics, enrich, enriched_decisions, _stats
 from .store import STORE, clean
 
 app = FastAPI(title="Signal Dashboard", docs_url="/api/docs", openapi_url="/api/openapi.json")
+
+# In front of everything, including the static mount at the bottom of this file
+# and the OpenAPI routes above. `auth.PUBLIC_PATHS` is the complete list of what
+# it lets past unauthenticated; see the module docstring for why the check lives
+# here rather than on each route.
+app.middleware("http")(auth.require_session)
+app.include_router(auth.router)
+app.include_router(admin_router)
+app.include_router(feedback_router)
 
 
 def fresh():

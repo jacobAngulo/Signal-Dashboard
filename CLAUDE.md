@@ -41,9 +41,39 @@ Rules:
   (Jacob's call, 2026-07-09). Raw per-event rows stay in the foundry
   "scores" view.
 - Deployed as systemd `signal-dashboard` on 127.0.0.1:8010, exposed at
-  `/signal-dashboard/` via nginx. Backend changes need
+  `/signal-dashboard/` via nginx. Runs as the unprivileged `signal-dashboard`
+  user; everything it reads is world-readable and the DuckDB handle is
+  `read_only=True`, so it needs write access to nothing but
+  `/srv/data/signal-dashboard`. Backend changes need
   `systemctl restart signal-dashboard`; frontend changes need
   `cd frontend && npm run build` (FastAPI serves `dist/`).
+- **Every route requires a Google sign-in** (`backend/auth.py`). The check is
+  one middleware in front of the whole app, *not* a per-route dependency —
+  `auth.PUBLIC_PATHS` is the complete list of what answers without a session,
+  and `tests/test_auth_gate.py` walks the real route table and fails if
+  anything else does. Add a route and it is closed by default; that is the
+  point. Do not convert this to per-route `Depends`.
+- **Authorization is `AUTH_ALLOWED_EMAILS` and nothing else** — a
+  comma-separated list in `.env.local`. No sign-up, no request queue, no
+  first-user-wins. Empty means nobody: if the process starts without
+  credentials or without a list it refuses everyone and says so, because the
+  alternative failure mode is publishing the whole dashboard.
+- **Google OAuth client credentials are owned by Ops Console → Google Cloud**,
+  not hand-edited. They live in `.env.local` (mode 0600, gitignored, owned by
+  the service user), are declared in `deploy/manifest.toml` under
+  `[google_auth]`, and are loaded via `EnvironmentFile=` in the unit. Rotate
+  through that screen, which rewrites the file, restarts the unit, and can roll
+  itself back. Since the credentials are now load-bearing for login rather than
+  parked, a bad rotation locks people out — the VPN path at
+  `angulo-solutions.com/signal-dashboard/` is the way back in.
+- The OAuth callback URL is **built from the incoming request**, not
+  configured, so the app can answer on more than one origin. Whatever it builds
+  must appear verbatim in `redirect_uris` or Google returns
+  `redirect_uri_mismatch`. The nginx `X-Forwarded-Prefix` header is what makes
+  the prefixed form come out right — see `deploy/nginx-location.conf`.
+- Shared sign-in primitives live in `ops_kit.web_auth` (the `ops-kit[web-auth]`
+  extra), not in this repo: state/nonce/PKCE, ID-token verification, and the
+  session store. Policy stays here. Do not fork them.
 - Frontend is hash-routed (`src/nav.js`) — new views must be reachable by
   URL, and tickers/dates rendered anywhere should use `TickerLink`/`DateLink`.
 - Don't fabricate fields the source files don't have; if a view needs data

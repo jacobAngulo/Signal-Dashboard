@@ -10,6 +10,7 @@ import Scores from './views/Scores.jsx'
 import LstmWindows from './views/LstmWindows.jsx'
 import TickerPage from './views/TickerPage.jsx'
 import { ProducerTag } from './ui.jsx'
+import FeedbackWidget from './components/FeedbackWidget.jsx'
 
 const TABS = [
   ['overview', 'Overview', ''],
@@ -70,6 +71,7 @@ export default function App() {
         )}
         </div>
       </main>
+      <FeedbackWidget />
     </div>
   )
 }

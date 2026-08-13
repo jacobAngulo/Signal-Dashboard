@@ -8,10 +8,29 @@ Type=simple
 WorkingDirectory=/projects/Signal-Dashboard
 Environment=PYTHONUNBUFFERED=1
 Environment=AV_GATEWAY_URL=http://127.0.0.1:8765
+# Google OAuth client credentials and the sign-in allowlist.
+#
+# Optional (`-`) so the service still starts without them. That is deliberate:
+# a unit that refuses to boot on a missing credential cannot serve the page
+# explaining the credential is missing. `backend/auth.py` treats unconfigured
+# as "refuse everyone", never as "let everyone through".
+EnvironmentFile=-/projects/Signal-Dashboard/.env.local
 ExecStart=/projects/Signal-Dashboard/.venv/bin/python -m uvicorn backend.main:app --host 127.0.0.1 --port 8010
 Restart=always
 RestartSec=5
-User=root
+
+# Unprivileged as of the sign-in work. Everything this app reads -- the LSTM and
+# Intrinsic signal directories, the foundry DuckDB -- is world-readable, and the
+# DuckDB handle is opened `read_only=True`, so it needs no write access to any
+# other project. The only paths it owns are its session database and its own
+# .env.local, both chowned to this user.
+User=signal-dashboard
+Group=signal-dashboard
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/srv/data/signal-dashboard
 
 [Install]
 WantedBy=multi-user.target

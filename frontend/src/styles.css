@@ -138,6 +138,42 @@ a.dlink:hover { color: var(--accent); border-color: var(--accent); }
 .btn:hover { border-color: var(--accent); }
 .btn:disabled { opacity: 0.4; cursor: default; }
 
+/* Native feedback intake: same relay contract, dashboard-owned presentation. */
+.feedback-control { position: fixed; right: 18px; bottom: 18px; z-index: 60; }
+.feedback-launcher {
+  display: inline-flex; align-items: center; gap: 7px; padding: 7px 11px;
+  border: 1px solid #2a4a7a; border-radius: 7px; background: #162944;
+  color: var(--text); box-shadow: 0 8px 24px #0009; font: 600 12px inherit; cursor: pointer;
+}
+.feedback-launcher:hover { border-color: var(--accent); background: #1b3556; }
+.feedback-launcher span { color: var(--accent); font-size: 10px; }
+.feedback-panel {
+  position: absolute; right: 0; bottom: 42px; width: min(390px, calc(100vw - 24px));
+  padding: 16px; background: var(--panel); border: 1px solid var(--border);
+  border-radius: 10px; box-shadow: 0 20px 60px #000c;
+}
+.feedback-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.feedback-head h2 { margin: 1px 0 0; font-size: 16px; }
+.feedback-kicker { color: var(--accent); font-size: 10px; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; }
+.feedback-close { border: 0; padding: 0 2px; background: transparent; color: var(--muted); font-size: 22px; line-height: 1; cursor: pointer; }
+.feedback-close:hover { color: var(--text); }
+.feedback-context { margin: 7px 0 13px; color: var(--muted); font-size: 11.5px; }
+.feedback-form { display: grid; gap: 10px; }
+.feedback-form label { display: grid; gap: 4px; color: var(--muted); font-size: 11.5px; }
+.feedback-form select, .feedback-form input, .feedback-form textarea { width: 100%; margin: 0; }
+.feedback-form textarea {
+  resize: vertical; padding: 7px 8px; background: var(--panel-2); border: 1px solid var(--border);
+  border-radius: 6px; color: var(--text); color-scheme: dark; font: 12.5px/1.45 inherit;
+}
+.feedback-form input:focus, .feedback-form select:focus, .feedback-form textarea:focus { border-color: var(--accent); outline: none; }
+.feedback-identity { color: var(--muted); font-size: 10.5px; }
+.feedback-submit { justify-self: end; margin: 0; padding: 6px 11px; }
+.feedback-notice { margin: 10px 0 0; padding: 7px 9px; border: 1px solid; border-radius: 7px; font-size: 11.5px; }
+.feedback-notice.ok { color: var(--pos); background: #12351f88; border-color: #1d5c38; }
+.feedback-notice.error { color: var(--neg); background: #3d181888; border-color: #6b2a2a; }
+
+@media (max-width: 560px) { .feedback-control { right: 12px; bottom: 12px; } }
+
 .filter-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 select, input {
   background: var(--panel-2); border: 1px solid var(--border); color: var(--text);

@@ -3,6 +3,24 @@ uvicorn
 pandas
 duckdb
 
+# fastapi.testclient. The auth gate is middleware, so it can only be tested by
+# driving real requests through the app -- there is no function to call. This
+# repo has no separate dev-requirements to put it in.
+httpx
+
+# Required by `request.form()`, which the access-request page posts to. Not
+# optional and not only for file uploads: current Starlette uses
+# `parse_options_header` to read the Content-Type of *any* form body, so without
+# this an ordinary urlencoded <form> raises AssertionError and the route 500s.
+# FastAPI does not pull it in, and nothing fails at import time -- the first
+# person to request access is what finds out.
+python-multipart
+
 # Shared deployment toolkit -- health envelope, gate, manifests.
 # Editable install from the consolidated ops-console repository.
--e /projects/ops-console/ops-kit
+#
+# The [web-auth] extra pulls google-auth and httpx for `ops_kit.web_auth`, which
+# backend/auth.py uses to run the Google sign-in gate. Only deployments that
+# face the public internet need it; the producer projects install plain ops-kit
+# and stay dependency-free.
+-e /projects/ops-console/ops-kit[web-auth]

@@ -74,6 +74,30 @@ evaluated separately for each return horizon rather than dropping the signal.
 Intraday chart requests use a separate 45-second gateway cache and never alter
 the daily SIP performance book.
 
+## Access
+
+Every route requires a Google sign-in. The check is a single middleware in
+front of the application rather than a dependency on each route, so a route
+added later is closed unless someone deliberately opens it;
+`auth.PUBLIC_PATHS` is the complete list of exceptions and
+`tests/test_auth_gate.py` walks the real route table to keep it honest.
+
+Authorization is one environment variable:
+
+```text
+AUTH_ALLOWED_EMAILS=someone@example.com,someone-else@example.com
+```
+
+There is no sign-up and no request queue — a verified Google account that is
+not on the list gets nothing. An empty list means nobody, not everybody: a
+process that starts without credentials or without a list refuses every
+request and says so on the login page, because the opposite failure mode
+publishes the dashboard.
+
+Reachable today over the admin WireGuard tunnel at
+`https://angulo-solutions.com/signal-dashboard/`. The sign-in is a second,
+independent layer rather than a replacement for that.
+
 ## Architecture
 
 - `backend/` — FastAPI (port 8010). Reads producer outputs strictly read-only:
@@ -83,6 +107,9 @@ the daily SIP performance book.
   JSON feed; list rows use a compact contract and `GET /api/signal?id=...`
   exposes full detail on demand.
 - `frontend/` — React 18 + Vite + recharts, tiny hash router (no deps).
+- `backend/auth.py` — the sign-in gate. Shared primitives (state/nonce/PKCE,
+  ID-token verification, session store) come from `ops_kit.web_auth` via the
+  `ops-kit[web-auth]` extra; only the policy lives here.
 - `deploy/` — systemd unit + nginx location block
   (served at `/signal-dashboard/`).
 
@@ -97,5 +124,17 @@ cd frontend && npm install && npm run build && cd ..
 
 Dev: `npm run dev` in `frontend/` (proxies `/api` to :8010).
 
-Deploy: `cp deploy/signal-dashboard.service /etc/systemd/system/ && systemctl enable --now signal-dashboard`,
-then merge `deploy/nginx-location.conf` into the nginx server block.
+Sign-in needs `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, and `AUTH_ALLOWED_EMAILS`
+in `.env.local` (mode 0600, gitignored). Without them the app starts and
+refuses every request — check `GET /api/auth/status`, which stays reachable
+precisely so an unreachable dashboard is still diagnosable.
+
+Deploy:
+
+1. `useradd --system --no-create-home --shell /usr/sbin/nologin signal-dashboard`
+2. `mkdir -p /srv/data/signal-dashboard/db` and `chown` it, plus `.env.local`,
+   to that user.
+3. `cp deploy/signal-dashboard.service /etc/systemd/system/ && systemctl enable --now signal-dashboard`
+4. Merge `deploy/nginx-location.conf` into the private-plane server block. The
+   `X-Forwarded-Prefix` header in it is required, not decorative — without it
+   the login redirect and the OAuth callback URL both come out wrong.

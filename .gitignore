@@ -3,4 +3,5 @@ __pycache__/
 node_modules/
 frontend/dist/
 config.json
+.env.local
 *.log

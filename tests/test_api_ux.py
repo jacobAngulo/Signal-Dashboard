@@ -1,10 +1,12 @@
+import json
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
 import pandas as pd
+from starlette.requests import Request
 
-from backend import main
+from backend import auth, config, main
 
 
 class DashboardApiUxTests(unittest.TestCase):
@@ -181,6 +183,58 @@ class DashboardApiUxTests(unittest.TestCase):
         self.assertEqual(result["scored_counts"]["6m"], 1)
         self.assertTrue(result["days"][0]["signals"]["1m"][0]["selected"])
         self.assertFalse(result["days"][0]["signals"]["1d"][0]["selected"])
+
+
+class AuthStatusTests(unittest.TestCase):
+    """`/api/auth/status` proves Google credentials reached the process.
+
+    Ops Console opens this after promoting a credential candidate, so it has to
+    answer truthfully and it has to answer without ever putting the client
+    secret in a response body.
+
+    The endpoint moved from `main` to `auth` when the sign-in flow landed, and
+    it now also reports who is signed in -- the credential assertions below are
+    unchanged, because what must never leak did not change with it.
+    """
+
+    CLIENT_ID = "123456789-abcdefg.apps.googleusercontent.com"
+    CLIENT_SECRET = "GOCSPX-notarealsecretvalue1234"
+
+    def status(self, client_id, client_secret):
+        with (
+            patch.object(config, "GOOGLE_CLIENT_ID", client_id),
+            patch.object(config, "GOOGLE_CLIENT_SECRET", client_secret),
+        ):
+            # No cookie, so this never opens the session file.
+            return auth.auth_status(Request({"type": "http", "headers": []}))
+
+    def test_reports_credentials_are_loaded(self):
+        result = self.status(self.CLIENT_ID, self.CLIENT_SECRET)
+
+        self.assertIs(result["google_client_configured"], True)
+        self.assertEqual(result["client_id_suffix"], self.CLIENT_ID[-30:])
+        self.assertIs(result["signed_in"], False)
+
+    def test_never_returns_the_client_secret(self):
+        body = json.dumps(self.status(self.CLIENT_ID, self.CLIENT_SECRET))
+
+        self.assertNotIn(self.CLIENT_SECRET, body)
+        # Not even a prefix long enough to be worth guessing from.
+        self.assertNotIn(self.CLIENT_SECRET[:12], body)
+        # The full client ID stays out too; only its tail is published.
+        self.assertNotIn(self.CLIENT_ID, body)
+
+    def test_reports_unconfigured_when_keys_are_empty(self):
+        result = self.status("", "")
+
+        self.assertIs(result["google_client_configured"], False)
+        self.assertIsNone(result["client_id_suffix"])
+
+    def test_a_half_provisioned_pair_is_not_configured(self):
+        """An ID without a secret is unusable, so it must not read as ready."""
+        result = self.status(self.CLIENT_ID, "")
+
+        self.assertIs(result["google_client_configured"], False)
 
 
 if __name__ == "__main__":

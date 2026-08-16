@@ -15,6 +15,7 @@ from .config import (
     PORT,
     PRICE_REFRESH_SECONDS,
 )
+from .frames import records, sort_key
 from .metrics import analytics, enrich, enriched_decisions, _stats
 from .store import STORE, clean
 
@@ -108,7 +109,7 @@ def _ticker_insights(signals, series, history):
     for producer, rows in history.items():
         if not rows:
             continue
-        latest = max(rows, key=lambda row: row.get("date") or "")
+        latest = max(rows, key=lambda row: sort_key(row.get("date")))
         latest_scores[producer] = {
             "date": latest.get("date"),
             "metric": latest.get("metric"),
@@ -116,7 +117,7 @@ def _ticker_insights(signals, series, history):
 
     latest_signal = max(
         signals,
-        key=lambda row: (row.get("date") or "", row.get("created_at") or ""),
+        key=lambda row: (sort_key(row.get("date")), sort_key(row.get("created_at"))),
         default=None,
     )
     return {
@@ -240,7 +241,8 @@ def overview():
 
     latest_signals = enriched_decisions(buys_only=True, spark=True)
     latest_signals.sort(
-        key=lambda r: (r["date"], r.get("created_at") or "", r["producer"]),
+        key=lambda r: (sort_key(r["date"]), sort_key(r.get("created_at")),
+                       sort_key(r["producer"])),
         reverse=True)
     # Bursty event producers can emit many near-identical rows for one ticker
     # in one day (bot chatter reposts); collapse them here so a single story
@@ -300,9 +302,9 @@ def lstm_windows(date_from: str = None, date_to: str = None):
         grouped = {window: [] for window in windows}
         best_horizon_counts = {window: 0 for window in windows}
         if "ticker" in frame.columns and "best_horizon" in frame.columns:
-            for index, row in enumerate(frame.to_dict("records")):
-                ticker_value = clean(row.get("ticker"))
-                horizon_value = clean(row.get("best_horizon"))
+            for index, row in enumerate(records(frame)):
+                ticker_value = row.get("ticker")
+                horizon_value = row.get("best_horizon")
                 ticker = str(ticker_value).strip().upper() if ticker_value is not None else ""
                 horizon = str(horizon_value).strip() if horizon_value is not None else ""
                 if not ticker or horizon not in grouped:
@@ -372,8 +374,8 @@ def day(date: str):
         if df is not None and len(df):
             metric = prod.spec["history_metric"]
             if metric in df.columns:
-                top = df.sort_values(metric, ascending=False, na_position="last") \
-                        .head(12).to_dict("records")
+                top = records(
+                    df.sort_values(metric, ascending=False, na_position="last").head(12))
         decisions = enriched_decisions(producer=name, date_from=date,
                                        date_to=date, spark=False)
         decision_rank = {"BUY": 0, "SELL": 1, "WATCH": 2}
@@ -422,7 +424,7 @@ def scores(producer: str, date: str, sort: str = None,
     return clean({
         "producer": producer, "date": date, "total": total,
         "columns": list(df.columns),
-        "rows": page.to_dict("records"),
+        "rows": records(page),
         "dates": prod.dates,
     })
 
@@ -460,7 +462,7 @@ def signals(producer: str = None, ticker: str = None, q: str = None,
     sort = sort if sort in sortable else "date"
     present = [row for row in rows if row.get(sort) is not None]
     missing = [row for row in rows if row.get(sort) is None]
-    present.sort(key=lambda row: row[sort], reverse=(dir == "desc"))
+    present.sort(key=lambda row: sort_key(row[sort]), reverse=(dir == "desc"))
     rows = present + missing
     total = len(rows)
     page = rows if limit is None else rows[offset:offset + limit]
@@ -576,7 +578,7 @@ def ticker_view(ticker: str):
     return clean({
         "ticker": t,
         "signals": [_signal_summary(row) for row in
-                    sorted(sigs, key=lambda r: r["date"], reverse=True)],
+                    sorted(sigs, key=lambda r: sort_key(r["date"]), reverse=True)],
         "series": series,
         "history": history,
         "insights": _ticker_insights(sigs, series, history),

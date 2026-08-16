@@ -78,3 +78,13 @@ Rules:
   URL, and tickers/dates rendered anywhere should use `TickerLink`/`DateLink`.
 - Don't fabricate fields the source files don't have; if a view needs data
   that doesn't exist yet, surface "not available" instead.
+- **Pandas values cross into the app through `backend/frames.py`, always.**
+  Use `records(frame)` instead of `DataFrame.to_dict("records")`: a blank CSV
+  cell is NaN, NaN is truthy, so every `value or default` guard downstream
+  passes it through until something compares it to a string and the request
+  500s (TB-15). And use `sort_key()` for any `sort`/`max` over rows that come
+  from more than one file or producer — ingress cleaning can't stop two
+  producers writing the same column as text and as a number, and sorting is
+  where that difference becomes an outage. `tests/test_frame_ingress.py`
+  walks every producer spec and every sortable column, so a producer or
+  column added later is covered by default.

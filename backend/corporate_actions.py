@@ -12,6 +12,8 @@ from urllib.request import Request, urlopen
 
 import pandas as pd
 
+from .frames import records
+
 
 POLICY = "dashboard"
 SAFE_STATES = {"confirmed", "clear", "not_applicable"}
@@ -138,7 +140,7 @@ class ContinuousPriceBook:
         if missing:
             raise RuntimeError(f"dashboard continuity response missing: {', '.join(missing)}")
         frame["date"] = pd.to_datetime(frame["date"], errors="coerce").dt.date.astype(str)
-        for row in frame.to_dict("records"):
+        for row in records(frame):
             if str(row.get("policy")) != POLICY:
                 raise RuntimeError(f"dashboard continuity response returned non-{POLICY} policy")
             try:

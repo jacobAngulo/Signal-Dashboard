@@ -34,6 +34,7 @@ from .config import (
 )
 from .corporate_actions import ContinuousPriceBook, HTTPGateway
 from .config import AV_GATEWAY_URL
+from .frames import records, sort_key
 
 DATE_RE = re.compile(r"(\d{4}-\d{2}-\d{2})")
 
@@ -337,7 +338,7 @@ def _score_attention_decisions(producer, dt, df, spec):
     reason_col = spec.get("attention_reason_col")
     metric_col = spec["history_metric"]
     rows = []
-    for index, raw in enumerate(df.to_dict("records")):
+    for index, raw in enumerate(records(df)):
         if not _truthy(raw.get(attention_col)):
             continue
         ticker = _clean_ticker(raw.get("ticker"))
@@ -465,7 +466,7 @@ class ProducerData:
             # creation time (matches LSTM's status finished_at to the second).
             created = datetime.fromtimestamp(
                 p.stat().st_mtime, tz=timezone.utc).isoformat()
-            for i, row in enumerate(df.to_dict("records")):
+            for i, row in enumerate(records(df)):
                 rec = {k: v for k, v in row.items()}
                 rec["producer"] = self.name
                 rec["date"] = dt
@@ -485,7 +486,10 @@ class ProducerData:
                             score_frame["ticker"].astype(str).str.upper().eq(rec["ticker"])
                         ]
                         if not match.empty:
-                            signal_price = match.iloc[-1].get(price_col)
+                            # Back through the same door: a blank price in the
+                            # score file must arrive as None, not NaN, or the
+                            # `is None` checks downstream never fire.
+                            signal_price = records(match.tail(1))[0].get(price_col)
                 rec["signal_price"] = signal_price
                 rec["created_at"] = created
                 rec["id"] = f"{self.name}:{dt}:{rec['ticker']}:{i}"
@@ -823,7 +827,8 @@ class FoundryData:
 
         self.n_signal_events = len(
             {e["item_id"] for evs in groups.values() for e in evs})
-        self.decisions.sort(key=lambda r: (r["date"], r["ticker"], r["created_at"] or ""))
+        self.decisions.sort(key=lambda r: (
+            sort_key(r["date"]), sort_key(r["ticker"]), sort_key(r["created_at"])))
         self.dates = sorted(score_rows)
         self.scores = {dt: pd.DataFrame(rows) for dt, rows in score_rows.items()}
 
@@ -1192,7 +1197,8 @@ class Store:
         out = []
         for p in self.producers.values():
             out.extend(p.decisions)
-        out.sort(key=lambda r: (r["date"], r["producer"], r["ticker"]))
+        out.sort(key=lambda r: (
+            sort_key(r["date"]), sort_key(r["producer"]), sort_key(r["ticker"])))
         return out
 
     @property

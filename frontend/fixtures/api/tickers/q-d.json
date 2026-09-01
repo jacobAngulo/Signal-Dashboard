@@ -1,0 +1,150 @@
+{
+ "tickers": [
+  {
+   "ticker": "DH",
+   "n_signals": 5,
+   "last_signal": "2026-08-12",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "DUO",
+   "n_signals": 4,
+   "last_signal": "2026-06-29",
+   "producers": [
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "DBGI",
+   "n_signals": 1,
+   "last_signal": "2026-07-14",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "DLNG",
+   "n_signals": 1,
+   "last_signal": "2026-06-24",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "D",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "DAAQ",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "DAC",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "DAIC",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "DAIO",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "DAKT",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "DAL",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "DAN",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "DAR",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "DARE",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "DASH",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  }
+ ]
+}

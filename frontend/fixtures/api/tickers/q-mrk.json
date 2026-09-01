@@ -1,0 +1,42 @@
+{
+ "tickers": [
+  {
+   "ticker": "MRK",
+   "n_signals": 1,
+   "last_signal": "2026-08-19",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "MRKR",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "KMRK",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "intrinsic"
+   ]
+  },
+  {
+   "ticker": "NMRK",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  }
+ ]
+}

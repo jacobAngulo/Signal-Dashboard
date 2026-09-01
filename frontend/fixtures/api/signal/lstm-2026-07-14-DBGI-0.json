@@ -1,0 +1,63 @@
+{
+ "signal": {
+  "run_date": "2026-07-14",
+  "date": "2026-07-14",
+  "as_of_close_date": "2026-07-13",
+  "as_of_source": "daily_close",
+  "as_of_timestamp": null,
+  "decision": "BUY",
+  "reason": "Best adjusted probability above threshold 0.2",
+  "ticker": "DBGI",
+  "horizon": "6m",
+  "adj_prob": 0.3028445839881897,
+  "pred_prob": 0.3028445839881897,
+  "pred_std": 0.1711089611053466,
+  "producer": "lstm",
+  "metric": 0.3028445839881897,
+  "signal_price": 5.624e-06,
+  "created_at": "2026-07-14T08:13:17.911744+00:00",
+  "id": "lstm:2026-07-14:DBGI:0",
+  "entry_px": 0.7299,
+  "entry_date": "2026-07-14",
+  "last_px": 0.160125,
+  "last_date": "2026-08-31",
+  "actionable_entry_px": 0.7299,
+  "ret_since_actionable": null,
+  "ret_1d": -0.013700506918756017,
+  "ret_1d_blocked_reason": null,
+  "ret_5d": -0.3560761748184683,
+  "ret_5d_blocked_reason": null,
+  "ret_20d": null,
+  "ret_20d_blocked_reason": "corporate_action_unresolved",
+  "ret_since": null,
+  "ret_since_blocked_reason": "corporate_action_unresolved",
+  "blocked_return_reason": "corporate_action_unresolved",
+  "action_warning_ids": [
+   "discontinuity:9da6660ed6f100518015dc6b4a5c7a0555d7588cefe46feb1d4fc1d6eb0175b2"
+  ],
+  "has_action_warning": true,
+  "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=confirmed|policy=dashboard",
+  "action_status": "observed",
+  "blocked_action_ids": [
+   "discontinuity:9da6660ed6f100518015dc6b4a5c7a0555d7588cefe46feb1d4fc1d6eb0175b2"
+  ],
+  "action_revision": 0,
+  "continuity_segments": [
+   0
+  ],
+  "status_basis": "5d",
+  "px_stale": false,
+  "status_perf": "down",
+  "window_label": "6m",
+  "window_sessions": 126,
+  "window_basis": "producer_horizon",
+  "window_note": "model horizon — 126 trading sessions",
+  "exit_basis": "sessions",
+  "exit_state": "open",
+  "exit_date": "2027-01-12",
+  "exit_px": null,
+  "exit_return": null,
+  "sessions_elapsed": 34,
+  "exit_note": "model horizon not yet reached"
+ }
+}

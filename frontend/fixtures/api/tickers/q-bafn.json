@@ -1,0 +1,14 @@
+{
+ "tickers": [
+  {
+   "ticker": "BAFN",
+   "n_signals": 1,
+   "last_signal": "2026-08-21",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  }
+ ]
+}

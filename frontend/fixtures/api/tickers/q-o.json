@@ -1,0 +1,139 @@
+{
+ "tickers": [
+  {
+   "ticker": "ORMP",
+   "n_signals": 3,
+   "last_signal": "2026-06-30",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "OMH",
+   "n_signals": 2,
+   "last_signal": "2026-06-08",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "OPTX",
+   "n_signals": 1,
+   "last_signal": "2026-07-23",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "O",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "OABI",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "OABIW",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "OACC",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "OAI",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "OAK-PA",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "OBA",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "OBAI",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "OBDC",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "OBE",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "OBIO",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "OBK",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  }
+ ]
+}

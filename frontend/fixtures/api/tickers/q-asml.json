@@ -1,0 +1,14 @@
+{
+ "tickers": [
+  {
+   "ticker": "ASML",
+   "n_signals": 6,
+   "last_signal": "2026-08-25",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  }
+ ]
+}

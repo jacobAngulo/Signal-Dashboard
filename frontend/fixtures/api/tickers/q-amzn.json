@@ -1,0 +1,14 @@
+{
+ "tickers": [
+  {
+   "ticker": "AMZN",
+   "n_signals": 1,
+   "last_signal": "2026-08-26",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  }
+ ]
+}

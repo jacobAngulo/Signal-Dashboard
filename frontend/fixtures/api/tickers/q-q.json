@@ -1,0 +1,138 @@
+{
+ "tickers": [
+  {
+   "ticker": "Q",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "QADR",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "QBTS",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "QCLS",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "QCOM",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "QCRH",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "QDEL",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "QDMI",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "QETA",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "QETH",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "QGEN",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "QH",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "QIND",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "QLEP",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "QLYS",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  }
+ ]
+}

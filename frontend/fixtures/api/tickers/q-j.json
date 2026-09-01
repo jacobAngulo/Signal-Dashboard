@@ -1,0 +1,140 @@
+{
+ "tickers": [
+  {
+   "ticker": "JWEL",
+   "n_signals": 1,
+   "last_signal": "2026-05-20",
+   "producers": [
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "J",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "JAB",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "JACK",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "JACS",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "JAGU",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "JAGX",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "JAKK",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "JAN",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "JANL",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "JANX",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "JATT",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "JAZZ",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "JBDI",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "JBGS",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  }
+ ]
+}

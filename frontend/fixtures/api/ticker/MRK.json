@@ -1,0 +1,2431 @@
+{
+ "ticker": "MRK",
+ "signals": [
+  {
+   "id": "foundry:2026-08-19:MRK",
+   "producer": "foundry",
+   "date": "2026-08-19",
+   "ticker": "MRK",
+   "decision": "BUY",
+   "metric": 0.384,
+   "status_perf": "up",
+   "entry_px": 135.17,
+   "entry_date": "2026-08-18",
+   "last_px": 147.76,
+   "last_date": "2026-08-31",
+   "ret_1d": -0.021090670170827774,
+   "ret_5d": 0.005913272010512616,
+   "ret_20d": null,
+   "ret_since": 0.093141969371902,
+   "ret_since_actionable": -0.029172141918528238,
+   "actionable_entry_px": 152.2,
+   "created_at": "2026-08-19T14:15:58.359241+00:00",
+   "px_stale": false,
+   "event_date": "2026-08-19",
+   "published_at": "2026-08-19T10:49:09+00:00",
+   "extracted_at": "2026-08-19T14:15:58.359241+00:00",
+   "as_of_timestamp": "2026-08-19T14:15:58.359241+00:00",
+   "as_of_source": "foundry_extraction",
+   "source": "hackernews",
+   "n_events": 3,
+   "gate_reason": "corroborated: 3 aligned events, net weight 1.78 ≥ 0.50",
+   "w_pos": 1.776,
+   "w_neg": 0,
+   "last_published_at": "2026-08-19T13:23:54+00:00",
+   "event_type": "other",
+   "horizon": "intraday",
+   "blocked_return_reason": null,
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since",
+   "window_label": "intraday",
+   "window_sessions": null,
+   "window_basis": "llm_time_sensitivity",
+   "window_note": "the extraction model's own word (intraday/swing/long_term); not a session count — see TB-57",
+   "exit_basis": null,
+   "exit_state": null,
+   "exit_date": null,
+   "exit_px": null,
+   "exit_return": null,
+   "sessions_elapsed": null,
+   "exit_note": "this producer publishes no exit signal"
+  },
+  {
+   "id": "foundry:2026-08-10:MRK",
+   "producer": "foundry",
+   "date": "2026-08-10",
+   "ticker": "MRK",
+   "decision": "WATCH",
+   "metric": 0.152,
+   "status_perf": "no_action",
+   "entry_px": 128.58,
+   "entry_date": "2026-08-07",
+   "last_px": 147.76,
+   "last_date": "2026-08-31",
+   "ret_1d": -0.0038191261839291,
+   "ret_5d": 0.03857317445768427,
+   "ret_20d": null,
+   "ret_since": 0.1491678332555606,
+   "ret_since_actionable": 0.1286281698747327,
+   "actionable_entry_px": 130.92,
+   "created_at": "2026-08-07T20:18:58.279246+00:00",
+   "px_stale": false,
+   "event_date": "2026-08-07",
+   "published_at": "2026-08-07T16:11:12-04:00",
+   "extracted_at": "2026-08-07T20:18:58.279246+00:00",
+   "as_of_timestamp": "2026-08-07T20:18:58.279246+00:00",
+   "as_of_source": "foundry_extraction",
+   "source": "sec_edgar",
+   "n_events": 1,
+   "gate_reason": "no directional events",
+   "w_pos": 0,
+   "w_neg": 0,
+   "last_published_at": "2026-08-07T16:11:12-04:00",
+   "event_type": "earnings",
+   "horizon": "swing",
+   "blocked_return_reason": null,
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since",
+   "window_label": "swing",
+   "window_sessions": null,
+   "window_basis": "llm_time_sensitivity",
+   "window_note": "the extraction model's own word (intraday/swing/long_term); not a session count — see TB-57",
+   "exit_basis": null,
+   "exit_state": null,
+   "exit_date": null,
+   "exit_px": null,
+   "exit_return": null,
+   "sessions_elapsed": null,
+   "exit_note": "this producer publishes no exit signal"
+  },
+  {
+   "id": "foundry:2026-08-04:MRK",
+   "producer": "foundry",
+   "date": "2026-08-04",
+   "ticker": "MRK",
+   "decision": "WATCH",
+   "metric": 0.1781,
+   "status_perf": "no_action",
+   "entry_px": 127.77,
+   "entry_date": "2026-08-03",
+   "last_px": 147.76,
+   "last_date": "2026-08-31",
+   "ret_1d": 0.0025781250000000977,
+   "ret_5d": 0.018906249999999902,
+   "ret_20d": null,
+   "ret_since": 0.1564530014870471,
+   "ret_since_actionable": 0.15437499999999993,
+   "actionable_entry_px": 128.0,
+   "created_at": "2026-08-04T11:02:03.428717+00:00",
+   "px_stale": false,
+   "event_date": "2026-08-04",
+   "published_at": "2026-08-04T06:47:58-04:00",
+   "extracted_at": "2026-08-04T11:02:03.428717+00:00",
+   "as_of_timestamp": "2026-08-04T11:02:03.428717+00:00",
+   "as_of_source": "foundry_extraction",
+   "source": "sec_edgar",
+   "n_events": 1,
+   "gate_reason": "no directional events",
+   "w_pos": 0,
+   "w_neg": 0,
+   "last_published_at": "2026-08-04T06:47:58-04:00",
+   "event_type": "earnings",
+   "horizon": "swing",
+   "blocked_return_reason": null,
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since",
+   "window_label": "swing",
+   "window_sessions": null,
+   "window_basis": "llm_time_sensitivity",
+   "window_note": "the extraction model's own word (intraday/swing/long_term); not a session count — see TB-57",
+   "exit_basis": null,
+   "exit_state": null,
+   "exit_date": null,
+   "exit_px": null,
+   "exit_return": null,
+   "sessions_elapsed": null,
+   "exit_note": "this producer publishes no exit signal"
+  }
+ ],
+ "series": [
+  {
+   "date": "2026-05-11",
+   "px": 111.28,
+   "open": 112.153,
+   "high": 113.68,
+   "low": 111.01,
+   "close": 111.28,
+   "volume": 7752887.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-12",
+   "px": 112.37,
+   "open": 111.5,
+   "high": 113.69,
+   "low": 111.39,
+   "close": 112.37,
+   "volume": 9119150.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-13",
+   "px": 113.45,
+   "open": 112.25,
+   "high": 114.065,
+   "low": 112.04,
+   "close": 113.45,
+   "volume": 8112194.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-14",
+   "px": 113.41,
+   "open": 113.63,
+   "high": 113.9,
+   "low": 112.565,
+   "close": 113.41,
+   "volume": 5286040.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-15",
+   "px": 111.38,
+   "open": 113.9,
+   "high": 113.93,
+   "low": 110.94,
+   "close": 111.38,
+   "volume": 10030944.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-18",
+   "px": 112.56,
+   "open": 111.43,
+   "high": 112.885,
+   "low": 110.97,
+   "close": 112.56,
+   "volume": 8049147.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-19",
+   "px": 114.24,
+   "open": 112.56,
+   "high": 115.1,
+   "low": 112.13,
+   "close": 114.24,
+   "volume": 7557230.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-20",
+   "px": 113.0,
+   "open": 114.63,
+   "high": 114.95,
+   "low": 112.903,
+   "close": 113.0,
+   "volume": 9132371.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-21",
+   "px": 115.88,
+   "open": 112.79,
+   "high": 115.98,
+   "low": 112.09,
+   "close": 115.88,
+   "volume": 7404601.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-22",
+   "px": 122.41,
+   "open": 120.55,
+   "high": 122.655,
+   "low": 120.075,
+   "close": 122.41,
+   "volume": 14757506.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-26",
+   "px": 119.72,
+   "open": 122.9,
+   "high": 123.13,
+   "low": 119.41,
+   "close": 119.72,
+   "volume": 10015021.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-27",
+   "px": 120.24,
+   "open": 119.82,
+   "high": 122.4,
+   "low": 119.78,
+   "close": 120.24,
+   "volume": 7165173.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-28",
+   "px": 119.89,
+   "open": 120.26,
+   "high": 121.5,
+   "low": 119.355,
+   "close": 119.89,
+   "volume": 9262217.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-29",
+   "px": 118.72,
+   "open": 119.65,
+   "high": 120.67,
+   "low": 118.19,
+   "close": 118.72,
+   "volume": 16601336.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-01",
+   "px": 115.17,
+   "open": 117.545,
+   "high": 117.96,
+   "low": 114.36,
+   "close": 115.17,
+   "volume": 9409590.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-02",
+   "px": 115.65,
+   "open": 114.5,
+   "high": 116.7799,
+   "low": 114.5,
+   "close": 115.65,
+   "volume": 8313374.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-03",
+   "px": 114.7,
+   "open": 115.445,
+   "high": 117.33,
+   "low": 114.7,
+   "close": 114.7,
+   "volume": 8227344.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-04",
+   "px": 120.26,
+   "open": 117.16,
+   "high": 120.55,
+   "low": 117.09,
+   "close": 120.26,
+   "volume": 15936084.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-05",
+   "px": 120.79,
+   "open": 120.935,
+   "high": 123.46,
+   "low": 120.36,
+   "close": 120.79,
+   "volume": 15970353.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-08",
+   "px": 119.52,
+   "open": 120.85,
+   "high": 122.6,
+   "low": 118.69,
+   "close": 119.52,
+   "volume": 12315061.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-09",
+   "px": 119.6,
+   "open": 120.03,
+   "high": 120.5,
+   "low": 118.0,
+   "close": 119.6,
+   "volume": 9669193.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-10",
+   "px": 119.09,
+   "open": 119.78,
+   "high": 120.04,
+   "low": 117.2601,
+   "close": 119.09,
+   "volume": 10304169.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-11",
+   "px": 120.76,
+   "open": 120.04,
+   "high": 122.71,
+   "low": 119.95,
+   "close": 120.76,
+   "volume": 13182295.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-12",
+   "px": 119.05,
+   "open": 121.5,
+   "high": 121.8999,
+   "low": 118.83,
+   "close": 119.05,
+   "volume": 10929450.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-15",
+   "px": 114.9,
+   "open": 118.71,
+   "high": 118.95,
+   "low": 114.865,
+   "close": 114.9,
+   "volume": 15398839.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-16",
+   "px": 115.17,
+   "open": 115.88,
+   "high": 115.9,
+   "low": 113.57,
+   "close": 115.17,
+   "volume": 10667724.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-17",
+   "px": 115.44,
+   "open": 114.86,
+   "high": 115.99,
+   "low": 114.02,
+   "close": 115.44,
+   "volume": 10461623.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-18",
+   "px": 113.87,
+   "open": 114.64,
+   "high": 114.94,
+   "low": 111.57,
+   "close": 113.87,
+   "volume": 29524982.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-22",
+   "px": 115.48,
+   "open": 113.97,
+   "high": 115.63,
+   "low": 112.995,
+   "close": 115.48,
+   "volume": 10524066.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-23",
+   "px": 119.6,
+   "open": 116.525,
+   "high": 119.8,
+   "low": 116.525,
+   "close": 119.6,
+   "volume": 10471439.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-24",
+   "px": 120.6,
+   "open": 120.9,
+   "high": 121.81,
+   "low": 119.51,
+   "close": 120.6,
+   "volume": 10480348.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-25",
+   "px": 125.45,
+   "open": 121.63,
+   "high": 125.9599,
+   "low": 121.0,
+   "close": 125.45,
+   "volume": 14052361.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-26",
+   "px": 128.66,
+   "open": 125.83,
+   "high": 128.78,
+   "low": 125.83,
+   "close": 128.66,
+   "volume": 18894304.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-29",
+   "px": 129.38,
+   "open": 127.645,
+   "high": 129.965,
+   "low": 126.74,
+   "close": 129.38,
+   "volume": 9587403.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-30",
+   "px": 128.5,
+   "open": 129.215,
+   "high": 130.29,
+   "low": 126.68,
+   "close": 128.5,
+   "volume": 11840001.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-01",
+   "px": 125.37,
+   "open": 128.01,
+   "high": 128.4199,
+   "low": 124.71,
+   "close": 125.37,
+   "volume": 10763957.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-02",
+   "px": 129.56,
+   "open": 126.175,
+   "high": 129.61,
+   "low": 125.99,
+   "close": 129.56,
+   "volume": 7835974.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-06",
+   "px": 126.78,
+   "open": 129.31,
+   "high": 130.0033,
+   "low": 125.624,
+   "close": 126.78,
+   "volume": 9501933.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-07",
+   "px": 128.86,
+   "open": 128.77,
+   "high": 129.69,
+   "low": 127.885,
+   "close": 128.86,
+   "volume": 10176103.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-08",
+   "px": 125.99,
+   "open": 128.34,
+   "high": 128.99,
+   "low": 125.14,
+   "close": 125.99,
+   "volume": 7912138.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-09",
+   "px": 125.07,
+   "open": 125.48,
+   "high": 128.07,
+   "low": 124.445,
+   "close": 125.07,
+   "volume": 6977453.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-10",
+   "px": 123.54,
+   "open": 125.12,
+   "high": 125.56,
+   "low": 122.9001,
+   "close": 123.54,
+   "volume": 8390563.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-13",
+   "px": 124.03,
+   "open": 123.58,
+   "high": 124.74,
+   "low": 122.44,
+   "close": 124.03,
+   "volume": 5227695.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-14",
+   "px": 120.78,
+   "open": 123.3,
+   "high": 123.66,
+   "low": 120.16,
+   "close": 120.78,
+   "volume": 9935070.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-15",
+   "px": 123.61,
+   "open": 124.25,
+   "high": 124.9,
+   "low": 122.75,
+   "close": 123.61,
+   "volume": 9055373.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-16",
+   "px": 127.63,
+   "open": 124.33,
+   "high": 128.93,
+   "low": 124.0,
+   "close": 127.63,
+   "volume": 13040925.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-17",
+   "px": 127.5,
+   "open": 128.45,
+   "high": 131.74,
+   "low": 127.03,
+   "close": 127.5,
+   "volume": 13475414.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-20",
+   "px": 124.4,
+   "open": 127.285,
+   "high": 127.89,
+   "low": 124.22,
+   "close": 124.4,
+   "volume": 7731139.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-21",
+   "px": 126.26,
+   "open": 124.8,
+   "high": 126.77,
+   "low": 124.095,
+   "close": 126.26,
+   "volume": 7346185.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-22",
+   "px": 127.47,
+   "open": 127.32,
+   "high": 128.83,
+   "low": 126.6208,
+   "close": 127.47,
+   "volume": 7793904.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-23",
+   "px": 130.48,
+   "open": 127.82,
+   "high": 131.04,
+   "low": 127.82,
+   "close": 130.48,
+   "volume": 8533240.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-24",
+   "px": 131.07,
+   "open": 131.44,
+   "high": 131.71,
+   "low": 130.24,
+   "close": 131.07,
+   "volume": 6156012.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-27",
+   "px": 130.76,
+   "open": 131.01,
+   "high": 132.53,
+   "low": 130.45,
+   "close": 130.76,
+   "volume": 6912366.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-28",
+   "px": 131.82,
+   "open": 132.88,
+   "high": 135.05,
+   "low": 131.14,
+   "close": 131.82,
+   "volume": 10266916.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-29",
+   "px": 130.36,
+   "open": 132.37,
+   "high": 132.69,
+   "low": 129.65,
+   "close": 130.36,
+   "volume": 7541155.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-30",
+   "px": 129.79,
+   "open": 128.195,
+   "high": 130.21,
+   "low": 127.25,
+   "close": 129.79,
+   "volume": 7835070.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-31",
+   "px": 130.2,
+   "open": 128.92,
+   "high": 131.04,
+   "low": 128.14,
+   "close": 130.2,
+   "volume": 7740370.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-03",
+   "px": 127.77,
+   "open": 129.87,
+   "high": 131.47,
+   "low": 126.72,
+   "close": 127.77,
+   "volume": 11156793.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-04",
+   "px": 128.0,
+   "open": 128.46,
+   "high": 129.99,
+   "low": 126.22,
+   "close": 128.0,
+   "volume": 11818528.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-05",
+   "px": 128.33,
+   "open": 129.41,
+   "high": 131.09,
+   "low": 127.555,
+   "close": 128.33,
+   "volume": 10503554.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-06",
+   "px": 128.37,
+   "open": 130.96,
+   "high": 131.08,
+   "low": 127.8,
+   "close": 128.37,
+   "volume": 7053596.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-07",
+   "px": 128.58,
+   "open": 127.84,
+   "high": 128.75,
+   "low": 126.68,
+   "close": 128.58,
+   "volume": 7349343.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-10",
+   "px": 130.92,
+   "open": 128.29,
+   "high": 130.98,
+   "low": 128.235,
+   "close": 130.92,
+   "volume": 6008577.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-11",
+   "px": 130.42,
+   "open": 129.93,
+   "high": 132.8399,
+   "low": 129.7,
+   "close": 130.42,
+   "volume": 6343770.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-12",
+   "px": 132.92,
+   "open": 130.25,
+   "high": 134.06,
+   "low": 128.91,
+   "close": 132.92,
+   "volume": 10448939.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-13",
+   "px": 135.55,
+   "open": 133.86,
+   "high": 135.68,
+   "low": 133.055,
+   "close": 135.55,
+   "volume": 8896141.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-14",
+   "px": 135.84,
+   "open": 134.43,
+   "high": 135.97,
+   "low": 133.4,
+   "close": 135.84,
+   "volume": 6870875.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-17",
+   "px": 135.97,
+   "open": 134.95,
+   "high": 137.17,
+   "low": 134.55,
+   "close": 135.97,
+   "volume": 8479667.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-18",
+   "px": 135.17,
+   "open": 137.24,
+   "high": 137.98,
+   "low": 134.88,
+   "close": 135.17,
+   "volume": 10286430.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-19",
+   "px": 152.2,
+   "open": 146.94,
+   "high": 153.5,
+   "low": 144.9,
+   "close": 152.2,
+   "volume": 32776768.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-20",
+   "px": 148.99,
+   "open": 150.78,
+   "high": 152.515,
+   "low": 148.516,
+   "close": 148.99,
+   "volume": 16193354.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-21",
+   "px": 152.55,
+   "open": 149.12,
+   "high": 154.49,
+   "low": 148.59,
+   "close": 152.55,
+   "volume": 15979524.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-24",
+   "px": 150.66,
+   "open": 150.72,
+   "high": 151.52,
+   "low": 149.14,
+   "close": 150.66,
+   "volume": 15034761.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-25",
+   "px": 156.45,
+   "open": 151.0,
+   "high": 156.9199,
+   "low": 150.66,
+   "close": 156.45,
+   "volume": 14006687.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-26",
+   "px": 153.1,
+   "open": 154.35,
+   "high": 155.19,
+   "low": 152.6109,
+   "close": 153.1,
+   "volume": 8637035.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-27",
+   "px": 149.54,
+   "open": 149.53,
+   "high": 152.08,
+   "low": 149.02,
+   "close": 149.54,
+   "volume": 8531685.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-28",
+   "px": 148.35,
+   "open": 146.72,
+   "high": 149.0078,
+   "low": 145.75,
+   "close": 148.35,
+   "volume": 8069961.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-31",
+   "px": 147.76,
+   "open": 147.0,
+   "high": 148.689,
+   "low": 145.95,
+   "close": 147.76,
+   "volume": 11133685.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "symbol:673f3ea02451550fd653e021",
+   "security_identity": "symbol:673f3ea02451550fd653e021",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_1beaa5ffcc032e126648a7925f92"
+   ],
+   "source_symbol": "MRK",
+   "data_source": "alpaca_sip_raw"
+  }
+ ],
+ "history": {
+  "lstm": [
+   {
+    "date": "2026-05-19",
+    "metric": 0.2052536606788635,
+    "px": 112.56,
+    "best_horizon": "1m",
+    "status": "buy_candidate"
+   },
+   {
+    "date": "2026-05-20",
+    "metric": 0.1667118072509765,
+    "px": 114.27,
+    "best_horizon": "1m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-05-21",
+    "metric": 0.2510830760002136,
+    "px": 115.6,
+    "best_horizon": "6m",
+    "status": "buy_candidate"
+   },
+   {
+    "date": "2026-05-22",
+    "metric": 0.236912339925766,
+    "px": 122.6,
+    "best_horizon": "6m",
+    "status": "buy_candidate"
+   },
+   {
+    "date": "2026-05-26",
+    "metric": 0.1224023327231407,
+    "px": 120.27,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-05-29",
+    "metric": 0.1235352456569671,
+    "px": 119.33,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-01",
+    "metric": 0.1108422204852104,
+    "px": 115.415,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-02",
+    "metric": 0.1155477538704872,
+    "px": 116.66,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-03",
+    "metric": 0.1105342209339141,
+    "px": 115.03,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-04",
+    "metric": 0.1164102330803871,
+    "px": 119.82,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-05",
+    "metric": 0.1223873049020767,
+    "px": 121.335,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-08",
+    "metric": 0.1164378449320793,
+    "px": 118.875,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-11",
+    "metric": 0.1067133992910385,
+    "px": 122.625,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-12",
+    "metric": 0.1362942457199096,
+    "px": 119.69,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-15",
+    "metric": 0.1070254072546958,
+    "px": 115.6,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-16",
+    "metric": 0.1067179962992668,
+    "px": 114.98,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-17",
+    "metric": 0.1148451343178749,
+    "px": 115.24,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-18",
+    "metric": 0.1108827292919159,
+    "px": 114.135,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-22",
+    "metric": 0.1143136322498321,
+    "px": 114.85,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-07-20",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-07-21",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-07-22",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-07-23",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-07-24",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-07-27",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-07-28",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-07-29",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-07-30",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-07-31",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-03",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-04",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-05",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-06",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-07",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-10",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-11",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-12",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-13",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-14",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-17",
+    "metric": 0.1510959267616272,
+    "px": 135.87,
+    "best_horizon": "6m",
+    "status": "no_buy",
+    "volume_ratio_20": 0.0241809295679821,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-18",
+    "metric": 0.1672040373086929,
+    "px": 135.43,
+    "best_horizon": "6m",
+    "status": "no_buy",
+    "volume_ratio_20": 0.0315769873050245,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-19",
+    "metric": 0.1406603455543518,
+    "px": 152.335,
+    "best_horizon": "6m",
+    "status": "no_buy",
+    "volume_ratio_20": 0.1414624496797223,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-20",
+    "metric": 0.1205463707447052,
+    "px": 150.83,
+    "best_horizon": "6m",
+    "status": "no_buy",
+    "volume_ratio_20": 0.0528244214717009,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-21",
+    "metric": 0.116789236664772,
+    "px": 152.2,
+    "best_horizon": "6m",
+    "status": "no_buy",
+    "volume_ratio_20": 0.0482844922578113,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-24",
+    "metric": 0.1169721707701683,
+    "px": 150.77,
+    "best_horizon": "6m",
+    "status": "no_buy",
+    "volume_ratio_20": 0.0300744807889942,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-25",
+    "metric": 0.1048329323530197,
+    "px": 155.84,
+    "best_horizon": "6m",
+    "status": "no_buy",
+    "volume_ratio_20": 0.0370338205046171,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-26",
+    "metric": 0.1085563451051712,
+    "px": 153.325,
+    "best_horizon": "6m",
+    "status": "no_buy",
+    "volume_ratio_20": 0.0187589320861651,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-27",
+    "metric": 0.1171960830688476,
+    "px": 150.94,
+    "best_horizon": "6m",
+    "status": "no_buy",
+    "volume_ratio_20": 0.0296763462977301,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-28",
+    "metric": 0.1033165231347084,
+    "px": 147.755,
+    "best_horizon": "6m",
+    "status": "no_buy",
+    "volume_ratio_20": 0.0312934938176016,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-31",
+    "metric": 0.096506230533123,
+    "px": 147.67,
+    "best_horizon": "6m",
+    "status": "no_buy",
+    "volume_ratio_20": 0.0135101892911423,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-09-01",
+    "metric": 0.1044221967458725,
+    "px": 149.18,
+    "best_horizon": "6m",
+    "status": "no_buy",
+    "volume_ratio_20": 0.0321986292620487,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   }
+  ],
+  "intrinsic": [
+   {
+    "date": "2026-05-19",
+    "metric": 0.3086552508836705,
+    "px": 112.56,
+    "intrinsic_value": 162.81312636549734,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-05-20",
+    "metric": 0.2981524122110611,
+    "px": 114.27,
+    "intrinsic_value": 162.81312636549734,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-05-21",
+    "metric": 0.2894307567051515,
+    "px": 115.69,
+    "intrinsic_value": 162.81312636549734,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-05-22",
+    "metric": 0.2482792835434651,
+    "px": 122.39,
+    "intrinsic_value": 162.81312636549734,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-05-26",
+    "metric": 0.2604711752189796,
+    "px": 120.405,
+    "intrinsic_value": 162.81312636549734,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-05-29",
+    "metric": 0.0127700827714343,
+    "px": 119.1,
+    "intrinsic_value": 120.6405903240326,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-01",
+    "metric": null,
+    "px": 122.41,
+    "intrinsic_value": null,
+    "status": "stale_ohlcv"
+   },
+   {
+    "date": "2026-06-02",
+    "metric": null,
+    "px": 122.41,
+    "intrinsic_value": null,
+    "status": "stale_ohlcv"
+   },
+   {
+    "date": "2026-06-03",
+    "metric": null,
+    "px": 122.41,
+    "intrinsic_value": null,
+    "status": "stale_ohlcv"
+   },
+   {
+    "date": "2026-06-04",
+    "metric": 0.0019113825903308,
+    "px": 120.41,
+    "intrinsic_value": 120.6405903240326,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-05",
+    "metric": -0.0076210641335385,
+    "px": 121.56,
+    "intrinsic_value": 120.6405903240326,
+    "status": "exit_candidate"
+   },
+   {
+    "date": "2026-06-08",
+    "metric": 0.0142621179108225,
+    "px": 118.92,
+    "intrinsic_value": 120.6405903240326,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-11",
+    "metric": -0.0135892046910917,
+    "px": 122.28,
+    "intrinsic_value": 120.6405903240326,
+    "status": "exit_candidate"
+   },
+   {
+    "date": "2026-06-12",
+    "metric": 0.0065532696906498,
+    "px": 119.85,
+    "intrinsic_value": 120.6405903240326,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-15",
+    "metric": 0.0396267152804229,
+    "px": 115.86,
+    "intrinsic_value": 120.6405903240326,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-16",
+    "metric": 0.0470040001362871,
+    "px": 114.97,
+    "intrinsic_value": 120.6405903240326,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-17",
+    "metric": 0.0475427906032884,
+    "px": 114.905,
+    "intrinsic_value": 120.6405903240326,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-18",
+    "metric": 0.0538839399456885,
+    "px": 114.14,
+    "intrinsic_value": 120.6405903240326,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-22",
+    "metric": 0.0485789261167525,
+    "px": 114.78,
+    "intrinsic_value": 120.6405903240326,
+    "status": "no_buy"
+   }
+  ],
+  "foundry": [
+   {
+    "date": "2026-08-04",
+    "metric": 0.1781,
+    "px": null,
+    "event_type": "earnings",
+    "sentiment": 0,
+    "source": "sec_edgar",
+    "attention_type_prior": 0.356855,
+    "attention_rank": 112,
+    "attention_candidate": false
+   },
+   {
+    "date": "2026-08-10",
+    "metric": 0.152,
+    "px": null,
+    "event_type": "earnings",
+    "sentiment": 0,
+    "source": "sec_edgar",
+    "attention_type_prior": 0.356855,
+    "attention_rank": 174,
+    "attention_candidate": false
+   },
+   {
+    "date": "2026-08-19",
+    "metric": 0.384,
+    "px": null,
+    "event_type": "other",
+    "sentiment": 2,
+    "source": "hackernews",
+    "attention_type_prior": 0.127283,
+    "attention_rank": 111,
+    "attention_candidate": false
+   }
+  ]
+ },
+ "insights": {
+  "status": "available",
+  "has_action_warning": true,
+  "decision_counts": {
+   "WATCH": 2,
+   "BUY": 1
+  },
+  "buy_count": 1,
+  "producer_count": 1,
+  "latest_signal": {
+   "date": "2026-08-19",
+   "producer": "foundry",
+   "decision": "BUY"
+  },
+  "latest_scores": {
+   "lstm": {
+    "date": "2026-09-01",
+    "metric": 0.1044221967458725
+   },
+   "intrinsic": {
+    "date": "2026-06-22",
+    "metric": 0.0485789261167525
+   },
+   "foundry": {
+    "date": "2026-08-19",
+    "metric": 0.384
+   }
+  },
+  "price_bars": 78,
+  "price_from": "2026-05-11",
+  "price_through": "2026-08-31",
+  "unresolved_bar_count": 1,
+  "action_boundary_count": 1,
+  "blocked_action_ids": [
+   "ca_1beaa5ffcc032e126648a7925f92"
+  ],
+  "performance_excluded_count": 0,
+  "note": "Corporate-action review flagged; only return windows that cross an uncertain boundary are excluded."
+ },
+ "price_as_of": "2026-08-31",
+ "price_build_running": false,
+ "price_refresh_seconds": 300,
+ "last_scored": "2026-09-01",
+ "latest_run": "2026-09-01",
+ "stats": {
+  "n_signals": 1,
+  "first_signal": "2026-08-19",
+  "last_signal": "2026-08-19",
+  "ret_5d": {
+   "n": 1,
+   "win_rate": 1.0,
+   "avg": 0.005913272010512616,
+   "median": 0.005913272010512616
+  },
+  "producers": [
+   "foundry"
+  ]
+ }
+}

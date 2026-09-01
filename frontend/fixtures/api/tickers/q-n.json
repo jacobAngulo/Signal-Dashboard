@@ -1,0 +1,145 @@
+{
+ "tickers": [
+  {
+   "ticker": "NVR",
+   "n_signals": 5,
+   "last_signal": "2026-09-01",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "NET",
+   "n_signals": 2,
+   "last_signal": "2026-08-05",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "NVDA",
+   "n_signals": 2,
+   "last_signal": "2026-08-27",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "NXTC",
+   "n_signals": 2,
+   "last_signal": "2026-07-10",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "NCRA",
+   "n_signals": 1,
+   "last_signal": "2026-07-02",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "NXXT",
+   "n_signals": 1,
+   "last_signal": "2026-08-25",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "NAAS",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "NABL",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "NAGE",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "NAII",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "NAK",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "NAKA",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "NAMI",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "NAMM",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "NAMS",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  }
+ ]
+}

@@ -47,6 +47,15 @@ Rules:
   `/srv/data/signal-dashboard`. Backend changes need
   `systemctl restart signal-dashboard`; frontend changes need
   `cd frontend && npm run build` (FastAPI serves `dist/`).
+- **Frontend work does not need the backend.** `npm run dev:fixtures` serves
+  the recorded API responses in `frontend/fixtures/api` (committed: a 10-day,
+  20-ticker slice, ~14 MB) instead of proxying to :8010, so the UI runs off
+  this box, where the producer data and the gateway do not exist. Re-record on
+  a box that has them with `.venv/bin/python scripts/capture_api_fixtures.py`;
+  add new endpoints to `list_specs()` there rather than hand-writing a JSON
+  file, so what ships is always something the API actually returned. Fixture
+  responses carry `x-fixture-match`: `exact`, or `fallback` when no capture
+  matched the filters and the closest one was served instead.
 - **Every route requires a Google sign-in** (`backend/auth.py`). The check is
   one middleware in front of the whole app, *not* a per-route dependency —
   `auth.PUBLIC_PATHS` is the complete list of what answers without a session,

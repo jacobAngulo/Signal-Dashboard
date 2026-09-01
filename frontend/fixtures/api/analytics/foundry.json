@@ -1,0 +1,936 @@
+{
+ "timeline": [
+  {
+   "date": "2026-07-08",
+   "foundry_buys": 0,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-07-09",
+   "foundry_buys": 0,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-07-10",
+   "foundry_buys": 0,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-07-13",
+   "foundry_buys": 2,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-07-14",
+   "foundry_buys": 3,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-07-15",
+   "foundry_buys": 0,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-07-16",
+   "foundry_buys": 0,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-07-17",
+   "foundry_buys": 1,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-07-20",
+   "foundry_buys": 0,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-07-21",
+   "foundry_buys": 1,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-07-22",
+   "foundry_buys": 1,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-07-23",
+   "foundry_buys": 1,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-07-24",
+   "foundry_buys": 1,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-07-27",
+   "foundry_buys": 1,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-07-28",
+   "foundry_buys": 0,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-07-29",
+   "foundry_buys": 1,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-07-30",
+   "foundry_buys": 0,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-07-31",
+   "foundry_buys": 2,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-03",
+   "foundry_buys": 1,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-04",
+   "foundry_buys": 0,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-05",
+   "foundry_buys": 1,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-06",
+   "foundry_buys": 0,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-07",
+   "foundry_buys": 2,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-10",
+   "foundry_buys": 1,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-11",
+   "foundry_buys": 1,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-12",
+   "foundry_buys": 1,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-13",
+   "foundry_buys": 1,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-14",
+   "foundry_buys": 0,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-17",
+   "foundry_buys": 0,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-18",
+   "foundry_buys": 1,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-19",
+   "foundry_buys": 3,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-20",
+   "foundry_buys": 0,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-21",
+   "foundry_buys": 1,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-24",
+   "foundry_buys": 1,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-25",
+   "foundry_buys": 4,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-26",
+   "foundry_buys": 1,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-27",
+   "foundry_buys": 2,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-28",
+   "foundry_buys": 0,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-08-31",
+   "foundry_buys": 2,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-09-01",
+   "foundry_buys": 0,
+   "foundry_status": "ok"
+  },
+  {
+   "date": "2026-09-02",
+   "foundry_buys": 0,
+   "foundry_status": "ok"
+  }
+ ],
+ "by_producer": {
+  "foundry": {
+   "n_signals": 37,
+   "n_pending": 0,
+   "n_no_px": 5,
+   "n_corporate_action_unresolved": 2,
+   "n_up": 13,
+   "n_down": 17,
+   "horizons": {
+    "1d": {
+     "n": 29,
+     "win_rate": 0.4827586206896552,
+     "avg": -0.012556382752382803,
+     "median": -0.005644718374321123
+    },
+    "5d": {
+     "n": 22,
+     "win_rate": 0.5909090909090909,
+     "avg": -0.010129449945372954,
+     "median": 0.006965932925651397
+    },
+    "20d": {
+     "n": 10,
+     "win_rate": 0.6,
+     "avg": 0.0936699644654533,
+     "median": 0.09207480564273329
+    }
+   },
+   "since": {
+    "n": 30,
+    "win_rate": 0.43333333333333335,
+    "avg": 0.021108261932282494,
+    "median": -0.010929089644287238
+   }
+  }
+ },
+ "buckets": {
+  "foundry": [
+   {
+    "label": "min – 0.336",
+    "n": 4,
+    "ret_1d": {
+     "n": 3,
+     "win_rate": 0.6666666666666666,
+     "avg": 0.02076652790346678,
+     "median": 0.0021948502915547508
+    },
+    "ret_5d": {
+     "n": 3,
+     "win_rate": 1.0,
+     "avg": 0.05197953259662036,
+     "median": 0.03765179715628242
+    },
+    "ret_20d": {
+     "n": 2,
+     "win_rate": 0.5,
+     "avg": 0.012540944223816741,
+     "median": 0.012540944223816741
+    }
+   },
+   {
+    "label": "0.336 – 0.513",
+    "n": 14,
+    "ret_1d": {
+     "n": 14,
+     "win_rate": 0.5,
+     "avg": -0.026090566371206485,
+     "median": -0.00696707796109608
+    },
+    "ret_5d": {
+     "n": 10,
+     "win_rate": 0.7,
+     "avg": -0.002316125451317341,
+     "median": 0.006965932925651397
+    },
+    "ret_20d": {
+     "n": 3,
+     "win_rate": 0.3333333333333333,
+     "avg": -0.021820861676626484,
+     "median": -0.07718961511263756
+    }
+   },
+   {
+    "label": "0.513 – 0.646",
+    "n": 9,
+    "ret_1d": {
+     "n": 5,
+     "win_rate": 0.4,
+     "avg": 0.0010844127907573054,
+     "median": -0.013076923076923097
+    },
+    "ret_5d": {
+     "n": 5,
+     "win_rate": 0.6,
+     "avg": 0.005449610224343271,
+     "median": 0.023749999999999938
+    },
+    "ret_20d": {
+     "n": 2,
+     "win_rate": 1.0,
+     "avg": 0.4009149805762382,
+     "median": 0.4009149805762382
+    }
+   },
+   {
+    "label": "0.646 – max",
+    "n": 10,
+    "ret_1d": {
+     "n": 7,
+     "win_rate": 0.42857142857142855,
+     "avg": -0.0095126883266282,
+     "median": -0.016117729502452827
+    },
+    "ret_5d": {
+     "n": 4,
+     "win_rate": 0.0,
+     "avg": -0.09571832329915225,
+     "median": -0.08308076638835166
+    },
+    "ret_20d": {
+     "n": 3,
+     "win_rate": 0.6666666666666666,
+     "avg": 0.05841679336143416,
+     "median": 0.1642384105960264
+    }
+   }
+  ]
+ },
+ "cumulative": [
+  {
+   "date": "2026-07-14",
+   "foundry": 1.139527
+  },
+  {
+   "date": "2026-07-17",
+   "foundry": 1.167906
+  },
+  {
+   "date": "2026-07-21",
+   "foundry": 1.161314
+  },
+  {
+   "date": "2026-07-23",
+   "foundry": 1.084406
+  },
+  {
+   "date": "2026-07-24",
+   "foundry": 1.02831
+  },
+  {
+   "date": "2026-07-27",
+   "foundry": 0.944521
+  },
+  {
+   "date": "2026-07-29",
+   "foundry": 0.929297
+  },
+  {
+   "date": "2026-07-31",
+   "foundry": 0.981264
+  },
+  {
+   "date": "2026-08-03",
+   "foundry": 1.045782
+  },
+  {
+   "date": "2026-08-05",
+   "foundry": 1.015332
+  },
+  {
+   "date": "2026-08-07",
+   "foundry": 1.018197
+  },
+  {
+   "date": "2026-08-11",
+   "foundry": 0.975518
+  },
+  {
+   "date": "2026-08-12",
+   "foundry": 0.983526
+  },
+  {
+   "date": "2026-08-13",
+   "foundry": 0.985684
+  },
+  {
+   "date": "2026-08-18",
+   "foundry": 0.987173
+  },
+  {
+   "date": "2026-08-19",
+   "foundry": 0.856154
+  },
+  {
+   "date": "2026-08-21",
+   "foundry": 0.89129
+  },
+  {
+   "date": "2026-08-24",
+   "foundry": 0.910828
+  },
+  {
+   "date": "2026-08-25",
+   "foundry": 0.918669
+  },
+  {
+   "date": "2026-08-26",
+   "foundry": 0.90448
+  },
+  {
+   "date": "2026-08-27",
+   "foundry": 0.852351
+  }
+ ],
+ "scatter": [
+  {
+   "ticker": "USBC",
+   "date": "2026-07-14",
+   "producer": "foundry",
+   "metric": 0.532,
+   "ret_5d": 0.16542570411136293,
+   "ret_since": 0.31775700934579443
+  },
+  {
+   "ticker": "SHFS",
+   "date": "2026-07-17",
+   "producer": "foundry",
+   "metric": 0.684,
+   "ret_5d": -0.07040229885057481,
+   "ret_since": -0.24597918637653748
+  },
+  {
+   "ticker": "AAPL",
+   "date": "2026-07-21",
+   "producer": "foundry",
+   "metric": 0.324,
+   "ret_5d": 0.03765179715628242,
+   "ret_since": -0.029823325882604945
+  },
+  {
+   "ticker": "OPTX",
+   "date": "2026-07-23",
+   "producer": "foundry",
+   "metric": 0.684,
+   "ret_5d": -0.15364238410596032,
+   "ret_since": -0.014440433212996484
+  },
+  {
+   "ticker": "AMD",
+   "date": "2026-07-24",
+   "producer": "foundry",
+   "metric": 0.336,
+   "ret_5d": -0.08774786856978645,
+   "ret_since": -0.1277955863551299
+  },
+  {
+   "ticker": "AMD",
+   "date": "2026-07-27",
+   "producer": "foundry",
+   "metric": 0.336,
+   "ret_5d": -0.020830386907768506,
+   "ret_since": -0.09815116390458856
+  },
+  {
+   "ticker": "SDOT",
+   "date": "2026-07-29",
+   "producer": "foundry",
+   "metric": 0.684,
+   "ret_5d": -0.06306937631394538,
+   "ret_since": -0.048128342245989386
+  },
+  {
+   "ticker": "MBRX",
+   "date": "2026-07-31",
+   "producer": "foundry",
+   "metric": 0.532,
+   "ret_5d": 0.023749999999999938,
+   "ret_since": -0.3679411764705882
+  },
+  {
+   "ticker": "MSFT",
+   "date": "2026-07-31",
+   "producer": "foundry",
+   "metric": 0.336,
+   "ret_5d": 0.07589516267860219,
+   "ret_since": 0.12456218133451569
+  },
+  {
+   "ticker": "NET",
+   "date": "2026-08-03",
+   "producer": "foundry",
+   "metric": 0.288,
+   "ret_5d": 0.09850038905001046,
+   "ret_since": 0.09366262814538673
+  },
+  {
+   "ticker": "NET",
+   "date": "2026-08-05",
+   "producer": "foundry",
+   "metric": 0.336,
+   "ret_5d": 0.06311441835062803,
+   "ret_since": 0.01254438655294865
+  },
+  {
+   "ticker": "MYSZ",
+   "date": "2026-08-07",
+   "producer": "foundry",
+   "metric": 0.513,
+   "ret_5d": -0.04807692307692302,
+   "ret_since": -0.13366336633663356
+  },
+  {
+   "ticker": "PLTR",
+   "date": "2026-08-07",
+   "producer": "foundry",
+   "metric": 0.336,
+   "ret_5d": 0.011801639439567468,
+   "ret_since": 0.19535659312467946
+  },
+  {
+   "ticker": "YHC",
+   "date": "2026-08-11",
+   "producer": "foundry",
+   "metric": 0.5985,
+   "ret_5d": 0.029940119760479167,
+   "ret_since": -0.06779661016949146
+  },
+  {
+   "ticker": "GOOGL",
+   "date": "2026-08-12",
+   "producer": "foundry",
+   "metric": 0.378,
+   "ret_5d": 0.0034348256389358234,
+   "ret_since": -0.012943571844095336
+  },
+  {
+   "ticker": "AAPL",
+   "date": "2026-08-13",
+   "producer": "foundry",
+   "metric": 0.252,
+   "ret_5d": 0.019786411583568198,
+   "ret_since": 0.04830438378825486
+  },
+  {
+   "ticker": "GOOGL",
+   "date": "2026-08-18",
+   "producer": "foundry",
+   "metric": 0.432,
+   "ret_5d": 0.008018593840790178,
+   "ret_since": -0.013517441860464996
+  },
+  {
+   "ticker": "CXAI",
+   "date": "2026-08-19",
+   "producer": "foundry",
+   "metric": 0.532,
+   "ret_5d": -0.14379084967320266,
+   "ret_since": -0.14084507042253513
+  },
+  {
+   "ticker": "MRK",
+   "date": "2026-08-19",
+   "producer": "foundry",
+   "metric": 0.384,
+   "ret_5d": 0.005913272010512616,
+   "ret_since": 0.093141969371902
+  },
+  {
+   "ticker": "MRNA",
+   "date": "2026-08-19",
+   "producer": "foundry",
+   "metric": 0.384,
+   "ret_5d": -0.14175937607523803,
+   "ret_since": 1.2290343074968235
+  },
+  {
+   "ticker": "BAFN",
+   "date": "2026-08-21",
+   "producer": "foundry",
+   "metric": 0.684,
+   "ret_5d": -0.0957592339261285,
+   "ret_since": -0.1192411924119241
+  },
+  {
+   "ticker": "NVDA",
+   "date": "2026-08-24",
+   "producer": "foundry",
+   "metric": 0.336,
+   "ret_5d": 0.05899846508058326,
+   "ret_since": 0.028222801788375662
+  }
+ ],
+ "histograms": {
+  "foundry": [
+   {
+    "lo": 0.0,
+    "label": "0.00",
+    "universe": 0.029205265724037054,
+    "signals": 0.0,
+    "n_universe": 599,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.05,
+    "label": "0.05",
+    "universe": 0.059434422233057047,
+    "signals": 0.0,
+    "n_universe": 1219,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.1,
+    "label": "0.10",
+    "universe": 0.21725987323256948,
+    "signals": 0.0,
+    "n_universe": 4456,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.15,
+    "label": "0.15",
+    "universe": 0.41189663578742075,
+    "signals": 0.0,
+    "n_universe": 8448,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.2,
+    "label": "0.20",
+    "universe": 0.04051682106289615,
+    "signals": 0.0,
+    "n_universe": 831,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.25,
+    "label": "0.25",
+    "universe": 0.081862506094588,
+    "signals": 0.08108108108108109,
+    "n_universe": 1679,
+    "n_signals": 3
+   },
+   {
+    "lo": 0.3,
+    "label": "0.30",
+    "universe": 0.04729400292540224,
+    "signals": 0.1891891891891892,
+    "n_universe": 970,
+    "n_signals": 7
+   },
+   {
+    "lo": 0.35,
+    "label": "0.35",
+    "universe": 0.04207703559239395,
+    "signals": 0.10810810810810811,
+    "n_universe": 863,
+    "n_signals": 4
+   },
+   {
+    "lo": 0.4,
+    "label": "0.40",
+    "universe": 0.009605070697220868,
+    "signals": 0.10810810810810811,
+    "n_universe": 197,
+    "n_signals": 4
+   },
+   {
+    "lo": 0.45,
+    "label": "0.45",
+    "universe": 0.01886884446611409,
+    "signals": 0.0,
+    "n_universe": 387,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.5,
+    "label": "0.50",
+    "universe": 0.020087762067284253,
+    "signals": 0.1891891891891892,
+    "n_universe": 412,
+    "n_signals": 7
+   },
+   {
+    "lo": 0.55,
+    "label": "0.55",
+    "universe": 0.012042905899561189,
+    "signals": 0.05405405405405406,
+    "n_universe": 247,
+    "n_signals": 2
+   },
+   {
+    "lo": 0.6,
+    "label": "0.60",
+    "universe": 0.0009751340809361287,
+    "signals": 0.02702702702702703,
+    "n_universe": 20,
+    "n_signals": 1
+   },
+   {
+    "lo": 0.65,
+    "label": "0.65",
+    "universe": 0.008824963432471964,
+    "signals": 0.24324324324324326,
+    "n_universe": 181,
+    "n_signals": 9
+   },
+   {
+    "lo": 0.7,
+    "label": "0.70",
+    "universe": 4.8756704046806435e-05,
+    "signals": 0.0,
+    "n_universe": 1,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.75,
+    "label": "0.75",
+    "universe": 0.0,
+    "signals": 0.0,
+    "n_universe": 0,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.8,
+    "label": "0.80",
+    "universe": 0.0,
+    "signals": 0.0,
+    "n_universe": 0,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.85,
+    "label": "0.85",
+    "universe": 0.0,
+    "signals": 0.0,
+    "n_universe": 0,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.9,
+    "label": "0.90",
+    "universe": 0.0,
+    "signals": 0.0,
+    "n_universe": 0,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.95,
+    "label": "0.95",
+    "universe": 0.0,
+    "signals": 0.0,
+    "n_universe": 0,
+    "n_signals": 0
+   }
+  ]
+ },
+ "weekday": [
+  {
+   "day": "Mon",
+   "n": 3,
+   "win_rate": 0.6666666666666666,
+   "avg": 0.04555615574094174,
+   "median": 0.05899846508058326
+  },
+  {
+   "day": "Tue",
+   "n": 4,
+   "win_rate": 1.0,
+   "avg": 0.06025905371722867,
+   "median": 0.03379595845838079
+  },
+  {
+   "day": "Wed",
+   "n": 6,
+   "win_rate": 0.5,
+   "avg": -0.046026181010384935,
+   "median": -0.02981727533750478
+  },
+  {
+   "day": "Thu",
+   "n": 2,
+   "win_rate": 0.5,
+   "avg": -0.06692798626119606,
+   "median": -0.06692798626119606
+  },
+  {
+   "day": "Fri",
+   "n": 7,
+   "win_rate": 0.42857142857142855,
+   "avg": -0.027219931757891884,
+   "median": -0.04807692307692302
+  }
+ ],
+ "best": [
+  {
+   "id": "foundry:2026-08-19:MRNA",
+   "producer": "foundry",
+   "date": "2026-08-19",
+   "ticker": "MRNA",
+   "metric": 0.384,
+   "entry_px": 62.96,
+   "ret_since": 1.2290343074968235,
+   "status_perf": "up",
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since"
+  },
+  {
+   "id": "foundry:2026-07-14:USBC",
+   "producer": "foundry",
+   "date": "2026-07-14",
+   "ticker": "USBC",
+   "metric": 0.532,
+   "entry_px": 0.321,
+   "ret_since": 0.31775700934579443,
+   "status_perf": "up",
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since"
+  },
+  {
+   "id": "foundry:2026-08-07:PLTR",
+   "producer": "foundry",
+   "date": "2026-08-07",
+   "ticker": "PLTR",
+   "metric": 0.336,
+   "entry_px": 155.92,
+   "ret_since": 0.19535659312467946,
+   "status_perf": "up",
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since"
+  },
+  {
+   "id": "foundry:2026-07-31:MSFT",
+   "producer": "foundry",
+   "date": "2026-07-31",
+   "ticker": "MSFT",
+   "metric": 0.336,
+   "entry_px": 451.1,
+   "ret_since": 0.12456218133451569,
+   "status_perf": "up",
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since"
+  },
+  {
+   "id": "foundry:2026-08-03:NET",
+   "producer": "foundry",
+   "date": "2026-08-03",
+   "ticker": "NET",
+   "metric": 0.288,
+   "entry_px": 278.98,
+   "ret_since": 0.09366262814538673,
+   "status_perf": "up",
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since"
+  }
+ ],
+ "worst": [
+  {
+   "id": "foundry:2026-07-31:MBRX",
+   "producer": "foundry",
+   "date": "2026-07-31",
+   "ticker": "MBRX",
+   "metric": 0.532,
+   "entry_px": 1.02,
+   "ret_since": -0.3679411764705882,
+   "status_perf": "down",
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since"
+  },
+  {
+   "id": "foundry:2026-07-17:SHFS",
+   "producer": "foundry",
+   "date": "2026-07-17",
+   "ticker": "SHFS",
+   "metric": 0.684,
+   "entry_px": 0.2114,
+   "ret_since": -0.24597918637653748,
+   "status_perf": "down",
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since"
+  },
+  {
+   "id": "foundry:2026-08-27:FJET",
+   "producer": "foundry",
+   "date": "2026-08-27",
+   "ticker": "FJET",
+   "metric": 0.684,
+   "entry_px": 3.87,
+   "ret_since": -0.1421188630490957,
+   "status_perf": "down",
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since"
+  },
+  {
+   "id": "foundry:2026-08-19:CXAI",
+   "producer": "foundry",
+   "date": "2026-08-19",
+   "ticker": "CXAI",
+   "metric": 0.532,
+   "entry_px": 0.0852,
+   "ret_since": -0.14084507042253513,
+   "status_perf": "down",
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since"
+  },
+  {
+   "id": "foundry:2026-08-07:MYSZ",
+   "producer": "foundry",
+   "date": "2026-08-07",
+   "ticker": "MYSZ",
+   "metric": 0.513,
+   "entry_px": 0.3636,
+   "ret_since": -0.13366336633663356,
+   "status_perf": "down",
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since"
+  }
+ ]
+}

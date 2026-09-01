@@ -1,0 +1,150 @@
+{
+ "tickers": [
+  {
+   "ticker": "MAX",
+   "n_signals": 1,
+   "last_signal": "2026-08-06",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "MBAV",
+   "n_signals": 1,
+   "last_signal": "2026-07-22",
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "MBRX",
+   "n_signals": 1,
+   "last_signal": "2026-07-31",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "MIDD",
+   "n_signals": 1,
+   "last_signal": "2026-08-21",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "MRK",
+   "n_signals": 1,
+   "last_signal": "2026-08-19",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "MRNA",
+   "n_signals": 1,
+   "last_signal": "2026-08-19",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "MSFT",
+   "n_signals": 1,
+   "last_signal": "2026-07-31",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "MU",
+   "n_signals": 1,
+   "last_signal": "2026-08-17",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "MYSZ",
+   "n_signals": 1,
+   "last_signal": "2026-08-07",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "M",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "MA",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "MAA",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "MAAS",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "MAC",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "MACI",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  }
+ ]
+}

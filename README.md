@@ -74,6 +74,25 @@ evaluated separately for each return horizon rather than dropping the signal.
 Intraday chart requests use a separate 45-second gateway cache and never alter
 the daily SIP performance book.
 
+## Frontend development without the backend
+
+The API needs the producers' 140 MB of CSVs, the 30 MB foundry DuckDB and a
+live av-gateway, none of which exist off the deployment box. So the responses
+every screen loads are recorded into `frontend/fixtures/api` and committed — a
+10-day, 20-ticker slice, about 14 MB:
+
+```bash
+cd frontend
+npm run dev:fixtures     # recorded responses, no backend, no sign-in
+npm run dev              # proxies /api to a real backend on :8010
+```
+
+Requests match exactly where they were recorded and fall back to the same
+endpoint's default capture otherwise, which the `x-fixture-match` header and
+the vite log report so an unhonoured filter is never mistaken for a real one.
+Re-record with `.venv/bin/python scripts/capture_api_fixtures.py` on a box that
+has the data. See `frontend/fixtures/README.md`.
+
 ## Access
 
 Every route requires a Google sign-in. The check is a single middleware in

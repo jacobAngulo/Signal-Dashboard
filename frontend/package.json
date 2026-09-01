@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:fixtures": "API_FIXTURES=1 vite",
     "build": "vite build",
     "preview": "vite preview"
   },

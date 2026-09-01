@@ -1,0 +1,12 @@
+{
+ "tickers": [
+  {
+   "ticker": "FJET",
+   "n_signals": 1,
+   "last_signal": "2026-08-27",
+   "producers": [
+    "foundry"
+   ]
+  }
+ ]
+}

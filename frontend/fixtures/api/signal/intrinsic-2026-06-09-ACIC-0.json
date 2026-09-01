@@ -1,0 +1,63 @@
+{
+ "signal": {
+  "run_date": "2026-06-09",
+  "date": "2026-06-09",
+  "decision": "BUY",
+  "ticker": "ACIC",
+  "as_of_close_date": "2026-06-09",
+  "as_of_source": "preclose_partial_bar",
+  "as_of_timestamp": "2026-06-09T15:25:02.857995-04:00",
+  "price": 10.335,
+  "intrinsic_value": 132.14452554744528,
+  "price_to_intrinsic": 0.0782098233520034,
+  "discount_to_intrinsic": 0.9217901766479966,
+  "reason": "buy_candidate",
+  "producer": "intrinsic",
+  "metric": 0.9217901766479966,
+  "signal_price": 10.335,
+  "created_at": "2026-06-09T19:25:42.366279+00:00",
+  "id": "intrinsic:2026-06-09:ACIC:0",
+  "entry_px": 10.26,
+  "entry_date": "2026-06-09",
+  "last_px": 9.47,
+  "last_date": "2026-08-31",
+  "actionable_entry_px": 10.26,
+  "ret_since_actionable": null,
+  "ret_1d": null,
+  "ret_1d_blocked_reason": "corporate_action_unresolved",
+  "ret_5d": null,
+  "ret_5d_blocked_reason": "corporate_action_unresolved",
+  "ret_20d": null,
+  "ret_20d_blocked_reason": "corporate_action_unresolved",
+  "ret_since": null,
+  "ret_since_blocked_reason": "corporate_action_unresolved",
+  "blocked_return_reason": "corporate_action_unresolved",
+  "action_warning_ids": [
+   "ca_f7db206ffc534375fd29d23dac64"
+  ],
+  "has_action_warning": true,
+  "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=unsupported|policy=dashboard",
+  "action_status": "unsupported",
+  "blocked_action_ids": [
+   "ca_f7db206ffc534375fd29d23dac64"
+  ],
+  "action_revision": 1,
+  "continuity_segments": [
+   1
+  ],
+  "status_basis": null,
+  "px_stale": false,
+  "status_perf": "return_limited",
+  "window_label": null,
+  "window_sessions": null,
+  "window_basis": null,
+  "window_note": "valuation snapshot — this producer publishes no holding window",
+  "exit_basis": "producer_status",
+  "exit_state": "open",
+  "exit_date": null,
+  "exit_px": null,
+  "exit_return": null,
+  "sessions_elapsed": null,
+  "exit_note": "price has not reached intrinsic value yet"
+ }
+}

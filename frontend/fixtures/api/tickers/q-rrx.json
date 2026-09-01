@@ -1,0 +1,14 @@
+{
+ "tickers": [
+  {
+   "ticker": "RRX",
+   "n_signals": 1,
+   "last_signal": "2026-08-20",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  }
+ ]
+}

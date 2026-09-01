@@ -1,0 +1,153 @@
+{
+ "tickers": [
+  {
+   "ticker": "ADTX",
+   "n_signals": 9,
+   "last_signal": "2026-06-24",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "AMD",
+   "n_signals": 7,
+   "last_signal": "2026-08-25",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "ASML",
+   "n_signals": 6,
+   "last_signal": "2026-08-25",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "AAPL",
+   "n_signals": 4,
+   "last_signal": "2026-08-31",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "APVO",
+   "n_signals": 4,
+   "last_signal": "2026-08-13",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "ACRE",
+   "n_signals": 2,
+   "last_signal": "2026-05-13",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "AEMD",
+   "n_signals": 2,
+   "last_signal": "2026-07-08",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "ASTI",
+   "n_signals": 2,
+   "last_signal": "2026-05-22",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "ABM",
+   "n_signals": 1,
+   "last_signal": "2026-05-13",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "ACIC",
+   "n_signals": 1,
+   "last_signal": "2026-06-09",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "ACLS",
+   "n_signals": 1,
+   "last_signal": "2026-07-20",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "ADI",
+   "n_signals": 1,
+   "last_signal": "2026-07-23",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "AEC",
+   "n_signals": 1,
+   "last_signal": "2026-06-10",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "AFGB",
+   "n_signals": 1,
+   "last_signal": "2026-05-29",
+   "producers": [
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "AGL",
+   "n_signals": 1,
+   "last_signal": "2026-08-05",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  }
+ ]
+}

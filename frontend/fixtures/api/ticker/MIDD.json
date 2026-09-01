@@ -1,0 +1,2558 @@
+{
+ "ticker": "MIDD",
+ "signals": [
+  {
+   "id": "lstm:2026-08-21:MIDD:0",
+   "producer": "lstm",
+   "date": "2026-08-21",
+   "ticker": "MIDD",
+   "decision": "BUY",
+   "metric": 0.3032001554965973,
+   "status_perf": "down",
+   "entry_px": 115.48,
+   "entry_date": "2026-08-21",
+   "last_px": 110.84,
+   "last_date": "2026-08-31",
+   "ret_1d": -0.002251472116383879,
+   "ret_5d": -0.023640457222029787,
+   "ret_20d": null,
+   "ret_since": -0.04018011776931074,
+   "ret_since_actionable": -0.04018011776931074,
+   "actionable_entry_px": 115.48,
+   "created_at": "2026-08-21T19:29:58.270017+00:00",
+   "px_stale": false,
+   "as_of_timestamp": "2026-08-21T14:40:47.949674-04:00",
+   "as_of_source": "preclose_partial_bar",
+   "horizon": "6m",
+   "blocked_return_reason": null,
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since",
+   "window_label": "6m",
+   "window_sessions": 126,
+   "window_basis": "producer_horizon",
+   "window_note": "model horizon — 126 trading sessions",
+   "exit_basis": "sessions",
+   "exit_state": "open",
+   "exit_date": "2027-02-23",
+   "exit_px": null,
+   "exit_return": null,
+   "sessions_elapsed": 6,
+   "exit_note": "model horizon not yet reached"
+  },
+  {
+   "id": "foundry:2026-08-14:MIDD",
+   "producer": "foundry",
+   "date": "2026-08-14",
+   "ticker": "MIDD",
+   "decision": "WATCH",
+   "metric": 0.133,
+   "status_perf": "no_action",
+   "entry_px": 117.02,
+   "entry_date": "2026-08-13",
+   "last_px": 110.84,
+   "last_date": "2026-08-31",
+   "ret_1d": -0.025697565940123845,
+   "ret_5d": -0.020608939021287354,
+   "ret_20d": null,
+   "ret_since": -0.05281148521620227,
+   "ret_since_actionable": -0.059960987193622195,
+   "actionable_entry_px": 117.91,
+   "created_at": "2026-08-13T20:38:07.257551+00:00",
+   "px_stale": false,
+   "event_date": "2026-08-13",
+   "published_at": "2026-08-13T16:19:43-04:00",
+   "extracted_at": "2026-08-13T20:38:07.257551+00:00",
+   "as_of_timestamp": "2026-08-13T20:38:07.257551+00:00",
+   "as_of_source": "foundry_extraction",
+   "source": "sec_edgar",
+   "n_events": 1,
+   "gate_reason": "no directional events",
+   "w_pos": 0,
+   "w_neg": 0,
+   "last_published_at": "2026-08-13T16:19:43-04:00",
+   "event_type": "earnings",
+   "horizon": "swing",
+   "blocked_return_reason": null,
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since",
+   "window_label": "swing",
+   "window_sessions": null,
+   "window_basis": "llm_time_sensitivity",
+   "window_note": "the extraction model's own word (intraday/swing/long_term); not a session count — see TB-57",
+   "exit_basis": null,
+   "exit_state": null,
+   "exit_date": null,
+   "exit_px": null,
+   "exit_return": null,
+   "sessions_elapsed": null,
+   "exit_note": "this producer publishes no exit signal"
+  },
+  {
+   "id": "foundry:2026-08-11:MIDD",
+   "producer": "foundry",
+   "date": "2026-08-11",
+   "ticker": "MIDD",
+   "decision": "WATCH",
+   "metric": 0.1781,
+   "status_perf": "no_action",
+   "entry_px": 130.3,
+   "entry_date": "2026-08-10",
+   "last_px": 110.84,
+   "last_date": "2026-08-31",
+   "ret_1d": -0.008667388949079036,
+   "ret_5d": -0.04992082673556131,
+   "ret_20d": null,
+   "ret_since": -0.1493476592478895,
+   "ret_since_actionable": -0.0762563546962246,
+   "actionable_entry_px": 119.99,
+   "created_at": "2026-08-11T11:17:21.051235+00:00",
+   "px_stale": false,
+   "event_date": "2026-08-11",
+   "published_at": "2026-08-11T07:02:00-04:00",
+   "extracted_at": "2026-08-11T11:17:21.051235+00:00",
+   "as_of_timestamp": "2026-08-11T11:17:21.051235+00:00",
+   "as_of_source": "foundry_extraction",
+   "source": "sec_edgar",
+   "n_events": 1,
+   "gate_reason": "no directional events",
+   "w_pos": 0,
+   "w_neg": 0,
+   "last_published_at": "2026-08-11T07:02:00-04:00",
+   "event_type": "earnings",
+   "horizon": "swing",
+   "blocked_return_reason": null,
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since",
+   "window_label": "swing",
+   "window_sessions": null,
+   "window_basis": "llm_time_sensitivity",
+   "window_note": "the extraction model's own word (intraday/swing/long_term); not a session count — see TB-57",
+   "exit_basis": null,
+   "exit_state": null,
+   "exit_date": null,
+   "exit_px": null,
+   "exit_return": null,
+   "sessions_elapsed": null,
+   "exit_note": "this producer publishes no exit signal"
+  },
+  {
+   "id": "foundry:2026-07-10:MIDD",
+   "producer": "foundry",
+   "date": "2026-07-10",
+   "ticker": "MIDD",
+   "decision": "WATCH",
+   "metric": 0.133,
+   "status_perf": "no_action",
+   "entry_px": 133.29,
+   "entry_date": "2026-07-09",
+   "last_px": 110.84,
+   "last_date": "2026-08-31",
+   "ret_1d": -0.00552811970221867,
+   "ret_5d": -0.018058524360580752,
+   "ret_20d": -0.008623866735461005,
+   "ret_since": -0.1684297396653912,
+   "ret_since_actionable": -0.1830176162747843,
+   "actionable_entry_px": 135.67,
+   "created_at": "2026-07-09T20:31:50.824694+00:00",
+   "px_stale": false,
+   "event_date": "2026-07-09",
+   "published_at": "2026-07-09T16:29:25-04:00",
+   "extracted_at": "2026-07-09T20:31:50.824694+00:00",
+   "as_of_timestamp": "2026-07-09T20:31:50.824694+00:00",
+   "as_of_source": "foundry_extraction",
+   "source": "sec_edgar",
+   "n_events": 1,
+   "gate_reason": "no directional events",
+   "w_pos": 0,
+   "w_neg": 0,
+   "last_published_at": "2026-07-09T16:29:25-04:00",
+   "event_type": "other",
+   "horizon": "swing",
+   "blocked_return_reason": null,
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since",
+   "window_label": "swing",
+   "window_sessions": null,
+   "window_basis": "llm_time_sensitivity",
+   "window_note": "the extraction model's own word (intraday/swing/long_term); not a session count — see TB-57",
+   "exit_basis": null,
+   "exit_state": null,
+   "exit_date": null,
+   "exit_px": null,
+   "exit_return": null,
+   "sessions_elapsed": null,
+   "exit_note": "this producer publishes no exit signal"
+  },
+  {
+   "id": "foundry:2026-07-08:MIDD",
+   "producer": "foundry",
+   "date": "2026-07-08",
+   "ticker": "MIDD",
+   "decision": "WATCH",
+   "metric": 0.171,
+   "status_perf": "no_action",
+   "entry_px": 139.26,
+   "entry_date": "2026-07-07",
+   "last_px": 110.84,
+   "last_date": "2026-08-31",
+   "ret_1d": 0.008092572984419899,
+   "ret_5d": 0.01300862199364694,
+   "ret_20d": 0.0235970352442898,
+   "ret_since": -0.20407870170903342,
+   "ret_since_actionable": -0.16170019664196034,
+   "actionable_entry_px": 132.22,
+   "created_at": "2026-07-08T17:42:40.895806+00:00",
+   "px_stale": false,
+   "event_date": "2026-06-17",
+   "published_at": "2026-06-17",
+   "extracted_at": "2026-07-08T17:42:40.895806+00:00",
+   "as_of_timestamp": "2026-07-08T17:42:40.895806+00:00",
+   "as_of_source": "foundry_extraction",
+   "source": "sec_edgar",
+   "n_events": 1,
+   "gate_reason": "no directional events",
+   "w_pos": 0,
+   "w_neg": 0,
+   "last_published_at": "2026-06-17",
+   "event_type": "other",
+   "horizon": "swing",
+   "blocked_return_reason": null,
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since",
+   "window_label": "swing",
+   "window_sessions": null,
+   "window_basis": "llm_time_sensitivity",
+   "window_note": "the extraction model's own word (intraday/swing/long_term); not a session count — see TB-57",
+   "exit_basis": null,
+   "exit_state": null,
+   "exit_date": null,
+   "exit_px": null,
+   "exit_return": null,
+   "sessions_elapsed": null,
+   "exit_note": "this producer publishes no exit signal"
+  }
+ ],
+ "series": [
+  {
+   "date": "2026-05-11",
+   "px": 156.25,
+   "open": 164.67,
+   "high": 165.465,
+   "low": 155.89,
+   "close": 156.25,
+   "volume": 720154.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-12",
+   "px": 151.0,
+   "open": 156.25,
+   "high": 156.49,
+   "low": 148.0,
+   "close": 151.0,
+   "volume": 889747.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-13",
+   "px": 147.45,
+   "open": 150.04,
+   "high": 150.36,
+   "low": 147.05,
+   "close": 147.45,
+   "volume": 729793.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-14",
+   "px": 147.04,
+   "open": 148.51,
+   "high": 148.51,
+   "low": 146.5,
+   "close": 147.04,
+   "volume": 540815.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-15",
+   "px": 143.58,
+   "open": 146.19,
+   "high": 146.63,
+   "low": 142.98,
+   "close": 143.58,
+   "volume": 595922.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-18",
+   "px": 144.41,
+   "open": 144.55,
+   "high": 146.92,
+   "low": 143.3,
+   "close": 144.41,
+   "volume": 468332.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-19",
+   "px": 141.52,
+   "open": 144.09,
+   "high": 144.09,
+   "low": 139.35,
+   "close": 141.52,
+   "volume": 570927.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-20",
+   "px": 143.4,
+   "open": 141.92,
+   "high": 144.58,
+   "low": 139.2032,
+   "close": 143.4,
+   "volume": 514219.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-21",
+   "px": 145.2,
+   "open": 142.86,
+   "high": 146.72,
+   "low": 139.78,
+   "close": 145.2,
+   "volume": 415988.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-22",
+   "px": 148.09,
+   "open": 145.2,
+   "high": 148.33,
+   "low": 144.38,
+   "close": 148.09,
+   "volume": 341178.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-26",
+   "px": 150.74,
+   "open": 148.28,
+   "high": 151.56,
+   "low": 147.525,
+   "close": 150.74,
+   "volume": 528376.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-27",
+   "px": 154.44,
+   "open": 152.05,
+   "high": 154.71,
+   "low": 151.76,
+   "close": 154.44,
+   "volume": 672536.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-28",
+   "px": 154.11,
+   "open": 152.98,
+   "high": 154.565,
+   "low": 150.005,
+   "close": 154.11,
+   "volume": 483629.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-05-29",
+   "px": 155.01,
+   "open": 153.45,
+   "high": 156.35,
+   "low": 151.82,
+   "close": 155.01,
+   "volume": 728339.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-01",
+   "px": 156.46,
+   "open": 153.78,
+   "high": 156.52,
+   "low": 150.33,
+   "close": 156.46,
+   "volume": 575183.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-02",
+   "px": 155.87,
+   "open": 156.46,
+   "high": 158.39,
+   "low": 153.62,
+   "close": 155.87,
+   "volume": 602170.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-03",
+   "px": 156.22,
+   "open": 154.66,
+   "high": 157.19,
+   "low": 152.77,
+   "close": 156.22,
+   "volume": 632696.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-04",
+   "px": 155.73,
+   "open": 157.28,
+   "high": 158.23,
+   "low": 154.33,
+   "close": 155.73,
+   "volume": 521098.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-05",
+   "px": 154.93,
+   "open": 154.9,
+   "high": 156.59,
+   "low": 151.8,
+   "close": 154.93,
+   "volume": 406395.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-08",
+   "px": 157.54,
+   "open": 155.06,
+   "high": 160.2,
+   "low": 153.8525,
+   "close": 157.54,
+   "volume": 474635.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-09",
+   "px": 161.4,
+   "open": 158.25,
+   "high": 162.305,
+   "low": 157.09,
+   "close": 161.4,
+   "volume": 530052.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-10",
+   "px": 153.75,
+   "open": 161.04,
+   "high": 163.28,
+   "low": 153.62,
+   "close": 153.75,
+   "volume": 466210.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-11",
+   "px": 157.94,
+   "open": 155.36,
+   "high": 158.94,
+   "low": 153.75,
+   "close": 157.94,
+   "volume": 508830.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-12",
+   "px": 158.5,
+   "open": 158.54,
+   "high": 158.94,
+   "low": 156.61,
+   "close": 158.5,
+   "volume": 514242.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-15",
+   "px": 163.52,
+   "open": 163.62,
+   "high": 164.49,
+   "low": 161.01,
+   "close": 163.52,
+   "volume": 501858.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-16",
+   "px": 165.02,
+   "open": 163.93,
+   "high": 166.56,
+   "low": 162.82,
+   "close": 165.02,
+   "volume": 811013.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-17",
+   "px": 164.77,
+   "open": 167.74,
+   "high": 170.73,
+   "low": 163.22,
+   "close": 164.77,
+   "volume": 796785.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-18",
+   "px": 172.26,
+   "open": 166.89,
+   "high": 173.42,
+   "low": 166.89,
+   "close": 172.26,
+   "volume": 2418708.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-22",
+   "px": 166.65,
+   "open": 170.49,
+   "high": 172.43,
+   "low": 166.211,
+   "close": 166.65,
+   "volume": 642246.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-23",
+   "px": 163.77,
+   "open": 164.81,
+   "high": 166.74,
+   "low": 162.37,
+   "close": 163.77,
+   "volume": 811279.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-24",
+   "px": 168.91,
+   "open": 163.77,
+   "high": 169.83,
+   "low": 163.03,
+   "close": 168.91,
+   "volume": 800318.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-25",
+   "px": 171.77,
+   "open": 170.18,
+   "high": 176.4423,
+   "low": 169.57,
+   "close": 171.77,
+   "volume": 1145211.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-26",
+   "px": 173.36,
+   "open": 171.27,
+   "high": 173.59,
+   "low": 169.66,
+   "close": 173.36,
+   "volume": 923833.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-29",
+   "px": 173.02,
+   "open": 171.21,
+   "high": 173.14,
+   "low": 170.01,
+   "close": 173.02,
+   "volume": 713114.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-06-30",
+   "px": 172.01,
+   "open": 175.43,
+   "high": 175.43,
+   "low": 170.65,
+   "close": 172.01,
+   "volume": 699319.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-01",
+   "px": 171.75,
+   "open": 171.83,
+   "high": 174.205,
+   "low": 170.92,
+   "close": 171.75,
+   "volume": 440518.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-02",
+   "px": 175.12,
+   "open": 173.14,
+   "high": 176.26,
+   "low": 172.76,
+   "close": 175.12,
+   "volume": 782335.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-06",
+   "px": 179.2,
+   "open": 174.75,
+   "high": 180.13,
+   "low": 174.405,
+   "close": 179.2,
+   "volume": 660590.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-07",
+   "px": 139.26,
+   "open": 146.07,
+   "high": 148.545,
+   "low": 137.68,
+   "close": 139.26,
+   "volume": 843143.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-08",
+   "px": 132.22,
+   "open": 136.31,
+   "high": 136.93,
+   "low": 130.32,
+   "close": 132.22,
+   "volume": 874828.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-09",
+   "px": 133.29,
+   "open": 132.54,
+   "high": 133.66,
+   "low": 129.835,
+   "close": 133.29,
+   "volume": 901020.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-10",
+   "px": 135.67,
+   "open": 133.55,
+   "high": 138.275,
+   "low": 132.695,
+   "close": 135.67,
+   "volume": 730680.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-13",
+   "px": 134.92,
+   "open": 134.03,
+   "high": 136.21,
+   "low": 133.6745,
+   "close": 134.92,
+   "volume": 338107.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-14",
+   "px": 134.59,
+   "open": 136.6,
+   "high": 138.04,
+   "low": 133.165,
+   "close": 134.59,
+   "volume": 1082308.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-15",
+   "px": 133.94,
+   "open": 134.52,
+   "high": 136.57,
+   "low": 132.1,
+   "close": 133.94,
+   "volume": 650299.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-16",
+   "px": 138.31,
+   "open": 133.63,
+   "high": 138.7456,
+   "low": 133.27,
+   "close": 138.31,
+   "volume": 475859.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-17",
+   "px": 133.22,
+   "open": 136.31,
+   "high": 138.33,
+   "low": 132.41,
+   "close": 133.22,
+   "volume": 598564.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-20",
+   "px": 129.56,
+   "open": 133.44,
+   "high": 133.45,
+   "low": 129.22,
+   "close": 129.56,
+   "volume": 439121.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-21",
+   "px": 131.11,
+   "open": 130.98,
+   "high": 131.55,
+   "low": 128.0901,
+   "close": 131.11,
+   "volume": 391997.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-22",
+   "px": 130.99,
+   "open": 130.29,
+   "high": 131.61,
+   "low": 129.85,
+   "close": 130.99,
+   "volume": 431027.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-23",
+   "px": 131.14,
+   "open": 130.45,
+   "high": 132.025,
+   "low": 129.53,
+   "close": 131.14,
+   "volume": 604465.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-24",
+   "px": 133.88,
+   "open": 131.41,
+   "high": 134.71,
+   "low": 131.41,
+   "close": 133.88,
+   "volume": 364684.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-27",
+   "px": 136.0,
+   "open": 134.69,
+   "high": 137.68,
+   "low": 133.54,
+   "close": 136.0,
+   "volume": 461040.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-28",
+   "px": 135.09,
+   "open": 136.15,
+   "high": 138.74,
+   "low": 134.05,
+   "close": 135.09,
+   "volume": 547465.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-29",
+   "px": 133.02,
+   "open": 133.64,
+   "high": 135.19,
+   "low": 130.525,
+   "close": 133.02,
+   "volume": 461053.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-30",
+   "px": 133.32,
+   "open": 135.02,
+   "high": 135.64,
+   "low": 131.56,
+   "close": 133.32,
+   "volume": 393191.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-07-31",
+   "px": 133.58,
+   "open": 133.66,
+   "high": 134.15,
+   "low": 131.2701,
+   "close": 133.58,
+   "volume": 294854.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-03",
+   "px": 135.81,
+   "open": 134.33,
+   "high": 137.27,
+   "low": 133.85,
+   "close": 135.81,
+   "volume": 327914.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-04",
+   "px": 138.78,
+   "open": 136.8,
+   "high": 138.93,
+   "low": 135.14,
+   "close": 138.78,
+   "volume": 560536.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-05",
+   "px": 135.34,
+   "open": 137.3,
+   "high": 138.035,
+   "low": 133.895,
+   "close": 135.34,
+   "volume": 463108.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-06",
+   "px": 133.28,
+   "open": 135.34,
+   "high": 135.8299,
+   "low": 132.11,
+   "close": 133.28,
+   "volume": 496704.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-07",
+   "px": 134.5,
+   "open": 133.73,
+   "high": 135.16,
+   "low": 133.0301,
+   "close": 134.5,
+   "volume": 467154.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-10",
+   "px": 130.3,
+   "open": 134.08,
+   "high": 134.365,
+   "low": 129.4,
+   "close": 130.3,
+   "volume": 516613.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-11",
+   "px": 119.99,
+   "open": 124.09,
+   "high": 126.64,
+   "low": 119.225,
+   "close": 119.99,
+   "volume": 1331048.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-12",
+   "px": 118.95,
+   "open": 118.69,
+   "high": 120.095,
+   "low": 115.8,
+   "close": 118.95,
+   "volume": 1280932.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-13",
+   "px": 117.02,
+   "open": 118.62,
+   "high": 120.155,
+   "low": 116.22,
+   "close": 117.02,
+   "volume": 658957.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-14",
+   "px": 117.91,
+   "open": 116.38,
+   "high": 118.08,
+   "low": 114.84,
+   "close": 117.91,
+   "volume": 871885.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-17",
+   "px": 114.88,
+   "open": 116.86,
+   "high": 118.5917,
+   "low": 114.28,
+   "close": 114.88,
+   "volume": 1009547.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-18",
+   "px": 114.0,
+   "open": 114.15,
+   "high": 116.785,
+   "low": 113.8,
+   "close": 114.0,
+   "volume": 577957.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-19",
+   "px": 112.43,
+   "open": 114.86,
+   "high": 115.06,
+   "low": 111.955,
+   "close": 112.43,
+   "volume": 850350.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-20",
+   "px": 112.52,
+   "open": 110.98,
+   "high": 112.72,
+   "low": 110.98,
+   "close": 112.52,
+   "volume": 531098.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-21",
+   "px": 115.48,
+   "open": 113.315,
+   "high": 115.66,
+   "low": 112.195,
+   "close": 115.48,
+   "volume": 515548.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-24",
+   "px": 115.22,
+   "open": 115.47,
+   "high": 116.685,
+   "low": 113.97,
+   "close": 115.22,
+   "volume": 532841.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-25",
+   "px": 113.97,
+   "open": 115.98,
+   "high": 116.57,
+   "low": 112.985,
+   "close": 113.97,
+   "volume": 378153.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-26",
+   "px": 115.44,
+   "open": 113.97,
+   "high": 116.31,
+   "low": 113.26,
+   "close": 115.44,
+   "volume": 419754.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-27",
+   "px": 113.61,
+   "open": 114.75,
+   "high": 115.19,
+   "low": 113.38,
+   "close": 113.61,
+   "volume": 454278.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-28",
+   "px": 112.75,
+   "open": 114.34,
+   "high": 115.29,
+   "low": 112.07,
+   "close": 112.75,
+   "volume": 350520.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  },
+  {
+   "date": "2026-08-31",
+   "px": 110.84,
+   "open": 112.33,
+   "high": 113.285,
+   "low": 110.33,
+   "close": 110.84,
+   "volume": 375382.0,
+   "action_revision": 1,
+   "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=observed|policy=dashboard",
+   "continuity_segment": 1,
+   "security_id": "sec_ff64a420b4b319446b88b4d4",
+   "security_identity": "sec_ff64a420b4b319446b88b4d4",
+   "confirmation_status": "observed",
+   "blocked_action_ids": [
+    "ca_e5591d70a57d4459c941aba50963"
+   ],
+   "source_symbol": "MIDD",
+   "data_source": "alpaca_sip_raw"
+  }
+ ],
+ "history": {
+  "lstm": [
+   {
+    "date": "2026-05-19",
+    "metric": 0.1360114514827728,
+    "px": 144.41,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-05-20",
+    "metric": 0.1412404775619506,
+    "px": 141.52,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-05-21",
+    "metric": 0.1020006462931633,
+    "px": 146.07,
+    "best_horizon": "1m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-05-22",
+    "metric": 0.125572994351387,
+    "px": 147.27,
+    "best_horizon": "1m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-05-26",
+    "metric": 0.1253964304924011,
+    "px": 150.32,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-05-29",
+    "metric": 0.1256428658962249,
+    "px": 155.8,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-01",
+    "metric": 0.1112187802791595,
+    "px": 155.91,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-02",
+    "metric": 0.1130187511444091,
+    "px": 156.18,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-03",
+    "metric": 0.1131958365440368,
+    "px": 156.06,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-04",
+    "metric": 0.1214207932353019,
+    "px": 155.51,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-05",
+    "metric": 0.1147648990154266,
+    "px": 154.255,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-08",
+    "metric": 0.112490214407444,
+    "px": 159.59,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-11",
+    "metric": 0.1192047372460365,
+    "px": 158.18,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-12",
+    "metric": 0.1251115351915359,
+    "px": 157.435,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-15",
+    "metric": 0.1096804067492485,
+    "px": 164.29,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-16",
+    "metric": 0.1136519685387611,
+    "px": 165.19,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-17",
+    "metric": 0.1193058863282203,
+    "px": 166.98,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-18",
+    "metric": 0.1071515828371048,
+    "px": 169.5,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-22",
+    "metric": 0.1180816665291786,
+    "px": 166.6,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-07-06",
+    "metric": 0.0911930948495864,
+    "px": 179.45,
+    "best_horizon": "6m",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-07-07",
+    "metric": 0.1257421970367431,
+    "px": 138.68,
+    "best_horizon": "1d",
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-07-20",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-07-21",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-07-22",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-07-23",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-07-24",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-07-27",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-07-28",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-07-29",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-07-30",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-07-31",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-03",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-04",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-05",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-06",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-07",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-10",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-11",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-12",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-13",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-14",
+    "metric": null,
+    "px": null,
+    "best_horizon": null,
+    "status": "provision_excluded:inexact_xnys_window",
+    "volume_ratio_20": null,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-17",
+    "metric": 0.2022832930088043,
+    "px": 115.90999999999998,
+    "best_horizon": "6m",
+    "status": "buy_candidate",
+    "volume_ratio_20": 0.0639570322956566,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-18",
+    "metric": 0.2638649046421051,
+    "px": 115.395,
+    "best_horizon": "6m",
+    "status": "buy_candidate",
+    "volume_ratio_20": 0.0501662177473241,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-19",
+    "metric": 0.2496371120214462,
+    "px": 113.48,
+    "best_horizon": "6m",
+    "status": "buy_candidate",
+    "volume_ratio_20": 0.0467911746941579,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-20",
+    "metric": 0.2834046185016632,
+    "px": 112.23,
+    "best_horizon": "6m",
+    "status": "buy_candidate",
+    "volume_ratio_20": 0.0227794543193841,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-21",
+    "metric": 0.3032001554965973,
+    "px": 115.44,
+    "best_horizon": "6m",
+    "status": "buy_candidate",
+    "volume_ratio_20": 0.0441186713827851,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-24",
+    "metric": 0.2736321985721588,
+    "px": 114.66,
+    "best_horizon": "6m",
+    "status": "buy_candidate",
+    "volume_ratio_20": 0.0282509109888295,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-25",
+    "metric": 0.2580530047416687,
+    "px": 113.16,
+    "best_horizon": "6m",
+    "status": "buy_candidate",
+    "volume_ratio_20": 0.0141242619340241,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-26",
+    "metric": 0.2664457559585571,
+    "px": 114.96,
+    "best_horizon": "6m",
+    "status": "buy_candidate",
+    "volume_ratio_20": 0.0122438425360936,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-27",
+    "metric": 0.2584432363510132,
+    "px": 114.01,
+    "best_horizon": "6m",
+    "status": "buy_candidate",
+    "volume_ratio_20": 0.0203847764916696,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-28",
+    "metric": 0.2253143489360809,
+    "px": 112.68,
+    "best_horizon": "6m",
+    "status": "buy_candidate",
+    "volume_ratio_20": 0.0155853276172501,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-08-31",
+    "metric": 0.2071041166782379,
+    "px": 110.63,
+    "best_horizon": "6m",
+    "status": "buy_candidate",
+    "volume_ratio_20": 0.0104748210225402,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   },
+   {
+    "date": "2026-09-01",
+    "metric": 0.2040532231330871,
+    "px": 113.17000000000002,
+    "best_horizon": "6m",
+    "status": "buy_candidate",
+    "volume_ratio_20": 0.0441701962812381,
+    "attention_candidate": false,
+    "attention_status": null,
+    "attention_horizon_sessions": null
+   }
+  ],
+  "intrinsic": [
+   {
+    "date": "2026-05-19",
+    "metric": null,
+    "px": 144.41,
+    "intrinsic_value": null,
+    "status": "missing_eps"
+   },
+   {
+    "date": "2026-05-20",
+    "metric": 0.5074402613477805,
+    "px": 141.52,
+    "intrinsic_value": 287.3154033807922,
+    "status": "buy_candidate"
+   },
+   {
+    "date": "2026-05-21",
+    "metric": 0.494666842461025,
+    "px": 145.19,
+    "intrinsic_value": 287.3154033807922,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-05-22",
+    "metric": 0.4867313124714331,
+    "px": 147.47,
+    "intrinsic_value": 287.3154033807922,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-05-26",
+    "metric": 0.476811899984443,
+    "px": 150.32,
+    "intrinsic_value": 287.3154033807922,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-05-29",
+    "metric": 0.3886342726729679,
+    "px": 155.85,
+    "intrinsic_value": 254.9210612138757,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-01",
+    "metric": null,
+    "px": 148.09,
+    "intrinsic_value": null,
+    "status": "stale_ohlcv"
+   },
+   {
+    "date": "2026-06-02",
+    "metric": null,
+    "px": 148.09,
+    "intrinsic_value": null,
+    "status": "stale_ohlcv"
+   },
+   {
+    "date": "2026-06-03",
+    "metric": null,
+    "px": 148.09,
+    "intrinsic_value": null,
+    "status": "stale_ohlcv"
+   },
+   {
+    "date": "2026-06-04",
+    "metric": 0.3899680188859367,
+    "px": 155.51,
+    "intrinsic_value": 254.9210612138757,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-05",
+    "metric": 0.3965386803762978,
+    "px": 153.835,
+    "intrinsic_value": 254.9210612138757,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-08",
+    "metric": 0.3771797463733533,
+    "px": 158.77,
+    "intrinsic_value": 254.9210612138757,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-11",
+    "metric": 0.3798080109694978,
+    "px": 158.1,
+    "intrinsic_value": 254.9210612138757,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-12",
+    "metric": 0.3823185920762625,
+    "px": 157.46,
+    "intrinsic_value": 254.9210612138757,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-15",
+    "metric": 0.3558594208807486,
+    "px": 164.205,
+    "intrinsic_value": 254.9210612138757,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-16",
+    "metric": 0.3512501508800476,
+    "px": 165.38,
+    "intrinsic_value": 254.9210612138757,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-17",
+    "metric": 0.3538391876463989,
+    "px": 164.72,
+    "intrinsic_value": 254.9210612138757,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-18",
+    "metric": 0.3330876656857957,
+    "px": 170.01,
+    "intrinsic_value": 254.9210612138757,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-06-22",
+    "metric": 0.3445814198152035,
+    "px": 167.08,
+    "intrinsic_value": 254.9210612138757,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-07-06",
+    "metric": 0.2948601455523217,
+    "px": 179.755,
+    "intrinsic_value": 254.9210612138757,
+    "status": "no_buy"
+   },
+   {
+    "date": "2026-07-07",
+    "metric": 0.4564591903854118,
+    "px": 138.56,
+    "intrinsic_value": 254.9210612138757,
+    "status": "no_buy"
+   }
+  ],
+  "foundry": [
+   {
+    "date": "2026-07-08",
+    "metric": 0.171,
+    "px": null,
+    "event_type": "other",
+    "sentiment": 0,
+    "source": "sec_edgar",
+    "attention_type_prior": 0.127283,
+    "attention_rank": 833,
+    "attention_candidate": false
+   },
+   {
+    "date": "2026-07-10",
+    "metric": 0.133,
+    "px": null,
+    "event_type": "other",
+    "sentiment": 0,
+    "source": "sec_edgar",
+    "attention_type_prior": 0.127283,
+    "attention_rank": 148,
+    "attention_candidate": false
+   },
+   {
+    "date": "2026-08-11",
+    "metric": 0.1781,
+    "px": null,
+    "event_type": "earnings",
+    "sentiment": 0,
+    "source": "sec_edgar",
+    "attention_type_prior": 0.356855,
+    "attention_rank": 104,
+    "attention_candidate": false
+   },
+   {
+    "date": "2026-08-14",
+    "metric": 0.133,
+    "px": null,
+    "event_type": "earnings",
+    "sentiment": 0,
+    "source": "sec_edgar",
+    "attention_type_prior": 0.356855,
+    "attention_rank": 493,
+    "attention_candidate": false
+   }
+  ]
+ },
+ "insights": {
+  "status": "available",
+  "has_action_warning": true,
+  "decision_counts": {
+   "WATCH": 4,
+   "BUY": 1
+  },
+  "buy_count": 1,
+  "producer_count": 2,
+  "latest_signal": {
+   "date": "2026-08-21",
+   "producer": "lstm",
+   "decision": "BUY"
+  },
+  "latest_scores": {
+   "lstm": {
+    "date": "2026-09-01",
+    "metric": 0.2040532231330871
+   },
+   "intrinsic": {
+    "date": "2026-07-07",
+    "metric": 0.4564591903854118
+   },
+   "foundry": {
+    "date": "2026-08-14",
+    "metric": 0.133
+   }
+  },
+  "price_bars": 78,
+  "price_from": "2026-05-11",
+  "price_through": "2026-08-31",
+  "unresolved_bar_count": 1,
+  "action_boundary_count": 1,
+  "blocked_action_ids": [
+   "ca_e5591d70a57d4459c941aba50963"
+  ],
+  "performance_excluded_count": 0,
+  "note": "Corporate-action review flagged; only return windows that cross an uncertain boundary are excluded."
+ },
+ "price_as_of": "2026-08-31",
+ "price_build_running": false,
+ "price_refresh_seconds": 300,
+ "last_scored": "2026-09-01",
+ "latest_run": "2026-09-01",
+ "stats": {
+  "n_signals": 1,
+  "first_signal": "2026-08-21",
+  "last_signal": "2026-08-21",
+  "ret_5d": {
+   "n": 1,
+   "win_rate": 0.0,
+   "avg": -0.023640457222029787,
+   "median": -0.023640457222029787
+  },
+  "producers": [
+   "lstm"
+  ]
+ }
+}

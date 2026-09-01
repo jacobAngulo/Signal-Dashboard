@@ -1,0 +1,1261 @@
+{
+ "timeline": [
+  {
+   "date": "2026-05-18",
+   "intrinsic_buys": 0,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-05-19",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-05-20",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-05-21",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-05-22",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-05-26",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-05-27",
+   "intrinsic_buys": 0,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-05-28",
+   "intrinsic_buys": 0,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-05-29",
+   "intrinsic_buys": 1,
+   "intrinsic_status": null
+  },
+  {
+   "date": "2026-06-01",
+   "intrinsic_buys": 0,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-06-02",
+   "intrinsic_buys": 0,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-06-03",
+   "intrinsic_buys": 0,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-06-04",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-06-05",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-06-08",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-06-09",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-06-10",
+   "intrinsic_buys": 0,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-06-11",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-06-12",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-06-15",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-06-16",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-06-17",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-06-18",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-06-22",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-06-23",
+   "intrinsic_buys": 0,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-06-24",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-06-25",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-06-26",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-06-29",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-06-30",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-07-01",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-07-02",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-07-06",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-07-07",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-07-08",
+   "intrinsic_buys": 0,
+   "intrinsic_status": null
+  },
+  {
+   "date": "2026-07-09",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-07-10",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-07-13",
+   "intrinsic_buys": 0,
+   "intrinsic_status": "failed"
+  },
+  {
+   "date": "2026-07-14",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-07-15",
+   "intrinsic_buys": 0,
+   "intrinsic_status": "failed"
+  },
+  {
+   "date": "2026-07-16",
+   "intrinsic_buys": 0,
+   "intrinsic_status": "failed"
+  },
+  {
+   "date": "2026-07-17",
+   "intrinsic_buys": 0,
+   "intrinsic_status": "failed"
+  },
+  {
+   "date": "2026-07-20",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-07-21",
+   "intrinsic_buys": 0,
+   "intrinsic_status": "failed"
+  },
+  {
+   "date": "2026-07-22",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-07-23",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-07-24",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-07-27",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-07-28",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-07-29",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-07-30",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-07-31",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-08-03",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-08-04",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-08-05",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-08-06",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-08-07",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-08-10",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-08-11",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-08-12",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-08-13",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  },
+  {
+   "date": "2026-08-14",
+   "intrinsic_buys": 1,
+   "intrinsic_status": "ok"
+  }
+ ],
+ "by_producer": {
+  "intrinsic": {
+   "n_signals": 48,
+   "n_pending": 0,
+   "n_no_px": 0,
+   "n_corporate_action_unresolved": 8,
+   "n_up": 29,
+   "n_down": 11,
+   "horizons": {
+    "1d": {
+     "n": 40,
+     "win_rate": 0.35,
+     "avg": -0.006239267509681029,
+     "median": -0.00936790955390443
+    },
+    "5d": {
+     "n": 40,
+     "win_rate": 0.45,
+     "avg": 0.0011224609847388489,
+     "median": -0.005932006724408911
+    },
+    "20d": {
+     "n": 31,
+     "win_rate": 0.6451612903225806,
+     "avg": 0.05518710935354055,
+     "median": 0.05059185067152305
+    }
+   },
+   "since": {
+    "n": 40,
+    "win_rate": 0.725,
+    "avg": 0.07272453512662333,
+    "median": 0.03323795678432062
+   }
+  }
+ },
+ "buckets": {
+  "intrinsic": [
+   {
+    "label": "min – 0.947",
+    "n": 12,
+    "ret_1d": {
+     "n": 9,
+     "win_rate": 0.4444444444444444,
+     "avg": 0.005432336411209129,
+     "median": -0.0064239828693790635
+    },
+    "ret_5d": {
+     "n": 9,
+     "win_rate": 0.4444444444444444,
+     "avg": 0.011119427233459243,
+     "median": 0.0
+    },
+    "ret_20d": {
+     "n": 8,
+     "win_rate": 0.5,
+     "avg": 0.00216209661493319,
+     "median": 0.04693479540771267
+    }
+   },
+   {
+    "label": "0.947 – 0.949",
+    "n": 12,
+    "ret_1d": {
+     "n": 9,
+     "win_rate": 0.4444444444444444,
+     "avg": -0.005455143453976328,
+     "median": -0.019709543568464882
+    },
+    "ret_5d": {
+     "n": 9,
+     "win_rate": 0.5555555555555556,
+     "avg": -0.019396422710961536,
+     "median": 0.03216261417728039
+    },
+    "ret_20d": {
+     "n": 6,
+     "win_rate": 1.0,
+     "avg": 0.10304895680655228,
+     "median": 0.12175150962204939
+    }
+   },
+   {
+    "label": "0.949 – 0.950",
+    "n": 12,
+    "ret_1d": {
+     "n": 11,
+     "win_rate": 0.2727272727272727,
+     "avg": -0.003855112653959981,
+     "median": -0.008593750000000067
+    },
+    "ret_5d": {
+     "n": 11,
+     "win_rate": 0.2727272727272727,
+     "avg": 0.0008378676706298368,
+     "median": -0.01385156250000008
+    },
+    "ret_20d": {
+     "n": 8,
+     "win_rate": 0.625,
+     "avg": 0.08166800777039701,
+     "median": 0.042572259075667085
+    }
+   },
+   {
+    "label": "0.950 – max",
+    "n": 12,
+    "ret_1d": {
+     "n": 11,
+     "win_rate": 0.2727272727272727,
+     "avg": -0.0188144725280706,
+     "median": -0.013705103969754218
+    },
+    "ret_5d": {
+     "n": 11,
+     "win_rate": 0.5454545454545454,
+     "avg": 0.010015895846376945,
+     "median": 0.002178649237472685
+    },
+    "ret_20d": {
+     "n": 9,
+     "win_rate": 0.5555555555555556,
+     "avg": 0.04687397933753353,
+     "median": 0.022875816993464193
+    }
+   }
+  ]
+ },
+ "cumulative": [
+  {
+   "date": "2026-05-19",
+   "intrinsic": 0.990291
+  },
+  {
+   "date": "2026-05-20",
+   "intrinsic": 0.958346
+  },
+  {
+   "date": "2026-05-21",
+   "intrinsic": 0.969621
+  },
+  {
+   "date": "2026-05-22",
+   "intrinsic": 0.935797
+  },
+  {
+   "date": "2026-05-26",
+   "intrinsic": 0.936166
+  },
+  {
+   "date": "2026-05-29",
+   "intrinsic": 0.934837
+  },
+  {
+   "date": "2026-06-04",
+   "intrinsic": 0.884813
+  },
+  {
+   "date": "2026-06-05",
+   "intrinsic": 0.892883
+  },
+  {
+   "date": "2026-06-08",
+   "intrinsic": 0.908673
+  },
+  {
+   "date": "2026-06-11",
+   "intrinsic": 0.917888
+  },
+  {
+   "date": "2026-06-12",
+   "intrinsic": 0.935165
+  },
+  {
+   "date": "2026-06-15",
+   "intrinsic": 0.926723
+  },
+  {
+   "date": "2026-06-16",
+   "intrinsic": 0.905153
+  },
+  {
+   "date": "2026-06-17",
+   "intrinsic": 0.897374
+  },
+  {
+   "date": "2026-06-18",
+   "intrinsic": 0.877056
+  },
+  {
+   "date": "2026-06-22",
+   "intrinsic": 0.918617
+  },
+  {
+   "date": "2026-06-24",
+   "intrinsic": 0.905265
+  },
+  {
+   "date": "2026-06-25",
+   "intrinsic": 0.845517
+  },
+  {
+   "date": "2026-06-26",
+   "intrinsic": 0.840086
+  },
+  {
+   "date": "2026-06-30",
+   "intrinsic": 0.805155
+  },
+  {
+   "date": "2026-07-14",
+   "intrinsic": 0.81127
+  },
+  {
+   "date": "2026-07-20",
+   "intrinsic": 0.891139
+  },
+  {
+   "date": "2026-07-22",
+   "intrinsic": 0.871943
+  },
+  {
+   "date": "2026-07-23",
+   "intrinsic": 0.868257
+  },
+  {
+   "date": "2026-07-24",
+   "intrinsic": 0.848911
+  },
+  {
+   "date": "2026-07-27",
+   "intrinsic": 0.902835
+  },
+  {
+   "date": "2026-07-28",
+   "intrinsic": 0.890462
+  },
+  {
+   "date": "2026-07-29",
+   "intrinsic": 0.874726
+  },
+  {
+   "date": "2026-07-30",
+   "intrinsic": 0.850905
+  },
+  {
+   "date": "2026-07-31",
+   "intrinsic": 0.886847
+  },
+  {
+   "date": "2026-08-03",
+   "intrinsic": 0.886847
+  },
+  {
+   "date": "2026-08-04",
+   "intrinsic": 0.869368
+  },
+  {
+   "date": "2026-08-05",
+   "intrinsic": 0.846369
+  },
+  {
+   "date": "2026-08-06",
+   "intrinsic": 0.919071
+  },
+  {
+   "date": "2026-08-07",
+   "intrinsic": 0.886874
+  },
+  {
+   "date": "2026-08-10",
+   "intrinsic": 0.840967
+  },
+  {
+   "date": "2026-08-11",
+   "intrinsic": 0.853876
+  },
+  {
+   "date": "2026-08-12",
+   "intrinsic": 0.8414
+  },
+  {
+   "date": "2026-08-13",
+   "intrinsic": 0.869636
+  },
+  {
+   "date": "2026-08-14",
+   "intrinsic": 0.753617
+  }
+ ],
+ "scatter": [
+  {
+   "ticker": "AGMH",
+   "date": "2026-05-19",
+   "producer": "intrinsic",
+   "metric": 0.999849168202534,
+   "ret_5d": 0.17475728155339798,
+   "ret_since": -0.10174757281553404
+  },
+  {
+   "ticker": "DUO",
+   "date": "2026-05-20",
+   "producer": "intrinsic",
+   "metric": 0.9999567555139472,
+   "ret_5d": -0.16935483870967738,
+   "ret_since": -0.3870967741935484
+  },
+  {
+   "ticker": "GFR",
+   "date": "2026-05-21",
+   "producer": "intrinsic",
+   "metric": 0.9497868359710464,
+   "ret_5d": -0.05378151260504205,
+   "ret_since": 0.03529411764705892
+  },
+  {
+   "ticker": "GFR",
+   "date": "2026-05-22",
+   "producer": "intrinsic",
+   "metric": 0.9489044289044288,
+   "ret_5d": -0.03156146179401986,
+   "ret_since": 0.023255813953488413
+  },
+  {
+   "ticker": "CALM",
+   "date": "2026-05-26",
+   "producer": "intrinsic",
+   "metric": 0.9489260592638332,
+   "ret_5d": -0.019342105263157827,
+   "ret_since": 0.03842105263157891
+  },
+  {
+   "ticker": "AFGB",
+   "date": "2026-05-29",
+   "producer": "intrinsic",
+   "metric": 0.9498349464720736,
+   "ret_5d": -0.015139611926171304,
+   "ret_since": -0.032181732134406005
+  },
+  {
+   "ticker": "GFR",
+   "date": "2026-06-04",
+   "producer": "intrinsic",
+   "metric": 0.9497027972027972,
+   "ret_5d": -0.030100334448160626,
+   "ret_since": 0.030100334448160515
+  },
+  {
+   "ticker": "CALM",
+   "date": "2026-06-05",
+   "producer": "intrinsic",
+   "metric": 0.9483636157078956,
+   "ret_5d": 0.03238598810310633,
+   "ret_since": 0.04322538003965626
+  },
+  {
+   "ticker": "CALM",
+   "date": "2026-06-08",
+   "producer": "intrinsic",
+   "metric": 0.9477300196539176,
+   "ret_5d": 0.04231071522137797,
+   "ret_since": 0.033796175006549634
+  },
+  {
+   "ticker": "FVRR",
+   "date": "2026-06-11",
+   "producer": "intrinsic",
+   "metric": 0.9472159878409878,
+   "ret_5d": 0.05273833671399619,
+   "ret_since": -0.03853955375253537
+  },
+  {
+   "ticker": "CALM",
+   "date": "2026-06-12",
+   "producer": "intrinsic",
+   "metric": 0.9472929400230986,
+   "ret_5d": -0.027272727272727226,
+   "ret_since": 0.01049935979513461
+  },
+  {
+   "ticker": "FVRR",
+   "date": "2026-06-15",
+   "producer": "intrinsic",
+   "metric": 0.9464877464877464,
+   "ret_5d": 0.01805416248746239,
+   "ret_since": -0.049147442326980983
+  },
+  {
+   "ticker": "BKNG",
+   "date": "2026-06-16",
+   "producer": "intrinsic",
+   "metric": 0.9496895362183808,
+   "ret_5d": 0.03147052128386063,
+   "ret_since": 0.1329956749374004
+  },
+  {
+   "ticker": "GDEV",
+   "date": "2026-06-17",
+   "producer": "intrinsic",
+   "metric": 0.9490747474747476,
+   "ret_5d": -0.01385156250000008,
+   "ret_since": -0.09375000000000011
+  },
+  {
+   "ticker": "CALM",
+   "date": "2026-06-18",
+   "producer": "intrinsic",
+   "metric": 0.9472895518089062,
+   "ret_5d": 0.03216261417728039,
+   "ret_since": 0.015309404348385458
+  },
+  {
+   "ticker": "CALM",
+   "date": "2026-06-22",
+   "producer": "intrinsic",
+   "metric": 0.9486550021284416,
+   "ret_5d": 0.044359615637751704,
+   "ret_since": 0.03883111754640001
+  },
+  {
+   "ticker": "DLNG",
+   "date": "2026-06-24",
+   "producer": "intrinsic",
+   "metric": 0.9434304674805464,
+   "ret_5d": 0.0,
+   "ret_since": 0.12209302325581395
+  },
+  {
+   "ticker": "ORMP",
+   "date": "2026-06-25",
+   "producer": "intrinsic",
+   "metric": 0.9466689976689976,
+   "ret_5d": -0.08000000000000007,
+   "ret_since": 0.0040000000000000036
+  },
+  {
+   "ticker": "ORMP",
+   "date": "2026-06-26",
+   "producer": "intrinsic",
+   "metric": 0.9462432012432012,
+   "ret_5d": -0.021413276231263323,
+   "ret_since": 0.07494646680942174
+  },
+  {
+   "ticker": "ORMP",
+   "date": "2026-06-30",
+   "producer": "intrinsic",
+   "metric": 0.9490641025641026,
+   "ret_5d": -0.108108108108108,
+   "ret_since": 0.043659043659043606
+  },
+  {
+   "ticker": "RAIL",
+   "date": "2026-07-14",
+   "producer": "intrinsic",
+   "metric": 0.9434388836321804,
+   "ret_5d": -0.0113924050632912,
+   "ret_since": -0.1278481012658229
+  },
+  {
+   "ticker": "EGO",
+   "date": "2026-07-20",
+   "producer": "intrinsic",
+   "metric": 0.9492854683195592,
+   "ret_5d": 0.17345834835917784,
+   "ret_since": 0.6170212765957448
+  },
+  {
+   "ticker": "DH",
+   "date": "2026-07-22",
+   "producer": "intrinsic",
+   "metric": 0.9474981888838714,
+   "ret_5d": 0.041369472182596345,
+   "ret_since": 0.3552068473609129
+  },
+  {
+   "ticker": "DH",
+   "date": "2026-07-23",
+   "producer": "intrinsic",
+   "metric": 0.9492431808131208,
+   "ret_5d": 0.04548768041988627,
+   "ret_since": 0.3850415512465375
+  },
+  {
+   "ticker": "SDHC",
+   "date": "2026-07-24",
+   "producer": "intrinsic",
+   "metric": 0.9460133400087212,
+   "ret_5d": -0.028178243774574008,
+   "ret_since": -0.20838794233289648
+  },
+  {
+   "ticker": "CHTR",
+   "date": "2026-07-27",
+   "producer": "intrinsic",
+   "metric": 0.9471426604715196,
+   "ret_5d": 0.09490160322163943,
+   "ret_since": 0.15827064812704195
+  },
+  {
+   "ticker": "PMTS",
+   "date": "2026-07-28",
+   "producer": "intrinsic",
+   "metric": 0.9498760454862633,
+   "ret_5d": 0.08317580340264663,
+   "ret_since": 0.3690926275992439
+  },
+  {
+   "ticker": "DH",
+   "date": "2026-07-29",
+   "producer": "intrinsic",
+   "metric": 0.9487942617275876,
+   "ret_5d": -0.08575342465753422,
+   "ret_since": 0.3013698630136985
+  },
+  {
+   "ticker": "FVRR",
+   "date": "2026-07-30",
+   "producer": "intrinsic",
+   "metric": 0.9499797821226392,
+   "ret_5d": 0.002178649237472685,
+   "ret_since": 0.03267973856209161
+  },
+  {
+   "ticker": "PMTS",
+   "date": "2026-07-31",
+   "producer": "intrinsic",
+   "metric": 0.9495820633483528,
+   "ret_5d": 0.3156146179401993,
+   "ret_since": 0.3749406739439962
+  },
+  {
+   "ticker": "DH",
+   "date": "2026-08-03",
+   "producer": "intrinsic",
+   "metric": 0.949192496400238,
+   "ret_5d": -0.002142857142857113,
+   "ret_since": 0.3571428571428572
+  },
+  {
+   "ticker": "FVRR",
+   "date": "2026-08-04",
+   "producer": "intrinsic",
+   "metric": 0.9472642436928153,
+   "ret_5d": -0.09232365145228216,
+   "ret_since": -0.016597510373444035
+  },
+  {
+   "ticker": "FVRR",
+   "date": "2026-08-05",
+   "producer": "intrinsic",
+   "metric": 0.9486220129077272,
+   "ret_5d": -0.08359788359788356,
+   "ret_since": 0.0031746031746033854
+  },
+  {
+   "ticker": "MAX",
+   "date": "2026-08-06",
+   "producer": "intrinsic",
+   "metric": 0.946466770824683,
+   "ret_5d": 0.07536466774716377,
+   "ret_since": 0.02269043760129663
+  },
+  {
+   "ticker": "FVRR",
+   "date": "2026-08-07",
+   "producer": "intrinsic",
+   "metric": 0.9493552082837796,
+   "ret_5d": -0.043524416135881094,
+   "ret_since": 0.006369426751592355
+  },
+  {
+   "ticker": "CABO",
+   "date": "2026-08-10",
+   "producer": "intrinsic",
+   "metric": 0.9486246864967756,
+   "ret_5d": -0.16396194739787362,
+   "ret_since": -0.23391158365976505
+  },
+  {
+   "ticker": "EGO",
+   "date": "2026-08-11",
+   "producer": "intrinsic",
+   "metric": 0.9487204427945168,
+   "ret_5d": -0.00972115630596071,
+   "ret_since": 0.14709644410335132
+  },
+  {
+   "ticker": "DH",
+   "date": "2026-08-12",
+   "producer": "intrinsic",
+   "metric": 0.9488580047793342,
+   "ret_5d": 0.104275607505383,
+   "ret_since": 0.4610888957243924
+  },
+  {
+   "ticker": "EGO",
+   "date": "2026-08-13",
+   "producer": "intrinsic",
+   "metric": 0.9495352384241272,
+   "ret_5d": 0.10952133194588964,
+   "ret_since": 0.16649323621227907
+  },
+  {
+   "ticker": "CABO",
+   "date": "2026-08-14",
+   "producer": "intrinsic",
+   "metric": 0.9496217122647892,
+   "ret_5d": -0.3381670533642691,
+   "ret_since": -0.20591647331786533
+  }
+ ],
+ "histograms": {
+  "intrinsic": [
+   {
+    "lo": 0.0,
+    "label": "0.00",
+    "universe": 0.026719188958104313,
+    "signals": 0.0,
+    "n_universe": 875,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.05,
+    "label": "0.05",
+    "universe": 0.025192378160498352,
+    "signals": 0.0,
+    "n_universe": 825,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.1,
+    "label": "0.10",
+    "universe": 0.030108708928789543,
+    "signals": 0.0,
+    "n_universe": 986,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.15,
+    "label": "0.15",
+    "universe": 0.0332234029559057,
+    "signals": 0.0,
+    "n_universe": 1088,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.2,
+    "label": "0.20",
+    "universe": 0.03762061805301087,
+    "signals": 0.0,
+    "n_universe": 1232,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.25,
+    "label": "0.25",
+    "universe": 0.041834615854403324,
+    "signals": 0.0,
+    "n_universe": 1370,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.3,
+    "label": "0.30",
+    "universe": 0.04757542445340174,
+    "signals": 0.0,
+    "n_universe": 1558,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.35,
+    "label": "0.35",
+    "universe": 0.04589593257603518,
+    "signals": 0.0,
+    "n_universe": 1503,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.4,
+    "label": "0.40",
+    "universe": 0.0521253206302675,
+    "signals": 0.0,
+    "n_universe": 1707,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.45,
+    "label": "0.45",
+    "universe": 0.05759130328569684,
+    "signals": 0.0,
+    "n_universe": 1886,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.5,
+    "label": "0.50",
+    "universe": 0.06568340051300843,
+    "signals": 0.0,
+    "n_universe": 2151,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.55,
+    "label": "0.55",
+    "universe": 0.060003664345914254,
+    "signals": 0.0,
+    "n_universe": 1965,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.6,
+    "label": "0.60",
+    "universe": 0.06614144375229021,
+    "signals": 0.0,
+    "n_universe": 2166,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.65,
+    "label": "0.65",
+    "universe": 0.07637107609625016,
+    "signals": 0.0,
+    "n_universe": 2501,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.7,
+    "label": "0.70",
+    "universe": 0.08394405765237571,
+    "signals": 0.0,
+    "n_universe": 2749,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.75,
+    "label": "0.75",
+    "universe": 0.07493587394650054,
+    "signals": 0.0,
+    "n_universe": 2454,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.8,
+    "label": "0.80",
+    "universe": 0.06550018321729571,
+    "signals": 0.0,
+    "n_universe": 2145,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.85,
+    "label": "0.85",
+    "universe": 0.042017833150116035,
+    "signals": 0.0,
+    "n_universe": 1376,
+    "n_signals": 0
+   },
+   {
+    "lo": 0.9,
+    "label": "0.90",
+    "universe": 0.033956272138756564,
+    "signals": 0.9583333333333334,
+    "n_universe": 1112,
+    "n_signals": 46
+   },
+   {
+    "lo": 0.95,
+    "label": "0.95",
+    "universe": 0.033559301331379014,
+    "signals": 0.041666666666666664,
+    "n_universe": 1099,
+    "n_signals": 2
+   }
+  ]
+ },
+ "weekday": [
+  {
+   "day": "Mon",
+   "n": 7,
+   "win_rate": 0.7142857142857143,
+   "avg": 0.0295685200552398,
+   "median": 0.04231071522137797
+  },
+  {
+   "day": "Tue",
+   "n": 8,
+   "win_rate": 0.375,
+   "avg": 0.0060645225058881674,
+   "median": -0.010556780684625955
+  },
+  {
+   "day": "Wed",
+   "n": 7,
+   "win_rate": 0.2857142857142857,
+   "avg": -0.029558947111016556,
+   "median": -0.01385156250000008
+  },
+  {
+   "day": "Thu",
+   "n": 9,
+   "win_rate": 0.6666666666666666,
+   "avg": 0.017063492576498467,
+   "median": 0.03216261417728039
+  },
+  {
+   "day": "Fri",
+   "n": 9,
+   "win_rate": 0.2222222222222222,
+   "avg": -0.017472909383955588,
+   "median": -0.027272727272727226
+  }
+ ],
+ "best": [
+  {
+   "id": "intrinsic:2026-07-20:EGO:0",
+   "producer": "intrinsic",
+   "date": "2026-07-20",
+   "ticker": "EGO",
+   "metric": 0.9492854683195592,
+   "entry_px": 27.73,
+   "ret_since": 0.6170212765957448,
+   "status_perf": "up",
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since"
+  },
+  {
+   "id": "intrinsic:2026-08-12:DH:0",
+   "producer": "intrinsic",
+   "date": "2026-08-12",
+   "ticker": "DH",
+   "metric": 0.9488580047793342,
+   "entry_px": 0.6502,
+   "ret_since": 0.4610888957243924,
+   "status_perf": "up",
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since"
+  },
+  {
+   "id": "intrinsic:2026-07-23:DH:0",
+   "producer": "intrinsic",
+   "date": "2026-07-23",
+   "ticker": "DH",
+   "metric": 0.9492431808131208,
+   "entry_px": 0.6859,
+   "ret_since": 0.3850415512465375,
+   "status_perf": "up",
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since"
+  },
+  {
+   "id": "intrinsic:2026-07-31:PMTS:0",
+   "producer": "intrinsic",
+   "date": "2026-07-31",
+   "ticker": "PMTS",
+   "metric": 0.9495820633483528,
+   "entry_px": 21.07,
+   "ret_since": 0.3749406739439962,
+   "status_perf": "up",
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since"
+  },
+  {
+   "id": "intrinsic:2026-07-28:PMTS:0",
+   "producer": "intrinsic",
+   "date": "2026-07-28",
+   "ticker": "PMTS",
+   "metric": 0.9498760454862633,
+   "entry_px": 21.16,
+   "ret_since": 0.3690926275992439,
+   "status_perf": "up",
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since"
+  }
+ ],
+ "worst": [
+  {
+   "id": "intrinsic:2026-05-20:DUO:0",
+   "producer": "intrinsic",
+   "date": "2026-05-20",
+   "ticker": "DUO",
+   "metric": 0.9999567555139472,
+   "entry_px": 1.24,
+   "ret_since": -0.3870967741935484,
+   "status_perf": "down",
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since"
+  },
+  {
+   "id": "intrinsic:2026-08-10:CABO:0",
+   "producer": "intrinsic",
+   "date": "2026-08-10",
+   "ticker": "CABO",
+   "metric": 0.9486246864967756,
+   "entry_px": 35.74,
+   "ret_since": -0.23391158365976505,
+   "status_perf": "down",
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since"
+  },
+  {
+   "id": "intrinsic:2026-07-24:SDHC:0",
+   "producer": "intrinsic",
+   "date": "2026-07-24",
+   "ticker": "SDHC",
+   "metric": 0.9460133400087212,
+   "entry_px": 15.26,
+   "ret_since": -0.20838794233289648,
+   "status_perf": "down",
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since"
+  },
+  {
+   "id": "intrinsic:2026-08-14:CABO:0",
+   "producer": "intrinsic",
+   "date": "2026-08-14",
+   "ticker": "CABO",
+   "metric": 0.9496217122647892,
+   "entry_px": 34.48,
+   "ret_since": -0.20591647331786533,
+   "status_perf": "down",
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since"
+  },
+  {
+   "id": "intrinsic:2026-07-14:RAIL:0",
+   "producer": "intrinsic",
+   "date": "2026-07-14",
+   "ticker": "RAIL",
+   "metric": 0.9434388836321804,
+   "entry_px": 7.9,
+   "ret_since": -0.1278481012658229,
+   "status_perf": "down",
+   "has_action_warning": false,
+   "action_warning_ids": [],
+   "status_basis": "since"
+  }
+ ]
+}

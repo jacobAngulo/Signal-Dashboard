@@ -1,0 +1,63 @@
+{
+ "signal": {
+  "run_date": "2026-06-05",
+  "date": "2026-06-05",
+  "as_of_close_date": "2026-06-05",
+  "as_of_source": "preclose_partial_bar",
+  "as_of_timestamp": "2026-06-05T15:15:02.837362-04:00",
+  "decision": "BUY",
+  "reason": "Best adjusted probability above threshold 0.2",
+  "ticker": "ADTX",
+  "horizon": "1m",
+  "adj_prob": 0.2553280889987945,
+  "pred_prob": 0.2553280889987945,
+  "pred_std": 0.060291014611721,
+  "producer": "lstm",
+  "metric": 0.2553280889987945,
+  "signal_price": 0.06,
+  "created_at": "2026-06-05T19:31:59.616287+00:00",
+  "id": "lstm:2026-06-05:ADTX:0",
+  "entry_px": 0.0023,
+  "entry_date": "2026-06-05",
+  "last_px": 0.0003518519,
+  "last_date": "2026-08-28",
+  "actionable_entry_px": 0.0023,
+  "ret_since_actionable": null,
+  "ret_1d": -0.19645734782608693,
+  "ret_1d_blocked_reason": null,
+  "ret_5d": -0.7954911304347826,
+  "ret_5d_blocked_reason": null,
+  "ret_20d": null,
+  "ret_20d_blocked_reason": "corporate_action_unresolved",
+  "ret_since": null,
+  "ret_since_blocked_reason": "corporate_action_unresolved",
+  "blocked_return_reason": "corporate_action_unresolved",
+  "action_warning_ids": [
+   "discontinuity:51d9c10191b4640e48594234455c7a48d97c172dbd7daa03600fe78166869ee3"
+  ],
+  "has_action_warning": true,
+  "price_basis": "economic_value_per_initial_share|source=alpaca_sip_raw|actions=confirmed|policy=dashboard",
+  "action_status": "observed",
+  "blocked_action_ids": [
+   "discontinuity:51d9c10191b4640e48594234455c7a48d97c172dbd7daa03600fe78166869ee3"
+  ],
+  "action_revision": 2,
+  "continuity_segments": [
+   0
+  ],
+  "status_basis": "5d",
+  "px_stale": true,
+  "status_perf": "down",
+  "window_label": "1m",
+  "window_sessions": 21,
+  "window_basis": "producer_horizon",
+  "window_note": "model horizon — 21 trading sessions",
+  "exit_basis": "sessions",
+  "exit_state": "closed",
+  "exit_date": "2026-07-08",
+  "exit_px": 0.0003518519,
+  "exit_return": null,
+  "sessions_elapsed": 21,
+  "exit_note": "model horizon reached, but the return crosses an unresolved corporate action"
+ }
+}

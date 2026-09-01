@@ -1,0 +1,144 @@
+{
+ "tickers": [
+  {
+   "ticker": "BHE",
+   "n_signals": 3,
+   "last_signal": "2026-07-24",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "BACC",
+   "n_signals": 1,
+   "last_signal": "2026-07-14",
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "BAFN",
+   "n_signals": 1,
+   "last_signal": "2026-08-21",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "BAH",
+   "n_signals": 1,
+   "last_signal": "2026-05-14",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "BAND",
+   "n_signals": 1,
+   "last_signal": "2026-08-07",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "BJDX",
+   "n_signals": 1,
+   "last_signal": "2026-07-06",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "BKNG",
+   "n_signals": 1,
+   "last_signal": "2026-06-16",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "BODI",
+   "n_signals": 1,
+   "last_signal": "2026-05-19",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "BURU",
+   "n_signals": 1,
+   "last_signal": "2026-07-13",
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "B",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "BA",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  },
+  {
+   "ticker": "BABA",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "BABB",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "BABU",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry"
+   ]
+  },
+  {
+   "ticker": "BAC",
+   "n_signals": 0,
+   "last_signal": null,
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  }
+ ]
+}

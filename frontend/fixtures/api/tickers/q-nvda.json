@@ -1,0 +1,14 @@
+{
+ "tickers": [
+  {
+   "ticker": "NVDA",
+   "n_signals": 2,
+   "last_signal": "2026-08-27",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  }
+ ]
+}

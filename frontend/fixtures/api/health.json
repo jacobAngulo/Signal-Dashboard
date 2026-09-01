@@ -1,0 +1,22 @@
+{
+ "status": "ok",
+ "slug": "signal-dashboard",
+ "started_at": "2026-09-01T23:12:34+00:00",
+ "uptime_s": 516.9,
+ "checks": [
+  {
+   "name": "prices",
+   "status": "ok",
+   "detail": "4762 tickers"
+  },
+  {
+   "name": "foundry_db",
+   "status": "ok",
+   "detail": "/srv/data/signal-foundry/db/foundry.duckdb"
+  }
+ ],
+ "info": {
+  "price_tickers": 4762,
+  "price_load_error": null
+ }
+}

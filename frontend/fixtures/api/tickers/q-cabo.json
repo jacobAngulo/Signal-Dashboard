@@ -1,0 +1,14 @@
+{
+ "tickers": [
+  {
+   "ticker": "CABO",
+   "n_signals": 2,
+   "last_signal": "2026-08-14",
+   "producers": [
+    "foundry",
+    "intrinsic",
+    "lstm"
+   ]
+  }
+ ]
+}

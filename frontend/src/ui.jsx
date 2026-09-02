@@ -310,3 +310,55 @@ export function ErrorBox({ err }) {
     </div>
   )
 }
+
+// TB-46: a whole-percent string ("5") to the 0-1 fraction /api/signals and
+// /api/ticker/{t} expect (0.05), or undefined when blank -- so a cleared
+// input drops the query param instead of sending stop_pct=NaN.
+export function pctToFraction(v) {
+  const n = Number(v)
+  return v !== '' && v !== null && v !== undefined && Number.isFinite(n)
+    ? n / 100 : undefined
+}
+
+// Stop-loss / take-profit controls, shared by Explore and the ticker page so
+// the two never drift into two different simulations. Purely presentational:
+// the caller owns the state, the URL wiring, and the API call -- this only
+// turns "5" into a field nobody has to type a decimal into. `compact` drops
+// the explainer line for the smaller ticker-page placement.
+export function ExitRules({
+  stopPct, setStopPct, targetPct, setTargetPct,
+  exitWindow, setExitWindow, trailing, setTrailing,
+  onClear, compact = false,
+}) {
+  const active = stopPct !== '' || targetPct !== '' || exitWindow !== '20' || trailing
+  return (
+    <div className={compact ? 'filter-row exit-rules-compact' : 'filter-col'}>
+      <label>Stop %
+        <input type="number" inputMode="decimal" step="0.5" min="0" value={stopPct}
+               onChange={(e) => setStopPct(e.target.value)} placeholder="e.g. 5" />
+      </label>
+      <label>Target %
+        <input type="number" inputMode="decimal" step="0.5" min="0" value={targetPct}
+               onChange={(e) => setTargetPct(e.target.value)} placeholder="e.g. 10" />
+      </label>
+      <label>Sessions
+        <input type="number" inputMode="numeric" step="1" min="1" max="252"
+               value={exitWindow} onChange={(e) => setExitWindow(e.target.value)} />
+      </label>
+      <label className="check">
+        <input type="checkbox" checked={trailing}
+               onChange={(e) => setTrailing(e.target.checked)} />
+        trailing stop
+      </label>
+      {!compact && (
+        <div className="muted small">
+          simulated on daily high/low prices — historical, not advice
+        </div>
+      )}
+      <button type="button" className={compact ? 'btn' : 'btn full-btn'}
+              onClick={onClear} disabled={!active}>
+        Clear exit rule
+      </button>
+    </div>
+  )
+}

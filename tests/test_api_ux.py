@@ -173,16 +173,154 @@ class DashboardApiUxTests(unittest.TestCase):
             {"decision": "BUY", "date": "2026-07-20", "ticker": "MON", "horizon": "1m"},
             {"decision": "BUY", "date": "2026-07-19", "ticker": "WEEK", "horizon": "1w"},
         ]
-        producer = SimpleNamespace(decisions=decisions, scores=scores)
-        store = SimpleNamespace(producers={"lstm": producer})
+        producer = SimpleNamespace(decisions=decisions, scores=scores,
+                                   fingerprint="order-and-counts")
+        store = SimpleNamespace(
+            producers={"lstm": producer},
+            price_generation=0,
+            candidate_price_book=SimpleNamespace(points={}),
+            candidate_price_load_error=None,
+            _candidate_price_build_busy=lambda: False,
+        )
         with patch.object(main, "STORE", store):
-            result = main.lstm_windows()
+            result = main.lstm_windows(limit=None)
 
         self.assertEqual(result["windows"], ["1d", "1w", "1m", "6m"])
         self.assertEqual(result["counts"], {"1d": 1, "1w": 1, "1m": 1, "6m": 0})
         self.assertEqual(result["scored_counts"]["6m"], 1)
-        self.assertTrue(result["days"][0]["signals"]["1m"][0]["selected"])
-        self.assertFalse(result["days"][0]["signals"]["1d"][0]["selected"])
+        # Per-day rows stay as aggregates; the candidates themselves are one
+        # flat list so the UI can sort and group on any vector.
+        self.assertEqual(result["days"][0]["candidate_counts"]["1m"], 1)
+        self.assertEqual(result["days"][0]["scored"], 3)
+        by_ticker = {row["ticker"]: row for row in result["candidates"]}
+        self.assertEqual(set(by_ticker), {"DAY", "MON", "WEEK"})
+        self.assertTrue(by_ticker["MON"]["selected"])
+        self.assertFalse(by_ticker["DAY"]["selected"])
+        self.assertNotIn("NOPE", by_ticker)
+
+    def test_lstm_windows_expose_vectors_and_performance_fields(self):
+        """The tab's whole point is slicing, so every candidate carries the
+        model vectors and the forward returns, and the payload declares which
+        columns are sliceable rather than leaving the UI to guess."""
+        scores = {
+            "2026-07-20": pd.DataFrame([{
+                "ticker": "DAY", "status": "buy_candidate", "best_horizon": "1d",
+                "best_adj_prob": 0.2, "best_pred_prob": 0.21, "best_pred_std": 0.03,
+                "close": 12.5, "volatility": 0.44, "volume_ratio_20": 1.8,
+                "attention_status": "surge", "attention_horizon_sessions": 3,
+                "price_basis": "economic_value_per_initial_share",
+            }]),
+        }
+        producer = SimpleNamespace(decisions=[], scores=scores,
+                                   fingerprint="vectors-and-performance")
+        store = SimpleNamespace(
+            producers={"lstm": producer},
+            price_generation=0,
+            candidate_price_book=SimpleNamespace(points={}),
+            candidate_price_load_error=None,
+            _candidate_price_build_busy=lambda: False,
+        )
+        with patch.object(main, "STORE", store):
+            result = main.lstm_windows(limit=None)
+
+        row = result["candidates"][0]
+        for key in ("volatility", "volume_ratio_20", "attention_status",
+                    "attention_horizon_sessions", "price_basis", "pred_std"):
+            self.assertIn(key, row, f"{key} must survive onto the candidate")
+        self.assertEqual(row["volatility"], 0.44)
+        self.assertEqual(row["attention_status"], "surge")
+        # Enrichment ran even with no price coverage: the return keys exist and
+        # are honestly empty rather than absent.
+        for key in ("ret_1d", "ret_5d", "ret_20d", "ret_since", "last_px"):
+            self.assertIn(key, row, f"{key} must be present even when blocked")
+        self.assertIsNone(row["ret_1d"])
+        keys = {vector["key"] for vector in result["vectors"]}
+        self.assertIn("volatility", keys)
+        self.assertIn("adj_prob", keys)
+        self.assertEqual(result["price_tier"]["total"], 1)
+        self.assertEqual(result["price_tier"]["covered"], 0)
+
+
+class LstmSlicingTests(unittest.TestCase):
+    """The tab exists to be sliced, so filtering, sorting, paging and grouping
+    all have to happen over the whole candidate set rather than over whatever
+    page the browser happens to be holding."""
+
+    def _store(self, fingerprint):
+        rows = []
+        for i, (ticker, horizon, prob, vol) in enumerate([
+            ("AAA", "1d", 0.90, 1.0), ("BBB", "1d", 0.70, 2.0),
+            ("CCC", "1w", 0.50, 3.0), ("DDD", "1w", 0.30, 4.0),
+            ("EEE", "6m", 0.10, 5.0),
+        ]):
+            rows.append({"ticker": ticker, "status": "buy_candidate",
+                         "best_horizon": horizon, "best_adj_prob": prob,
+                         "volume_ratio_20": vol, "close": 10.0 + i})
+        producer = SimpleNamespace(
+            decisions=[{"decision": "BUY", "date": "2026-07-20",
+                        "ticker": "AAA", "horizon": "1d"}],
+            scores={"2026-07-20": pd.DataFrame(rows)},
+            fingerprint=fingerprint,
+        )
+        return SimpleNamespace(
+            producers={"lstm": producer},
+            price_generation=0,
+            candidate_price_book=SimpleNamespace(points={}),
+            candidate_price_load_error=None,
+            _candidate_price_build_busy=lambda: False,
+        )
+
+    def test_filters_sort_and_page_run_over_the_whole_set(self):
+        with patch.object(main, "STORE", self._store("slice-basic")):
+            page = main.lstm_windows(sort="adj_prob", dir="desc", limit=2, offset=0)
+            self.assertEqual(page["total"], 5)
+            self.assertEqual([r["ticker"] for r in page["candidates"]], ["AAA", "BBB"])
+
+            # Page two continues the same global ordering, not a re-sort of a page.
+            two = main.lstm_windows(sort="adj_prob", dir="desc", limit=2, offset=2)
+            self.assertEqual([r["ticker"] for r in two["candidates"]], ["CCC", "DDD"])
+
+            asc = main.lstm_windows(sort="adj_prob", dir="asc", limit=1, offset=0)
+            self.assertEqual(asc["candidates"][0]["ticker"], "EEE")
+
+            filtered = main.lstm_windows(horizon="1w", limit=None)
+            self.assertEqual(filtered["total"], 2)
+            self.assertEqual({r["ticker"] for r in filtered["candidates"]}, {"CCC", "DDD"})
+
+            floor = main.lstm_windows(min_prob=0.5, limit=None)
+            self.assertEqual(floor["total"], 3)
+
+            picks = main.lstm_windows(picks_only=True, limit=None)
+            self.assertEqual([r["ticker"] for r in picks["candidates"]], ["AAA"])
+
+            found = main.lstm_windows(q="cc", limit=None)
+            self.assertEqual([r["ticker"] for r in found["candidates"]], ["CCC"])
+
+    def test_groups_summarise_the_filtered_set_not_the_page(self):
+        with patch.object(main, "STORE", self._store("slice-groups")):
+            result = main.lstm_windows(group_by="horizon", limit=1, offset=0)
+            self.assertEqual(len(result["candidates"]), 1)
+            by_label = {g["label"]: g for g in result["groups"]}
+            # Grouping saw all five candidates even though one row was returned.
+            self.assertEqual(sum(g["n"] for g in result["groups"]), 5)
+            self.assertEqual(by_label["1d"]["n"], 2)
+            self.assertEqual(by_label["1d"]["picks"], 1)
+            self.assertEqual(by_label["6m"]["n"], 1)
+
+            # A numeric vector is cut into equal-count buckets, not raw values.
+            numeric = main.lstm_windows(group_by="volume_ratio_20", limit=1, offset=0)
+            self.assertEqual(sum(g["n"] for g in numeric["groups"]), 5)
+            self.assertTrue(all("–" in g["label"] for g in numeric["groups"]))
+
+            # An unknown vector falls back rather than returning nothing.
+            unknown = main.lstm_windows(group_by="not_a_vector", limit=1, offset=0)
+            self.assertEqual(unknown["group_by"], "horizon")
+
+    def test_grouping_respects_the_active_filter(self):
+        with patch.object(main, "STORE", self._store("slice-filtered-groups")):
+            result = main.lstm_windows(horizon="1d", group_by="horizon", limit=None)
+            self.assertEqual([g["label"] for g in result["groups"]], ["1d"])
+            self.assertEqual(result["groups"][0]["n"], 2)
 
 
 class AuthStatusTests(unittest.TestCase):

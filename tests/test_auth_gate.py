@@ -30,6 +30,8 @@ EXPECTED_PUBLIC = {
     "/api/health",
     "/api/auth/status",
     "/api/auth/start",
+    "/api/auth/password/login",
+    "/api/auth/password/register",
     "/api/auth/request-access",
     "/api/auth/callback/google",
 }
@@ -67,12 +69,14 @@ class GateTests(unittest.TestCase):
         self.tmp = __import__("tempfile").TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         store = web_auth.SessionStore(f"{self.tmp.name}/auth.sqlite3", ttl_s=1800)
+        identities = web_auth.IdentityStore(f"{self.tmp.name}/auth.sqlite3")
         access = AccessStore(f"{self.tmp.name}/auth.sqlite3")
 
         # A configured server with one allowed address is the state every test
         # here cares about; the unconfigured case gets its own class below.
         patches = [
             patch.object(auth, "STORE", store),
+            patch.object(auth, "IDENTITIES", identities),
             patch.object(auth, "ACCESS", access),
             patch.object(config, "AUTH_CONFIGURED", True),
             patch.object(config, "GOOGLE_CLIENT_ID", "test-client-id"),
@@ -195,7 +199,7 @@ class GateTests(unittest.TestCase):
 
     # ------------------------------------------------------------------ access requests
 
-    def test_a_stranger_is_sent_to_access_requested(self):
+    def test_a_stranger_is_sent_to_the_root_request_state(self):
         _, _, nonce = self.store.start_flow("https://example.test/api/auth/callback/google")
         state = self._last_state()
         identity = web_auth.Identity(subject="sub-2", email="stranger@gmail.com")
@@ -204,7 +208,7 @@ class GateTests(unittest.TestCase):
                 f"/api/auth/callback/google?code=x&state={state}", follow_redirects=False
             )
         self.assertEqual(response.status_code, 303)
-        self.assertIn("/access-requested", response.headers["location"])
+        self.assertEqual(response.headers["location"], "/")
         # A session is created so the stranger can submit a request, but the
         # middleware's access check prevents them from reaching data routes.
         self.assertIn(auth.SESSION_COOKIE, response.cookies)
@@ -217,14 +221,14 @@ class GateTests(unittest.TestCase):
         response = self.client.get("/api/tickers", follow_redirects=False)
         self.assertEqual(response.status_code, 403)
 
-    def test_a_stranger_with_a_session_is_redirected_from_html_routes(self):
+    def test_a_stranger_with_a_session_sees_the_pending_state_at_root(self):
         token = self.store.create_session(
             web_auth.Identity(subject="sub-2", email="stranger@gmail.com")
         )
         self.client.cookies.set(auth.SESSION_COOKIE, token)
         response = self.client.get("/", headers={"accept": "text/html"}, follow_redirects=False)
-        self.assertEqual(response.status_code, 303)
-        self.assertIn("/access-requested", response.headers["location"])
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Request access", response.text)
 
     def test_an_approved_address_receives_a_session_and_access(self):
         state = self._new_flow()
@@ -266,13 +270,8 @@ class GateTests(unittest.TestCase):
         return self._new_flow()
 
 
-class UnconfiguredTests(unittest.TestCase):
-    """A server missing its credentials or its allowlist refuses everyone.
-
-    This is the accident the module exists to prevent: an environment variable
-    that failed to load must not be the difference between a private dashboard
-    and a public one.
-    """
+class GoogleUnconfiguredTests(unittest.TestCase):
+    """Password login remains available when Google credentials are absent."""
 
     def setUp(self):
         self.tmp = __import__("tempfile").TemporaryDirectory()
@@ -288,25 +287,26 @@ class UnconfiguredTests(unittest.TestCase):
             self.addCleanup(item.stop)
         self.client = TestClient(app)
 
-    def test_data_routes_refuse_rather_than_open(self):
+    def test_data_routes_still_require_a_session(self):
         response = self.client.get("/api/signals", follow_redirects=False)
-        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.status_code, 401)
 
-    def test_the_application_refuses_rather_than_opens(self):
-        response = self.client.get("/", follow_redirects=False)
-        self.assertEqual(response.status_code, 503)
+    def test_the_application_still_redirects_to_login(self):
+        response = self.client.get("/", headers={"accept": "text/html"}, follow_redirects=False)
+        self.assertEqual(response.status_code, 303)
+        self.assertEqual(response.headers["location"], "/login")
 
-    def test_the_login_page_says_so_instead_of_offering_a_dead_button(self):
+    def test_the_login_page_offers_password_without_a_dead_google_button(self):
         response = self.client.get("/login")
-        self.assertEqual(response.status_code, 503)
-        self.assertIn("not configured", response.text)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Sign in with password", response.text)
         self.assertNotIn("Continue with Google", response.text)
 
     def test_status_still_answers_so_the_fault_is_diagnosable(self):
         response = self.client.get("/api/auth/status")
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(response.json()["configured"])
-        self.assertEqual(response.json()["allowlist_size"], 0)
+        self.assertTrue(response.json()["configured"])
+        self.assertFalse(response.json()["google_client_configured"])
 
 
 if __name__ == "__main__":

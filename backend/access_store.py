@@ -28,6 +28,18 @@ CREATE TABLE IF NOT EXISTS access_request (
   created_at INTEGER NOT NULL
 );
 CREATE UNIQUE INDEX IF NOT EXISTS access_request_email_idx ON access_request (email);
+
+-- A bounded, content-free heartbeat for Product Ops. This deliberately stores
+-- neither the page nor query the analyst opened, only that an approved user
+-- was active during a fifteen-minute interval.
+CREATE TABLE IF NOT EXISTS product_activity (
+  user_id TEXT NOT NULL,
+  bucket INTEGER NOT NULL,
+  occurred_at INTEGER NOT NULL,
+  kind TEXT NOT NULL DEFAULT 'active',
+  PRIMARY KEY (user_id, bucket)
+);
+CREATE INDEX IF NOT EXISTS product_activity_occurred_idx ON product_activity (occurred_at);
 """
 
 
@@ -55,6 +67,18 @@ class AccessStore:
                 "SELECT status FROM access_request WHERE email = ?", (email,)
             ).fetchone()
         return row["status"] if row else None
+
+    def record_activity(self, email: str) -> None:
+        now = int(time.time() * 1000)
+        try:
+            with self.connect() as db:
+                db.execute(
+                    "INSERT INTO product_activity (user_id, bucket, occurred_at) VALUES (?, ?, ?) "
+                    "ON CONFLICT(user_id, bucket) DO UPDATE SET occurred_at = excluded.occurred_at",
+                    (email, now // (15 * 60 * 1000), now),
+                )
+        except sqlite3.Error:
+            return
 
     def upsert_request(self, email: str, note: str | None) -> str:
         """Insert or reset a request to pending. Returns the status."""

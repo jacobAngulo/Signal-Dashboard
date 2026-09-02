@@ -53,6 +53,19 @@ PRICE_REFRESH_SECONDS = max(
         CFG.get("price_refresh_seconds", 300),
     )),
 )
+# The candidate price book is a second tier behind the decision book: ~2.7k
+# LSTM score candidates against the decision universe's ~70 tickers, which is
+# roughly 29 gateway bulk chunks and about five minutes per rebuild. Refreshing
+# that on the decision cadence would leave the builder running permanently, so
+# candidate returns are deliberately allowed to lag. Decision returns keep the
+# fast tier and are unaffected.
+CANDIDATE_PRICE_REFRESH_SECONDS = max(
+    300,
+    int(os.environ.get(
+        "CANDIDATE_PRICE_REFRESH_SECONDS",
+        CFG.get("candidate_price_refresh_seconds", 1800),
+    )),
+)
 
 # Google OAuth client credentials, consumed by the sign-in flow in `auth.py`.
 # Environment only, with no config.json fallback: the app reads config.json at
@@ -61,24 +74,23 @@ PRICE_REFRESH_SECONDS = max(
 GOOGLE_CLIENT_ID = os.environ.get("AUTH_GOOGLE_ID", "").strip()
 GOOGLE_CLIENT_SECRET = os.environ.get("AUTH_GOOGLE_SECRET", "").strip()
 
-# The entire authorization policy. A verified Google identity that is not on
-# this list gets nothing -- there is no self-service, no request queue, and no
-# implicit owner. Same environment-only reasoning as the secret above: this is
-# a list of real people's addresses and config.json is world-readable.
-#
-# As of the access-request cutover this is kept only for the fail-closed boot
-# check in AUTH_CONFIGURED below -- the actual gate is the access_request
-# table in the auth DB. An empty list still means "nobody" at startup, but
-# once the process is up the table is the source of truth.
+# Retained for backwards-compatible deployment configuration only. The
+# access-request table is now the authorization policy for Google and password
+# accounts alike, so this value is not consulted by the request gate.
 AUTH_ALLOWED_EMAILS = frozenset(
     part.strip().lower()
     for part in os.environ.get("AUTH_ALLOWED_EMAILS", "").split(",")
     if part.strip()
 )
 
-# Matches the console's OPS_GOOGLE_SESSION_TTL_S default. The floor exists so a
-# typo cannot produce a session that expires faster than a page can load.
-AUTH_SESSION_TTL_S = max(300, int(os.environ.get("AUTH_SESSION_TTL_S", "1800")))
+# Sessions are renewed while the browser is active, so an ordinary return visit
+# does not require another sign-in.  A fixed absolute ceiling limits a cookie
+# that is stolen and never explicitly revoked.
+AUTH_SESSION_TTL_S = max(300, int(os.environ.get("AUTH_SESSION_TTL_S", str(30 * 24 * 60 * 60))))
+AUTH_SESSION_ABSOLUTE_TTL_S = max(
+    AUTH_SESSION_TTL_S,
+    int(os.environ.get("AUTH_SESSION_ABSOLUTE_TTL_S", str(90 * 24 * 60 * 60))),
+)
 
 # Outside the repo, like every other piece of state on this box. Disposable:
 # deleting it signs everyone out and costs nothing else, which is why it is
@@ -92,8 +104,8 @@ AUTH_DB_PATH = Path(
 # surface entirely (fail-closed), matching the industry-ops pattern.
 ADMIN_API_TOKEN = os.environ.get("ADMIN_API_TOKEN", "")
 
-# True once this process can actually run a sign-in. When it is False the gate
-# refuses everyone rather than admitting everyone -- see `auth.configured`.
+# True when the optional Google provider can complete a sign-in. Password
+# sign-in remains available when this is false.
 AUTH_CONFIGURED = bool(GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET)
 
 # Project-scoped Ticket Board intake stays server-side. Browser feedback is

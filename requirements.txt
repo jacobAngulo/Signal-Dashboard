@@ -3,6 +3,12 @@ uvicorn
 pandas
 duckdb
 
+# Forward trading-session arithmetic for signal windows and exit dates. The
+# app's own calendar is observed producer dates only, so it cannot name a
+# session in the future. Same pin as the LSTM repo uses, so the two agree
+# about what a session is without this repo importing that one.
+exchange-calendars==4.13.2
+
 # fastapi.testclient. The auth gate is middleware, so it can only be tested by
 # driving real requests through the app -- there is no function to call. This
 # repo has no separate dev-requirements to put it in.

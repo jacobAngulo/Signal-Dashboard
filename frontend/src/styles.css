@@ -480,6 +480,11 @@ input[type="checkbox"] { accent-color: var(--lstm); }
 .disabled-control { opacity: .55; }
 .full-btn { width: 100%; margin: 3px 0 0 !important; }
 
+/* TB-46: compact Exit-rules control (ticker page) -- same .filter-row layout
+   as everywhere else, just with fixed-width number inputs so four controls
+   and a button fit one line instead of stretching to fill the card. */
+.exit-rules-compact input[type="number"] { width: 70px; }
+
 .kbd-hint {
   position: absolute; right: 7px; top: calc(50% - 4px); transform: translateY(-50%);
   font: 400 10px/14px var(--mono); color: var(--faint);
@@ -512,30 +517,69 @@ input[type="checkbox"] { accent-color: var(--lstm); }
   clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important;
 }
 
-.window-table { min-width: 760px; }
-.window-cell { min-width: 150px; vertical-align: top; white-space: normal; }
-.window-cell-meta { margin-bottom: 3px; white-space: nowrap; }
-.window-signal {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 8px; padding: 3px 0;
+/* The LSTM tab is a flat candidate table now: one row per candidate, every
+   model vector sortable, rather than a day x horizon grid of stacked chips. */
+.candidate-table { min-width: 900px; }
+.candidate-table td, .candidate-table th { white-space: nowrap; }
+.candidate-table .col-ret_1d, .candidate-table .col-ret_5d,
+.candidate-table .col-ret_20d,
+.candidate-table .col-ret_since, .candidate-table .col-adj_prob,
+.candidate-table .col-pred_prob, .candidate-table .col-pred_std,
+.candidate-table .col-volatility, .candidate-table .col-volume_ratio_20,
+.candidate-table .col-close, .candidate-table .col-entry_px,
+.candidate-table .col-last_px, .candidate-table .col-attention_horizon_sessions {
+  font-variant-numeric: tabular-nums;
 }
-/* The day's published pick. 2a has no fills, so the highlight is a left rule. */
-.window-signal.selected {
-  background: transparent; border-left: 2px solid var(--up); padding-left: 6px;
+.candidate-table th:first-child, .candidate-table td:first-child {
+  position: sticky; left: 0; z-index: 3; background: var(--panel);
 }
-.window-date { min-width: 122px; vertical-align: top; text-align: left; }
-.window-date > * { display: block; margin-bottom: 2px; }
-.window-table th:first-child { position: sticky; left: 0; z-index: 3; }
-.th-sub {
-  display: block; margin-top: 1px; color: var(--faint);
-  font-size: 9px; font-weight: 400; letter-spacing: .06em;
+.candidate-table tr.clickable:hover th:first-child,
+.candidate-table tr.clickable:hover td:first-child { background: var(--inset); }
+.candidate-ticker { display: inline-flex; align-items: center; gap: 5px; }
+.vector-table { min-width: 560px; }
+.vector-table td, .vector-table th { white-space: nowrap; }
+.vector-table .col-n, .vector-table .col-picks, .vector-table .col-ret_1d,
+.vector-table .col-ret_5d, .vector-table .col-ret_since, .vector-table .col-wr_5d {
+  font-variant-numeric: tabular-nums;
 }
-.probability-btn {
-  border: 0; background: transparent; color: var(--lstm-text);
-  font: inherit; font-variant-numeric: tabular-nums; cursor: pointer; padding: 1px 3px;
+.table-pager {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  border-top: 1px solid var(--rule);
+  margin: 10px -12px -11px; padding: 9px 12px;
 }
-.probability-btn:hover { text-decoration: underline; }
-.window-more { margin-top: 3px; }
+/* The pager also renders above the table, where the bottom margin would pull
+   it into the header row. */
+.table-pager:first-child {
+  border-top: 0; border-bottom: 1px solid var(--rule);
+  margin: -6px -12px 10px;
+}
+.table-pager .btn[disabled] { opacity: .45; cursor: default; }
+.tier-note p { margin: 0; }
+.slice-summary { margin-left: auto; }
+
+/* Every filter change is a server round-trip now, so the table has to say it
+   is working. Dimmed rather than blanked: the previous page stays readable
+   and the layout does not jump. */
+.table-wrap.is-loading {
+  opacity: .45; pointer-events: none; transition: opacity .12s ease-in;
+}
+
+/* Column headers deliberately keep the app-wide `top: 0`. `.table-wrap` sets
+   `overflow-x: auto`, which makes it a scroll container on both axes, so these
+   headers stick to the wrapper rather than to the page — any non-zero offset
+   pushes them down *inside* the table and over the first rows. The headers
+   scrolling away on a long table is a real annoyance, but the fix is a
+   scrollable wrapper height, not an offset. */
+.vector-table tr.clickable:hover th, .vector-table tr.clickable:hover td {
+  background: var(--panel-2);
+}
+/* A price-basis bucket label is ~90 characters and was pushing the spread —
+   the column the list is ranked by — off the right edge. Clamp it; the full
+   value is on the title attribute. */
+.vector-table .bucket-label {
+  max-width: 260px; overflow: hidden; text-overflow: ellipsis;
+}
+.bucket-n { opacity: .55; font-size: 10.5px; }
 .card-footer {
   border-top: 1px solid var(--rule);
   margin: 10px -12px -11px; padding: 9px 12px;
@@ -623,6 +667,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .signal-table .col-ret_20d,
   .signal-table .col-spark { display: none; }
   .signal-table { min-width: 650px; }
-  .window-table-wrap { margin-inline: -12px; }
+  .candidate-table .col-volatility,
+  .candidate-table .col-close,
+  .candidate-table .col-ret_20d,
+  .candidate-table .col-volume_ratio_20 { display: none; }
+  .candidate-table { min-width: 620px; }
   .pagination { justify-content: space-between; }
 }

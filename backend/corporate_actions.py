@@ -80,16 +80,74 @@ def _frame(payload):
     return pd.DataFrame(payload)
 
 
+def _entry_index(rows, dates, entry_date, entry_snap):
+    """Where a return/simulation window anchors, shared by `performance()` and
+    `simulate_exit()` so the two can never disagree about the entry session.
+
+    Returns `(index, blocked_reason)` -- `index` is None exactly when
+    `blocked_reason` explains why (no coverage at all, the entry session
+    hasn't traded yet, or it fell in an in-range gap that strict mode refuses
+    to substitute for).
+    """
+    if not rows:
+        return None, "no_gateway_price_coverage"
+    if entry_snap == "before":
+        i = bisect_left(dates, entry_date) - 1
+    elif entry_snap == "on_or_before":
+        i = bisect_right(dates, entry_date) - 1
+    else:
+        i = bisect_left(dates, entry_date)
+        if i >= len(rows):
+            # The entry session simply hasn't traded yet (latest-bucket
+            # signals): distinct from an in-range gap.
+            return None, "pending_entry_session"
+        if dates[i] != entry_date:
+            i = -1  # in-range gap: strict mode never substitutes a session
+    if i < 0:
+        return None, "missing_entry_session"
+    return i, None
+
+
+def _interval_guard(blocked_ids, unsafe, segments):
+    """`blocked_reason` if the interval must fail closed, else None.
+
+    Same semantics as `performance()`'s guard, extracted so the incremental
+    walk in `simulate_exit()` and the one-shot check in `performance()` can
+    never drift apart: coverage failures, hard-unsafe states, a boundary
+    crossing with unresolved evidence, or unsafe metadata without ids all fail
+    closed. An unresolved action only poisons a window when it crosses a
+    continuity boundary -- once both endpoints share a post-action basis, the
+    unknown constant adjustment cancels in the ratio.
+    """
+    coverage_ids = [
+        action_id for action_id in blocked_ids
+        if str(action_id).startswith("coverage:")
+    ]
+    hard_unsafe = [status for status in unsafe if status != "observed"]
+    crosses_uncertain_boundary = len(segments) > 1 and bool(blocked_ids or unsafe)
+    incomplete_unsafe_metadata = bool(unsafe and not blocked_ids)
+    if coverage_ids or hard_unsafe or crosses_uncertain_boundary or incomplete_unsafe_metadata:
+        return "corporate_action_unresolved"
+    return None
+
+
 class ContinuousPriceBook:
     def __init__(self):
         self.points = {}
         self.load_error = None
+        # TB-46: stop/target simulations over the whole filtered Explore slice
+        # can mean thousands of calls per request. Keyed on every argument
+        # that changes the answer; cleared below whenever `points` is
+        # replaced, so a refresh can never serve an exit computed against
+        # retired prices.
+        self._sim_cache = {}
 
     def load(self, gateway, tickers, *, start=None, end=None, chunk_size=100):
         symbols = sorted({str(ticker).strip().upper() for ticker in tickers if str(ticker).strip()})
         self.load_error = None
         if not symbols:
             self.points = {}
+            self._sim_cache = {}
             return
         method = getattr(gateway, "continuous_ohlcv_bulk", None)
         if method is None:
@@ -126,6 +184,7 @@ class ContinuousPriceBook:
             ticker: [by_date[key] for key in sorted(by_date)]
             for ticker, by_date in grouped.items()
         }
+        self._sim_cache = {}
 
     @staticmethod
     def _accumulate(frame, grouped):
@@ -187,31 +246,20 @@ class ContinuousPriceBook:
     def performance(self, ticker, entry_date, *, sessions=None, through_last=False,
                     entry_snap=None):
         rows = self.points.get(str(ticker).upper(), [])
-        if not rows:
-            return {"return": None, "blocked_reason": "no_gateway_price_coverage"}
         dates = [row["date"] for row in rows]
         # entry_snap anchors the entry at the signal instead of an exact
         # session: "on_or_before" takes the last session <= entry_date (daily
         # producers score off that close), "before" the last session strictly
         # earlier (foundry events are actionable the session *after*
         # publication, so their signal-time price is the prior close).
-        if entry_snap == "before":
-            i = bisect_left(dates, entry_date) - 1
-        elif entry_snap == "on_or_before":
-            i = bisect_right(dates, entry_date) - 1
-        else:
-            i = bisect_left(dates, entry_date)
-            if i >= len(rows):
-                # The entry session simply hasn't traded yet (latest-bucket
-                # signals): distinct from an in-range gap, and the last point
-                # still serves the signal-independent columns.
-                return {"return": None, "blocked_reason": "pending_entry_session",
-                        "last": rows[-1]}
-            if dates[i] != entry_date:
-                i = -1  # in-range gap: strict mode never substitutes a session
-        if i < 0:
-            return {"return": None, "blocked_reason": "missing_entry_session",
-                    "last": rows[-1]}
+        i, reason = _entry_index(rows, dates, entry_date, entry_snap)
+        if i is None:
+            result = {"return": None, "blocked_reason": reason}
+            if rows:
+                # The last point still serves the signal-independent columns
+                # even when no entry session is available.
+                result["last"] = rows[-1]
+            return result
         j = len(rows) - 1 if through_last else i + int(sessions or 0)
         if j >= len(rows):
             return {
@@ -231,31 +279,11 @@ class ContinuousPriceBook:
             segment = row["continuity_segment"]
             if segment not in segments:
                 segments.append(segment)
-        coverage_ids = [
-            action_id for action_id in blocked_ids
-            if action_id.startswith("coverage:")
-        ]
         action_warning_ids = [
             action_id for action_id in blocked_ids
             if not action_id.startswith("coverage:")
         ]
-        hard_unsafe = [
-            status for status in unsafe
-            if status != "observed"
-        ]
-        # An unresolved action poisons a return only when the requested window
-        # crosses its continuity boundary. Once both endpoints are on the same
-        # post-action basis, the unknown constant adjustment cancels in the
-        # ratio. Coverage failures and malformed unsafe metadata still fail
-        # closed because no trustworthy boundary is available.
-        crosses_uncertain_boundary = len(segments) > 1 and bool(blocked_ids or unsafe)
-        incomplete_unsafe_metadata = bool(unsafe and not blocked_ids)
-        if (
-            coverage_ids
-            or hard_unsafe
-            or crosses_uncertain_boundary
-            or incomplete_unsafe_metadata
-        ):
+        if _interval_guard(blocked_ids, unsafe, segments):
             return {
                 "return": None,
                 "blocked_reason": "corporate_action_unresolved",
@@ -285,3 +313,138 @@ class ContinuousPriceBook:
             "exit": exit_point,
             "last": rows[-1],
         }
+
+    def simulate_exit(self, ticker, entry_date, *, stop=None, target=None,
+                      max_sessions=20, side="long", entry_snap=None,
+                      trailing=False):
+        """Historical stop-loss/take-profit replay over already-stored prices.
+
+        Read-only: this walks daily high/low bars that are already in the
+        book and reports what would have happened, nothing more. No orders,
+        no position state -- see CLAUDE.md and docs/TB-46-signal-windows-plan.md.
+
+        Uses the same `_entry_index`/`_interval_guard` predicates as
+        `performance()` so a simulated entry always lands on the identical
+        session, and a window this dashboard would refuse to trust for an
+        ordinary return is refused here too.
+        """
+        cache_key = (
+            str(ticker).upper(), entry_date, stop, target,
+            int(max_sessions), side, bool(trailing), entry_snap,
+        )
+        if cache_key in self._sim_cache:
+            return self._sim_cache[cache_key]
+        result = self._simulate_exit(
+            str(ticker).upper(), entry_date, stop=stop, target=target,
+            max_sessions=int(max_sessions), side=side,
+            entry_snap=entry_snap, trailing=bool(trailing),
+        )
+        self._sim_cache[cache_key] = result
+        return result
+
+    def _simulate_exit(self, ticker, entry_date, *, stop, target, max_sessions,
+                       side, entry_snap, trailing):
+        rows = self.points.get(ticker, [])
+        dates = [row["date"] for row in rows]
+        out = {
+            "outcome": None, "exit_date": None, "exit_px": None, "return": None,
+            "sessions_held": None, "ambiguous": False, "stop_px": None,
+            "target_px": None, "blocked_reason": None,
+        }
+        i, reason = _entry_index(rows, dates, entry_date, entry_snap)
+        if i is None:
+            out["blocked_reason"] = reason
+            return out
+
+        entry = rows[i]["px"]
+        long_side = side != "short"
+        if long_side:
+            stop_px = entry * (1 - stop) if stop is not None else None
+            target_px = entry * (1 + target) if target is not None else None
+        else:
+            # Foundry SELL rows: a short profits as price falls, so its stop
+            # sits above entry and its target below.
+            stop_px = entry * (1 + stop) if stop is not None else None
+            target_px = entry * (1 - target) if target is not None else None
+        out["stop_px"], out["target_px"] = stop_px, target_px
+
+        def _return(exit_px):
+            return exit_px / entry - 1.0 if long_side else 1.0 - exit_px / entry
+
+        # The corporate-action guard is maintained incrementally across the
+        # walk -- running sets/list, updated one bar at a time -- rather than
+        # rebuilt over the whole interval each step, which would turn an O(n)
+        # walk into O(n^2) over a slice of thousands of signals.
+        blocked_ids, unsafe, segments = set(), set(), []
+
+        def _absorb(row):
+            blocked_ids.update(row["blocked_action_ids"])
+            if row["confirmation_status"] not in SAFE_STATES:
+                unsafe.add(row["confirmation_status"])
+            segment = row["continuity_segment"]
+            if segment not in segments:
+                segments.append(segment)
+
+        _absorb(rows[i])
+
+        j = i
+        limit = i + max_sessions
+        while j < limit:
+            j += 1
+            if j >= len(rows):
+                # Ran out of *data*, not out of window: the rule never got a
+                # chance to fire. Distinct from "held", which means the window
+                # completed and neither threshold was touched.
+                out["outcome"] = "open"
+                out["sessions_held"] = (len(rows) - 1) - i
+                return out
+            row = rows[j]
+            _absorb(row)
+            guard_reason = _interval_guard(blocked_ids, unsafe, segments)
+            if guard_reason:
+                # A window we cannot trust must not report a trigger, no
+                # matter which bar the trigger appears to fall on.
+                out["blocked_reason"] = guard_reason
+                out["outcome"] = None
+                return out
+            if long_side:
+                hit_stop = stop_px is not None and row["low"] <= stop_px
+                hit_target = target_px is not None and row["high"] >= target_px
+            else:
+                hit_stop = stop_px is not None and row["high"] >= stop_px
+                hit_target = target_px is not None and row["low"] <= target_px
+            if hit_stop or hit_target:
+                # Daily bars don't say which threshold traded first. Both in
+                # one bar is measured at 0-0.5% of cases -- a footnote, not a
+                # modelling choice -- and the conservative read is the loss.
+                ambiguous = hit_stop and hit_target
+                outcome = "stop" if (ambiguous or hit_stop) else "target"
+                exit_px = stop_px if outcome == "stop" else target_px
+                out.update({
+                    "outcome": outcome,
+                    "exit_date": row["date"],
+                    "exit_px": exit_px,
+                    "return": _return(exit_px),
+                    "sessions_held": j - i,
+                    "ambiguous": ambiguous,
+                })
+                return out
+            if trailing and stop_px is not None:
+                stop_px = (
+                    max(stop_px, row["high"] * (1 - stop)) if long_side
+                    else min(stop_px, row["low"] * (1 + stop))
+                )
+                out["stop_px"] = stop_px
+
+        # The window completed with data available the whole way through, and
+        # neither threshold fired -- exit at the close of the final session,
+        # not the threshold price (there was no threshold event).
+        exit_row = rows[j]
+        out.update({
+            "outcome": "held",
+            "exit_date": exit_row["date"],
+            "exit_px": exit_row["px"],
+            "return": _return(exit_row["px"]),
+            "sessions_held": j - i,
+        })
+        return out

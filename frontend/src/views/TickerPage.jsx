@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { api, PRODUCER_META } from '../api.js'
 import { fmtPct, fmtPx, fmtTs } from '../format.js'
-import { Card, EmptyState, ErrorBox, ProducerTag, Spinner, Stat, Tag } from '../ui.jsx'
+import { Card, EmptyState, ErrorBox, ProducerTag, Spinner, Stat, SymbolLinks, Tag } from '../ui.jsx'
 import { HistoryChart, PriceChart } from '../charts.jsx'
 import SignalTable from '../SignalTable.jsx'
 import SignalDetail from '../SignalDetail.jsx'
@@ -86,6 +86,7 @@ export default function TickerPage({ ticker }) {
             CA
           </Tag>
         )}
+        <SymbolLinks ticker={data.ticker} />
       </div>
 
       {stale && (

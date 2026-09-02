@@ -67,6 +67,82 @@ export function TickerLink({ t, bold = true }) {
   )
 }
 
+// Where to go look at a symbol outside this app. Pure URL templates over the
+// bare ticker — nothing in the producers' output carries an exchange, so
+// venues that need one in the path (Google Finance's AAPL:NASDAQ) stay out,
+// as do crypto-only venues, which list none of these equities.
+//
+// The marks are each company's own logo, inlined so the page still makes no
+// third-party requests: Robinhood and Yahoo! from Simple Icons (CC0), Alpaca
+// from alpaca.markets' own webassets, brand colours sampled from the same.
+// They are the companies' trademarks and are here only to point at them.
+const SYMBOL_SITES = [
+  {
+    name: 'Robinhood',
+    color: '#ccff00',
+    ink: '#000000',
+    box: 24,
+    size: 16,
+    url: (t) => `https://robinhood.com/stocks/${t}`,
+    mark: () => <path d="M2.84 24h.53c.096 0 .192-.048.224-.128C7.591 13.696 11.94 8.656 14.67 5.638c.112-.128.064-.225-.096-.225h-4.88a.55.55 0 0 0-.45.225L5.746 9.972c-.514.642-.642 1.236-.642 2.086v4.43c-1.14 3.194-1.862 5.361-2.392 7.32-.032.125.016.192.129.192M20.447.646c-.754-.802-4.157-.834-5.73-.224a3 3 0 0 0-.786.465 41 41 0 0 0-3.323 3.178c-.112.113-.064.225.097.225h5.409c.497 0 .786.289.786.786v6.1c0 .16.128.208.225.064l3.258-4.254c.53-.69.69-.898.835-1.861.192-1.413.08-3.58-.77-4.479m-6.982 16.18 2.231-3.676a.7.7 0 0 0 .064-.29V6.73c0-.16-.112-.225-.224-.097-3.355 3.74-5.971 7.672-8.395 12.407-.06.12.016.225.16.177l5.009-1.54c.565-.174.882-.402 1.155-.852" />,
+  },
+  {
+    name: 'Alpaca',
+    color: '#f1cc21',
+    ink: '#ffffff',
+    // The alpaca is drawn to the edge of its badge, so it fills the whole
+    // tile and reuses the tile's circle as its clip.
+    box: 378,
+    size: 26,
+    url: (t) => `https://app.alpaca.markets/trade/${t}`,
+    mark: (id) => (
+      <>
+        <defs>
+          <clipPath id={id}><circle cx="189" cy="189" r="189" /></clipPath>
+        </defs>
+        <g clipPath={`url(#${id})`}>
+          <path d="M261.969 357.639C259.185 357.639 256.514 356.533 254.545 354.564C252.576 352.595 251.469 349.924 251.469 347.139V157.089C251.473 148.025 249.216 139.103 244.904 131.13C240.592 123.158 234.361 116.386 226.773 111.427C229.107 107.607 230.381 103.234 230.465 98.7584C230.548 94.2827 229.437 89.8656 227.247 85.9613C225.058 82.057 221.867 78.8066 218.004 76.5443C214.142 74.282 209.746 73.0894 205.269 73.0894V94.0894H204.917C203.924 88.2174 200.884 82.8867 196.336 79.0426C191.787 75.1985 186.025 73.0894 180.069 73.0894V102.489H171.669V102.54C159.235 103.079 147.489 108.398 138.881 117.388C130.273 126.377 125.469 138.343 125.469 150.789C125.469 150.865 125.469 150.941 125.469 151.016L97.2202 169.278C99.1196 181.11 105.173 191.878 114.294 199.65C123.415 207.423 133.327 211.691 145.31 211.689C145.772 211.689 146.217 211.689 146.671 211.689L129.669 390.609L250.419 399.009L256.719 383.259L377.411 379.059V357.639H261.969Z" />
+          <path d="M152.247 159.714C152.25 158.184 152.858 156.717 153.94 155.635C155.022 154.553 156.488 153.944 158.018 153.942H174.818C174.818 157.006 173.602 159.944 171.435 162.111C169.269 164.277 166.332 165.494 163.268 165.494H151.718L152.247 159.714Z" fill="#f1cc21" />
+        </g>
+      </>
+    ),
+  },
+  {
+    name: 'Yahoo Finance',
+    color: '#6001d2',
+    ink: '#ffffff',
+    box: 24,
+    size: 15,
+    // Yahoo writes class shares with a dash (BRK-B) where the brokers use a dot.
+    url: (t) => `https://finance.yahoo.com/quote/${t.replace(/\./g, '-')}`,
+    mark: () => <path d="M18.86 1.56L14.27 11.87H19.4L24 1.56H18.86M0 6.71L5.15 18.27L3.3 22.44H7.83L14.69 6.71H10.19L7.39 13.44L4.62 6.71H0M15.62 12.87C13.95 12.87 12.71 14.12 12.71 15.58C12.71 17 13.91 18.19 15.5 18.19C17.18 18.19 18.43 16.96 18.43 15.5C18.43 14.03 17.23 12.87 15.62 12.87Z" />,
+  },
+]
+
+// Outbound quote/trade links for one ticker, as brand-coloured badges. Login,
+// if a site wants one, is the reader's problem — these just land on the
+// symbol's page.
+export function SymbolLinks({ ticker }) {
+  const clipId = useId().replace(/:/g, '')
+  const t = String(ticker || '').trim().toUpperCase()
+  if (!t) return null
+  return (
+    <span className="symbol-links">
+      {SYMBOL_SITES.map((site) => (
+        <a key={site.name} className="symbol-link" href={site.url(encodeURIComponent(t))}
+           target="_blank" rel="noreferrer" title={`${t} on ${site.name}`}
+           style={{ background: site.color, color: site.ink }}>
+          <svg width={site.size} height={site.size} viewBox={`0 0 ${site.box} ${site.box}`}
+               fill="currentColor" aria-hidden="true">
+            {site.mark(`${clipId}-${site.name}`)}
+          </svg>
+          <span className="sr-only">Open {t} on {site.name}</span>
+        </a>
+      ))}
+    </span>
+  )
+}
+
 export function DateLink({ d }) {
   if (!d) return <span className="muted">–</span>
   return <a className="dlink" href={href('day', d)} onClick={(e) => e.stopPropagation()}>{d}</a>

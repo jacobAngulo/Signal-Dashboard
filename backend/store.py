@@ -23,6 +23,7 @@ except ImportError:  # pragma: no cover - exercised only in an incomplete env
     duckdb = None
 
 from .config import (
+    CANDIDATE_PRICE_REFRESH_SECONDS,
     FOUNDRY_ATTENTION,
     FOUNDRY_DB,
     FOUNDRY_GATE,
@@ -960,6 +961,19 @@ class Store:
         self._next_price_attempt = 0.0
         self._price_inputs_built = None
         self._price_thread = None
+        # Second tier: prices for the LSTM score candidates, which outnumber
+        # the decision universe roughly forty to one. Kept in its own book so
+        # a slow candidate rebuild never delays or partially fills the
+        # decision book that the rest of the dashboard reads.
+        self.candidate_price_book = ContinuousPriceBook()
+        self.candidate_price_load_error = None
+        # Bumped whenever either book is swapped. Anything expensive derived
+        # from prices (the enriched candidate set) caches against this plus the
+        # producer's own fingerprint, instead of recomputing per request.
+        self.price_generation = 0
+        self._next_candidate_price_attempt = 0.0
+        self._candidate_price_inputs_built = None
+        self._candidate_price_thread = None
 
     def refresh(self):
         # Single-flight: a cold price build fires one continuous-ohlcv/bulk
@@ -1018,6 +1032,22 @@ class Store:
                 self._price_thread = thread
                 thread.start()
             self._build_ticker_index()
+        # The candidate tier is paced purely by its TTL, never by a universe
+        # change: the score files publish a different candidate set every day
+        # and each rebuild is ~29 gateway chunks, so rebuilding on change
+        # would mean rebuilding continuously. Candidate returns lag by design.
+        if (
+            (self._candidate_price_inputs_built is None
+             or now >= self._next_candidate_price_attempt)
+            and not self._candidate_price_build_busy()
+        ):
+            thread = threading.Thread(
+                target=self._candidate_price_build_worker,
+                daemon=True,
+                name="dashboard-candidate-price-build",
+            )
+            self._candidate_price_thread = thread
+            thread.start()
 
     def _price_build_busy(self):
         thread = self._price_thread
@@ -1047,12 +1077,96 @@ class Store:
             )
             self._build_ticker_index()
 
+    def _candidate_price_inputs(self):
+        """The LSTM score-candidate universe the second price tier covers."""
+        lstm = self.producers.get("lstm")
+        scores = getattr(lstm, "scores", {}) or {}
+        tickers = set()
+        dates = []
+        for date, frame in scores.items():
+            if frame is None or frame.empty:
+                continue
+            if "ticker" not in frame.columns or "status" not in frame.columns:
+                continue
+            hits = frame.loc[
+                frame["status"].astype("string").str.strip().str.lower()
+                == "buy_candidate",
+                "ticker",
+            ]
+            names = {
+                str(value).strip().upper()
+                for value in hits.tolist()
+                if value is not None and str(value).strip()
+            }
+            if names:
+                tickers.update(names)
+                dates.append(date)
+        return (frozenset(tickers), min(dates) if dates else None)
+
+    def _candidate_price_build_busy(self):
+        thread = self._candidate_price_thread
+        return thread is not None and thread.is_alive()
+
+    def _build_candidate_prices(self, inputs):
+        tickers, start = inputs
+        if not tickers:
+            self.candidate_price_book = ContinuousPriceBook()
+            self.candidate_price_load_error = None
+            self.price_generation += 1
+            return
+        gateway = None
+        try:
+            if self.gateway_factory is not None:
+                gateway = self.gateway_factory()
+            else:
+                gateway = HTTPGateway(AV_GATEWAY_URL)
+            next_book = ContinuousPriceBook()
+            next_book.load(gateway, tickers, start=start)
+            self.candidate_price_book = next_book
+            self.candidate_price_load_error = None
+            self.price_generation += 1
+        except Exception as exc:
+            # Same fail-closed contract as the decision book: a failed or
+            # partial candidate build never replaces a good snapshot, and
+            # candidates show no returns until one fully succeeds.
+            self.candidate_price_load_error = str(exc)
+        finally:
+            if gateway is not None and hasattr(gateway, "close"):
+                gateway.close()
+
+    def _candidate_price_build_worker(self):
+        inputs = self._candidate_price_inputs()
+        try:
+            self._build_candidate_prices(inputs)
+        finally:
+            self._candidate_price_inputs_built = inputs
+            self._next_candidate_price_attempt = time.monotonic() + (
+                min(600.0, float(CANDIDATE_PRICE_REFRESH_SECONDS))
+                if self.candidate_price_load_error
+                else float(CANDIDATE_PRICE_REFRESH_SECONDS)
+            )
+
     def trading_calendar(self):
         """Sorted trading dates observed in the daily producers' score files."""
         ds = set()
         for name in PRODUCERS:
             ds.update(self.producers[name].dates)
         return tuple(sorted(ds))
+
+    def producer_status_exit(self, producer, ticker, after_date, status):
+        """First date > `after_date` on which `ticker` carried `status` in
+        `producer`'s score history. Read-only over already-loaded history --
+        no file reads, no new I/O."""
+        prod = self.producers.get(producer)
+        if prod is None or after_date is None:
+            return None
+        for row in getattr(prod, "history", {}).get(str(ticker).upper(), []):
+            date = row.get("date")
+            if date is None or date <= after_date:
+                continue
+            if row.get("status") == status:
+                return date
+        return None
 
     def _build_ticker_index(self):
         idx = {}
@@ -1102,6 +1216,7 @@ class Store:
             next_book.load(gateway, tickers, start=start)
             self.price_book = next_book
             self.price_load_error = None
+            self.price_generation += 1
         except Exception as exc:
             # Fail closed: an unavailable/malformed gateway never introduces
             # reconstructed or partially loaded returns. The last fully
@@ -1157,14 +1272,35 @@ class Store:
         dates, px = s
         return px[-1], dates[-1]
 
+    def _book_for(self, ticker):
+        """Decision tickers read the fast book, candidate-only ones the slow tier.
+
+        Membership decides, not emptiness of the result: a decision ticker with
+        a coverage gap must keep reporting the decision book's fail-closed
+        reason rather than silently sourcing a second opinion.
+        """
+        key = str(ticker).upper()
+        if key in self.price_book.points:
+            return self.price_book
+        return self.candidate_price_book
+
     def series(self, ticker, start=None):
-        return self.price_book.series(ticker, start=start)
+        return self._book_for(ticker).series(ticker, start=start)
 
     def performance(self, ticker, date, *, sessions=None, through_last=False,
                     entry_snap=None):
-        return self.price_book.performance(
+        return self._book_for(ticker).performance(
             ticker, date, sessions=sessions, through_last=through_last,
             entry_snap=entry_snap,
+        )
+
+    def simulate_exit(self, ticker, entry_date, *, stop=None, target=None,
+                      max_sessions=20, side="long", entry_snap=None,
+                      trailing=False):
+        return self._book_for(ticker).simulate_exit(
+            ticker, entry_date, stop=stop, target=target,
+            max_sessions=max_sessions, side=side, entry_snap=entry_snap,
+            trailing=trailing,
         )
 
     def intraday_series(self, ticker, *, timeframe, start, end=None):

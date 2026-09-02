@@ -119,6 +119,19 @@ a.tlink:hover { color: var(--accent); border-color: var(--accent); }
 a.dlink { color: var(--muted); text-decoration: none; border-bottom: 1px dotted transparent; }
 a.dlink:hover { color: var(--accent); border-color: var(--accent); }
 
+/* outbound quote/trade links, ticker page header — brand-coloured icon tiles */
+.symbol-links { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+a.symbol-link {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 999px; overflow: hidden;
+  text-decoration: none; border: 1px solid #0000;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+}
+a.symbol-link:hover { filter: brightness(1.12); transform: translateY(-1px); }
+a.symbol-link:focus-visible {
+  outline: none; box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+}
+
 .tag {
   display: inline-block; padding: 1px 8px; border-radius: 999px;
   font-size: 11px; font-weight: 600; border: 1px solid var(--border);
@@ -206,7 +219,7 @@ select, input {
 .hm-legend .hm-cell { width: 11px; height: 11px; }
 
 /* breadcrumb page header */
-.crumb { display: flex; align-items: center; gap: 12px; margin: 2px 0 12px; }
+.crumb { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin: 2px 0 12px; }
 .crumb-title { font-size: 19px; font-weight: 700; }
 
 .section-h { margin: 14px 0 6px; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
@@ -363,6 +376,11 @@ select, input {
 .disabled-control { opacity: .55; }
 .full-btn { width: 100%; margin: 3px 0 0 !important; }
 
+/* TB-46: compact Exit-rules control (ticker page) -- same .filter-row layout
+   as everywhere else, just with fixed-width number inputs so four controls
+   and a button fit one line instead of stretching to fill the card. */
+.exit-rules-compact input[type="number"] { width: 70px; }
+
 .kbd-hint {
   position: absolute; right: 7px; top: 50%; transform: translateY(-50%);
   font-size: 10px; color: var(--muted); border: 1px solid var(--border);
@@ -393,27 +411,67 @@ select, input {
   clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important;
 }
 
-.window-table { min-width: 760px; }
-.window-cell { min-width: 150px; vertical-align: top; white-space: normal; }
-.window-cell-meta { margin-bottom: 3px; white-space: nowrap; }
-.window-signal {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 8px; padding: 3px 0;
+/* The LSTM tab is a flat candidate table now: one row per candidate, every
+   model vector sortable, rather than a day x horizon grid of stacked chips. */
+.candidate-table { min-width: 900px; }
+.candidate-table td, .candidate-table th { white-space: nowrap; }
+.candidate-table .col-ret_1d, .candidate-table .col-ret_5d,
+.candidate-table .col-ret_20d,
+.candidate-table .col-ret_since, .candidate-table .col-adj_prob,
+.candidate-table .col-pred_prob, .candidate-table .col-pred_std,
+.candidate-table .col-volatility, .candidate-table .col-volume_ratio_20,
+.candidate-table .col-close, .candidate-table .col-entry_px,
+.candidate-table .col-last_px, .candidate-table .col-attention_horizon_sessions {
+  font-variant-numeric: tabular-nums;
 }
-.window-signal.selected { background: #12351f33; }
-.window-date { min-width: 122px; vertical-align: top; text-align: left; }
-.window-date > * { display: block; margin-bottom: 2px; }
-.window-table th:first-child { position: sticky; left: 0; z-index: 3; }
-.th-sub {
-  display: block; margin-top: 1px; color: var(--muted);
-  font-size: 9.5px; font-weight: 400;
+.candidate-table th:first-child, .candidate-table td:first-child {
+  position: sticky; left: 0; z-index: 3; background: var(--panel);
 }
-.probability-btn {
-  border: 0; background: transparent; color: var(--accent);
-  font: inherit; font-variant-numeric: tabular-nums; cursor: pointer; padding: 1px 3px;
+.candidate-ticker { display: inline-flex; align-items: center; gap: 5px; }
+.vector-table { min-width: 560px; }
+.vector-table td, .vector-table th { white-space: nowrap; }
+.vector-table .col-n, .vector-table .col-picks, .vector-table .col-ret_1d,
+.vector-table .col-ret_5d, .vector-table .col-ret_since, .vector-table .col-wr_5d {
+  font-variant-numeric: tabular-nums;
 }
-.probability-btn:hover { text-decoration: underline; }
-.window-more { margin-top: 3px; }
+.table-pager {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  border-top: 1px solid var(--border);
+  margin: 10px -14px -12px; padding: 10px 14px;
+}
+/* The pager also renders above the table, where the bottom margin would pull
+   it into the header row. */
+.table-pager:first-child {
+  border-top: 0; border-bottom: 1px solid var(--border);
+  margin: -6px -14px 10px;
+}
+.table-pager .btn[disabled] { opacity: .45; cursor: default; }
+.tier-note p { margin: 0; }
+.slice-summary { margin-left: auto; }
+
+/* Every filter change is a server round-trip now, so the table has to say it
+   is working. Dimmed rather than blanked: the previous page stays readable
+   and the layout does not jump. */
+.table-wrap.is-loading {
+  opacity: .45; pointer-events: none; transition: opacity .12s ease-in;
+}
+
+/* Column headers deliberately keep the app-wide `top: 0`. `.table-wrap` sets
+   `overflow-x: auto`, which makes it a scroll container on both axes, so these
+   headers stick to the wrapper rather than to the page — any non-zero offset
+   pushes them down *inside* the table and over the first rows. The headers
+   scrolling away on a long table is a real annoyance, but the fix is a
+   scrollable wrapper height, not an offset. */
+.vector-table tr.clickable:hover th, .vector-table tr.clickable:hover td {
+  background: var(--panel-2);
+}
+/* A price-basis bucket label is ~90 characters and was pushing the spread —
+   the column the list is ranked by — off the right edge. Clamp it; the full
+   value is on the title attribute. */
+.vector-table .bucket-label {
+  max-width: 260px; overflow: hidden; text-overflow: ellipsis;
+}
+.bucket-n { opacity: .55; font-size: 10.5px; }
 .card-footer {
   border-top: 1px solid var(--border);
   margin: 10px -14px -12px; padding: 10px 14px;
@@ -472,6 +530,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   nav a { flex: 0 0 auto; }
   .page-head { align-items: flex-start; flex-direction: column; gap: 7px; }
   .page-actions { flex-wrap: wrap; }
+  .symbol-links { margin-left: 0; flex-wrap: wrap; }
   .filter-date-grid { grid-template-columns: 1fr; }
   .filter-row { align-items: stretch; }
   .filter-row > label:not(.check) { min-width: calc(50% - 8px); flex: 1; }
@@ -491,6 +550,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .signal-table .col-ret_20d,
   .signal-table .col-spark { display: none; }
   .signal-table { min-width: 650px; }
-  .window-table-wrap { margin-inline: -14px; }
+  .candidate-table .col-volatility,
+  .candidate-table .col-close,
+  .candidate-table .col-ret_20d,
+  .candidate-table .col-volume_ratio_20 { display: none; }
+  .candidate-table { min-width: 620px; }
   .pagination { justify-content: space-between; }
 }

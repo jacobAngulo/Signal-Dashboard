@@ -15,6 +15,7 @@ Environment=AV_GATEWAY_URL=http://127.0.0.1:8765
 # explaining the credential is missing. `backend/auth.py` treats unconfigured
 # as "refuse everyone", never as "let everyone through".
 EnvironmentFile=-/projects/Signal-Dashboard/.env.local
+EnvironmentFile=/etc/saas-mail.env
 ExecStart=/projects/Signal-Dashboard/.venv/bin/python -m uvicorn backend.main:app --host 127.0.0.1 --port 8010
 Restart=always
 RestartSec=5

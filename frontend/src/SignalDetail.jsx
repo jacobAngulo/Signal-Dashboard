@@ -14,6 +14,10 @@ const CORE_KEYS = new Set([
   'event_date', 'published_at', 'extracted_at', 'as_of_timestamp', 'as_of_source',
   'source', 'n_grouped', 'n_events', 'gate_reason', 'w_pos', 'w_neg',
   'last_published_at',
+  // TB-46: shown in the "window"/"exit" stat cells instead
+  'window_label', 'window_sessions', 'window_basis', 'window_note',
+  'exit_basis', 'exit_state', 'exit_date', 'exit_px', 'exit_return',
+  'sessions_elapsed', 'exit_note',
 ])
 
 // Date-only publish values (no time known) pass through untouched.
@@ -140,6 +144,15 @@ export default function SignalDetail({ signal, onClose }) {
                     sub={signal.ret_since_actionable != null
                       ? `session basis ${(signal.ret_since_actionable * 100).toFixed(1)}%`
                       : undefined} />
+          <MiniStat label="window" v={signal.window_label || 'n/a'}
+                    sub={signal.window_note} />
+          <MiniStat label="exit"
+                    v={signal.exit_state === 'closed' ? <Pct v={signal.exit_return} />
+                      : signal.exit_state === 'open' ? 'open' : '–'}
+                    sub={signal.exit_state === 'closed' ? signal.exit_date
+                      : signal.exit_state === 'open' && signal.sessions_elapsed != null && signal.window_sessions
+                        ? `${signal.sessions_elapsed}/${signal.window_sessions} sessions`
+                        : signal.exit_note} />
         </div>
 
         <h4>Price — signal dates marked</h4>

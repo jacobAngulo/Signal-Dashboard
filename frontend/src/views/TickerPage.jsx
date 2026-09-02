@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { api, PRODUCER_META } from '../api.js'
 import { fmtPct, fmtPx, fmtTs } from '../format.js'
-import { Card, EmptyState, ErrorBox, ProducerTag, Spinner, Stat, Tag } from '../ui.jsx'
+import { Card, EmptyState, ErrorBox, ExitRules, ProducerTag, Spinner, Stat, SymbolLinks, Tag, pctToFraction } from '../ui.jsx'
 import { HistoryChart, PriceChart } from '../charts.jsx'
 import SignalTable from '../SignalTable.jsx'
 import SignalDetail from '../SignalDetail.jsx'
@@ -18,16 +18,30 @@ export default function TickerPage({ ticker }) {
   const [chartErr, setChartErr] = useState(null)
   const [chartLoading, setChartLoading] = useState(true)
 
+  // TB-46: stop-loss / take-profit historical simulation, same control as
+  // Explore's (see ui.jsx ExitRules) but local to this page -- no URL wiring,
+  // just refetching /api/ticker/{t} with the sim params attached.
+  const [stopPct, setStopPct] = useState('')
+  const [targetPct, setTargetPct] = useState('')
+  const [exitWindow, setExitWindow] = useState('20')
+  const [trailing, setTrailing] = useState(false)
+  const clearExitRule = () => { setStopPct(''); setTargetPct(''); setExitWindow('20'); setTrailing(false) }
+
   useEffect(() => {
     const controller = new AbortController()
     setData(null); setErr(null)
-    const load = () => api(`ticker/${ticker}`, null, { signal: controller.signal })
+    const load = () => api(`ticker/${ticker}`, {
+      stop_pct: pctToFraction(stopPct),
+      target_pct: pctToFraction(targetPct),
+      exit_window: exitWindow || 20,
+      trailing,
+    }, { signal: controller.signal })
       .then((next) => { setData(next); setErr(null) })
       .catch((nextErr) => { if (nextErr.name !== 'AbortError') setErr(nextErr) })
     load()
     const timer = setInterval(load, 60000)
     return () => { clearInterval(timer); controller.abort() }
-  }, [ticker])
+  }, [ticker, stopPct, targetPct, exitWindow, trailing])
 
   useEffect(() => {
     if (interval === '1Day') {
@@ -86,6 +100,7 @@ export default function TickerPage({ ticker }) {
             CA
           </Tag>
         )}
+        <SymbolLinks ticker={data.ticker} />
       </div>
 
       {stale && (
@@ -159,6 +174,17 @@ export default function TickerPage({ ticker }) {
       {!historyEntries.length && (
         <Card><EmptyState title="No score history" detail="This ticker has no retained daily model scores." /></Card>
       )}
+
+      <Card title="Exit rules">
+        <ExitRules
+          stopPct={stopPct} setStopPct={setStopPct}
+          targetPct={targetPct} setTargetPct={setTargetPct}
+          exitWindow={exitWindow} setExitWindow={setExitWindow}
+          trailing={trailing} setTrailing={setTrailing}
+          onClear={clearExitRule}
+          compact
+        />
+      </Card>
 
       <Card title={`Signals for ${data.ticker}`}>
         <SignalTable rows={data.signals} onRow={setSel} hide={['ticker', 'spark']}

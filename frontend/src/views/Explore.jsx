@@ -1,7 +1,7 @@
 import React, { useDeferredValue, useEffect, useState } from 'react'
 import { api, PRODUCER_META } from '../api.js'
 import { fmtPct } from '../format.js'
-import { Card, EmptyState, ErrorBox, Spinner } from '../ui.jsx'
+import { Card, EmptyState, ErrorBox, ExitRules, Spinner, pctToFraction } from '../ui.jsx'
 import SignalTable from '../SignalTable.jsx'
 import SignalDetail from '../SignalDetail.jsx'
 
@@ -26,7 +26,18 @@ export default function Explore({ query = {} }) {
   const [minMetric, setMinMetric] = useState(query.min || '')
   const [offset, setOffset] = useState(0)
 
-  useEffect(() => { setOffset(0) }, [producer, from, to, buysOnly, deferredTicker, status, minMetric])
+  // TB-46: stop-loss / take-profit historical simulation. `stopPct`/`targetPct`
+  // are whole-percent strings ("5") so the input never makes Jacob type a
+  // decimal -- pctToFraction converts to the 0-1 fraction the API wants.
+  const [stopPct, setStopPct] = useState(query.stop || '')
+  const [targetPct, setTargetPct] = useState(query.target || '')
+  const [exitWindow, setExitWindow] = useState(query.win || '20')
+  const [trailing, setTrailing] = useState(query.trail === '1')
+
+  useEffect(() => { setOffset(0) }, [
+    producer, from, to, buysOnly, deferredTicker, status, minMetric,
+    stopPct, targetPct, exitWindow, trailing,
+  ])
 
   useEffect(() => {
     const params = new URLSearchParams()
@@ -37,8 +48,13 @@ export default function Explore({ query = {} }) {
     if (ticker) params.set('ticker', ticker)
     if (status) params.set('status', status)
     if (producer && minMetric) params.set('min', minMetric)
+    if (stopPct) params.set('stop', stopPct)
+    if (targetPct) params.set('target', targetPct)
+    if (exitWindow && exitWindow !== '20') params.set('win', exitWindow)
+    if (trailing) params.set('trail', '1')
     history.replaceState(null, '', `#/explore${params.size ? `?${params}` : ''}`)
-  }, [producer, from, to, buysOnly, ticker, status, minMetric])
+  }, [producer, from, to, buysOnly, ticker, status, minMetric,
+      stopPct, targetPct, exitWindow, trailing])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -54,20 +70,28 @@ export default function Explore({ query = {} }) {
       limit: PAGE,
       offset,
       spark: true,
+      stop_pct: pctToFraction(stopPct),
+      target_pct: pctToFraction(targetPct),
+      exit_window: exitWindow || 20,
+      trailing,
     }, { signal: controller.signal })
       .then((next) => { setData(next); setErr(null) })
       .catch((nextErr) => { if (nextErr.name !== 'AbortError') setErr(nextErr) })
       .finally(() => { if (!controller.signal.aborted) setLoading(false) })
     return () => controller.abort()
-  }, [producer, from, to, buysOnly, deferredTicker, status, minMetric, offset])
+  }, [producer, from, to, buysOnly, deferredTicker, status, minMetric, offset,
+      stopPct, targetPct, exitWindow, trailing])
 
   const reset = () => {
     setProducer(''); setFrom(''); setTo(''); setBuysOnly(true)
     setTicker(''); setStatus(''); setMinMetric(''); setOffset(0)
+    setStopPct(''); setTargetPct(''); setExitWindow('20'); setTrailing(false)
   }
+  const clearExitRule = () => { setStopPct(''); setTargetPct(''); setExitWindow('20'); setTrailing(false) }
   const activeFilters = [producer, from, to, ticker, status, producer && minMetric, !buysOnly]
     .filter(Boolean).length
   const summary = data?.summary || {}
+  const sim = summary.sim
   const metricName = producer ? PRODUCER_META[producer]?.metric : null
   const shownFrom = data?.total ? offset + 1 : 0
   const shownTo = data ? Math.min(offset + data.signals.length, data.total) : 0
@@ -130,6 +154,16 @@ export default function Explore({ query = {} }) {
             </div>}
           </Card>
 
+          <Card title="Exit rules">
+            <ExitRules
+              stopPct={stopPct} setStopPct={setStopPct}
+              targetPct={targetPct} setTargetPct={setTargetPct}
+              exitWindow={exitWindow} setExitWindow={setExitWindow}
+              trailing={trailing} setTrailing={setTrailing}
+              onClear={clearExitRule}
+            />
+          </Card>
+
           <Card title="Slice performance" className={loading ? 'refetching' : ''}>
             <div className="kv-grid">
               <span>signals</span><b>{summary.n ?? '–'}</b>
@@ -139,6 +173,22 @@ export default function Explore({ query = {} }) {
               <span>avg since</span><b className={summary.avg_since > 0 ? 'pos' : summary.avg_since < 0 ? 'neg' : ''}>{summary.avg_since == null ? '–' : fmtPct(summary.avg_since)}</b>
             </div>
             <div className="muted small">computed over the full filtered slice</div>
+            {sim && (
+              <>
+                <div className="kv-grid small" style={{ marginTop: 8 }}>
+                  <span>target hit</span><b className="pos">{sim.counts.target}</b>
+                  <span>stopped out</span><b className="neg">{sim.counts.stop}</b>
+                  <span>neither</span><b>{sim.counts.held + sim.counts.open}</b>
+                  <span>hit rate</span><b>{sim.hit_rate == null ? '–' : fmtPct(sim.hit_rate, 0)}</b>
+                  <span>avg return at exit</span>
+                  <b className={sim.avg_return > 0 ? 'pos' : sim.avg_return < 0 ? 'neg' : ''}>
+                    {sim.avg_return == null ? '–' : fmtPct(sim.avg_return)}
+                  </b>
+                  {sim.n_blocked > 0 && (<><span>CA-blocked</span><b>{sim.n_blocked}</b></>)}
+                </div>
+                <div className="muted small">stop/target simulation over the same slice</div>
+              </>
+            )}
           </Card>
         </aside>
 

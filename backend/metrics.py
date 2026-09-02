@@ -5,15 +5,254 @@ systems and only exposes what the producers generated and how it moved.
 """
 from collections import defaultdict
 from datetime import date as _date
+import math
 from statistics import median
 
+from . import trading_days
 from .store import STORE
 
 HORIZONS = (1, 5, 20)
 
+# TB-46: per-producer holding window, in XNYS trading sessions. Copied by
+# value from the LSTM repo's own dataset builder rather than imported, so this
+# repo stays decoupled from that one -- see docs/TB-46-signal-windows-plan.md.
+LSTM_HORIZON_SESSIONS = {"1d": 1, "1w": 5, "1m": 21, "6m": 126}
 
-def enrich(rec, spark=False):
-    """Attach entry price, forward returns and a performance status."""
+
+def _finite(v):
+    """`v` as a float, or None if it's missing, NaN, or not numeric."""
+    if v is None:
+        return None
+    try:
+        v = float(v)
+    except (TypeError, ValueError):
+        return None
+    return v if math.isfinite(v) else None
+
+
+def _text(v):
+    """`v` as a stripped string, or None if it's missing/blank/NaN."""
+    if v is None:
+        return None
+    if isinstance(v, float) and math.isnan(v):
+        return None
+    text = str(v).strip()
+    return text or None
+
+
+_WINDOW_NONE = {
+    "window_label": None, "window_sessions": None,
+    "window_basis": None, "window_note": None,
+}
+
+
+def _window(rec):
+    """Per-producer holding window, or None when the producer has none.
+
+    Deliberately not unified into a single number: LSTM publishes a real
+    session count, foundry publishes a word an LLM chose, intrinsic publishes
+    nothing. Flattening those into one scale would be inventing data.
+    """
+    producer = rec.get("producer")
+    if producer == "lstm":
+        if rec.get("tier") == "lstm_attention":
+            # The attention tier carries its own expected holding horizon,
+            # distinct from `best_horizon` (the model's strongest head, not
+            # the attention window). Fall back to best_horizon only when the
+            # attention-specific field is absent.
+            sessions = _finite(rec.get("attention_horizon_sessions"))
+            if sessions is not None:
+                sessions = int(sessions)
+                return {
+                    "window_label": f"{sessions} sessions",
+                    "window_sessions": sessions,
+                    "window_basis": "attention_horizon",
+                    "window_note": "attention tier expected holding horizon",
+                }
+            horizon = _text(rec.get("best_horizon"))
+            sessions = LSTM_HORIZON_SESSIONS.get(horizon) if horizon else None
+            return {
+                "window_label": horizon,
+                "window_sessions": sessions,
+                "window_basis": "producer_horizon" if horizon else None,
+                "window_note": (
+                    f"model horizon — {sessions} trading sessions"
+                    if sessions is not None
+                    else "model horizon" if horizon else None
+                ),
+            }
+        horizon = _text(rec.get("horizon"))
+        if horizon is None:
+            return dict(_WINDOW_NONE)
+        sessions = LSTM_HORIZON_SESSIONS.get(horizon)
+        return {
+            "window_label": horizon,
+            "window_sessions": sessions,
+            "window_basis": "producer_horizon",
+            "window_note": (
+                f"model horizon — {sessions} trading sessions"
+                if sessions is not None
+                # Never guess: an unrecognized horizon string is still shown
+                # verbatim, but with no invented session count.
+                else "model horizon — unrecognized value, published verbatim"
+            ),
+        }
+    if producer == "foundry":
+        horizon = _text(rec.get("horizon"))
+        if horizon is None:
+            return dict(_WINDOW_NONE)
+        return {
+            "window_label": horizon,
+            "window_sessions": None,
+            "window_basis": "llm_time_sensitivity",
+            "window_note": (
+                "the extraction model's own word (intraday/swing/long_term); "
+                "not a session count — see TB-57"
+            ),
+        }
+    if producer == "intrinsic":
+        return {
+            **_WINDOW_NONE,
+            "window_note": (
+                "valuation snapshot — this producer publishes no holding window"
+            ),
+        }
+    return dict(_WINDOW_NONE)
+
+
+_EXIT_NONE = {
+    "exit_basis": None, "exit_state": None, "exit_date": None,
+    "exit_px": None, "exit_return": None, "sessions_elapsed": None,
+    "exit_note": None,
+}
+
+
+def _sessions_elapsed(ticker, start_date, end_date):
+    """Trading sessions from `start_date` to `end_date`, exclusive of start.
+
+    Prefers the forward calendar (works even when the price book has a gap);
+    falls back to counting the price book's own points, which needs no
+    dependency and is exact for any range that has already traded.
+    """
+    if start_date is None or end_date is None:
+        return None
+    elapsed = trading_days.sessions_between(start_date, end_date)
+    if elapsed is not None:
+        return elapsed
+    series = STORE.series(ticker, start=start_date)
+    dates = [p["date"] for p in series]
+    if start_date in dates and end_date in dates:
+        return dates.index(end_date) - dates.index(start_date)
+    return None
+
+
+def _native_exit(rec, entry_date, window_sessions):
+    """When this signal's own producer logic would have sold.
+
+    Not an execution feature: a read-only replay of already-stored prices
+    against the producer's own published horizon or status, using the same
+    corporate-action guard as every other return on this dashboard
+    (`STORE.performance`) so a native exit can never report a number that
+    return-computation elsewhere would have refused to trust.
+    """
+    producer = rec.get("producer")
+    ticker = rec["ticker"]
+
+    if producer == "foundry":
+        return {**_EXIT_NONE, "exit_note": "this producer publishes no exit signal"}
+
+    if producer == "lstm":
+        out = dict(_EXIT_NONE)
+        out["exit_basis"] = "sessions"
+        if window_sessions is None:
+            out["exit_note"] = "unrecognized horizon — cannot compute a native exit"
+            return out
+        if entry_date is None:
+            out["exit_note"] = "no confirmed entry session yet"
+            return out
+        perf = STORE.performance(ticker, entry_date, sessions=window_sessions)
+        reason = perf.get("blocked_reason")
+        if reason == "pending_exit_session":
+            out["exit_state"] = "open"
+            out["exit_date"] = trading_days.session_offset(entry_date, window_sessions)
+            last = perf.get("last") or {}
+            out["sessions_elapsed"] = _sessions_elapsed(ticker, entry_date, last.get("date"))
+            out["exit_note"] = "model horizon not yet reached"
+        elif reason == "corporate_action_unresolved":
+            # The producer's time-based exit still happened on a known session;
+            # only the cross-boundary return is unsafe. Preserve the native exit
+            # state/date and withhold the return, matching `exit_state`'s
+            # contract that None means the producer has no native exit.
+            exit_point = perf.get("exit") or {}
+            out["exit_state"] = "closed"
+            out["exit_date"] = exit_point.get("date")
+            out["exit_px"] = exit_point.get("px")
+            out["sessions_elapsed"] = window_sessions
+            out["exit_note"] = (
+                "model horizon reached, but the return crosses an unresolved "
+                "corporate action"
+            )
+        elif reason is not None:
+            out["exit_note"] = reason
+        elif perf.get("return") is not None:
+            exit_point = perf.get("exit") or {}
+            out["exit_state"] = "closed"
+            out["exit_date"] = exit_point.get("date")
+            out["exit_px"] = exit_point.get("px")
+            out["exit_return"] = perf.get("return")
+            out["sessions_elapsed"] = window_sessions
+            out["exit_note"] = "model horizon reached"
+        return out
+
+    if producer == "intrinsic":
+        out = dict(_EXIT_NONE)
+        out["exit_basis"] = "producer_status"
+        if entry_date is None:
+            out["exit_note"] = "no confirmed entry session yet"
+            return out
+        # getattr, not a direct call: some test doubles patch `STORE` with a
+        # minimal stand-in that predates this method. Real Store always has
+        # it (backend/store.py) -- this only guards against an incomplete
+        # fixture, never real behavior.
+        status_exit = getattr(STORE, "producer_status_exit", None)
+        exit_date = (
+            status_exit("intrinsic", ticker, entry_date, "exit_candidate")
+            if status_exit is not None else None
+        )
+        if exit_date is None:
+            out["exit_state"] = "open"
+            out["exit_note"] = "price has not reached intrinsic value yet"
+            return out
+        out["exit_state"] = "closed"
+        out["exit_date"] = exit_date
+        sessions = _sessions_elapsed(ticker, entry_date, exit_date)
+        out["sessions_elapsed"] = sessions
+        if sessions is not None:
+            perf = STORE.performance(ticker, entry_date, sessions=sessions)
+            if perf.get("return") is not None:
+                exit_point = perf.get("exit") or {}
+                out["exit_px"] = exit_point.get("px")
+                out["exit_return"] = perf.get("return")
+            elif perf.get("blocked_reason") == "corporate_action_unresolved":
+                out["exit_note"] = (
+                    "status flipped, but the return crosses an unresolved "
+                    "corporate action"
+                )
+        return out
+
+    return dict(_EXIT_NONE)
+
+
+def enrich(rec, spark=False, directional=None):
+    """Attach entry price, forward returns and a performance status.
+
+    `directional` decides whether the row gets an up/down/flat reading or the
+    inert `no_action`. It defaults to "this was a BUY", because a SELL or WATCH
+    row has no long position whose direction would mean anything. LSTM score
+    candidates pass it explicitly: they carry BUY semantics and were simply not
+    the day's single winner, so reading their direction is the whole point of
+    the candidate view.
+    """
     out = dict(rec)
     ticker, dt = rec["ticker"], rec["date"]
     signal_price = rec.get("signal_price")
@@ -113,7 +352,7 @@ def enrich(rec, spark=False):
     book_last = STORE.price_max_date
     out["px_stale"] = bool(last_date and book_last and last_date < book_last)
 
-    if rec.get("decision") != "BUY":
+    if not (rec.get("decision") == "BUY" if directional is None else directional):
         out["status_perf"] = "no_action"
     elif entry is None:
         # "pending" must mean "resolves on a future close". If the ticker has
@@ -133,6 +372,9 @@ def enrich(rec, spark=False):
         out["status_perf"] = "down"
     else:
         out["status_perf"] = "flat"
+
+    out.update(_window(out))
+    out.update(_native_exit(out, entry_date, out["window_sessions"]))
 
     if spark:
         series = STORE.series(ticker)

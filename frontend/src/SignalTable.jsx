@@ -16,6 +16,10 @@ function EventTime({ r }) {
 export default function SignalTable({ rows, onRow, empty, maxHeight, hide = [] }) {
   const H = new Set(hide)
   const decisionKind = (d) => d === 'BUY' ? 'ok' : d === 'SELL' ? 'err' : d === 'WATCH' ? 'info' : 'muted'
+  // Only present with stop_pct/target_pct on the request -- see backend
+  // main._apply_sim. A page with no rows carrying it renders no column at
+  // all, matching the "no params, byte-identical response" API contract.
+  const hasSim = rows.some((r) => r.sim_outcome !== undefined)
   const columns = [
     !H.has('date') && {
       key: 'date', label: 'Date',
@@ -54,6 +58,13 @@ export default function SignalTable({ rows, onRow, empty, maxHeight, hide = [] }
       key: 'decision', label: 'Decision',
       render: (r) => <Tag kind={decisionKind(r.decision)}>{r.decision}</Tag>,
     },
+    !H.has('window') && {
+      key: 'window_label', label: 'Window',
+      title: 'per-producer holding window — LSTM: model horizon in sessions · Intrinsic: none published · Foundry: the extraction model\'s own word, not a session count',
+      render: (r) => r.window_label
+        ? <span title={r.window_note || undefined}>{r.window_label}</span>
+        : <span className="muted" title={r.window_note || 'this producer publishes no holding window'}>n/a</span>,
+    },
     {
       key: 'metric', label: 'Metric', align: 'right',
       title: 'LSTM: adjusted probability · Intrinsic: discount to intrinsic value · Foundry: event signal score',
@@ -61,7 +72,6 @@ export default function SignalTable({ rows, onRow, empty, maxHeight, hide = [] }
         <span>
           {fmtNum(r.metric, 3)} <span className="muted small">{PRODUCER_META[r.producer]?.metric}</span>
           {r.event_type ? <span className="muted small"> · {r.event_type}</span> : null}
-          {r.horizon ? <span className="muted small"> · {r.horizon}</span> : null}
         </span>
       ),
     },
@@ -83,6 +93,50 @@ export default function SignalTable({ rows, onRow, empty, maxHeight, hide = [] }
           <Pct v={r.ret_since} />{r.px_stale && r.ret_since != null ? <span className="warn"> ⚠</span> : null}
         </span>
       ),
+    },
+    {
+      key: 'exit_state', label: 'Exit',
+      title: "when this signal's own logic would have sold — a producer with no native exit shows a dash",
+      render: (r) => {
+        if (r.exit_state === 'closed') {
+          return (
+            <span title={r.exit_note || undefined}>
+              <DateLink d={r.exit_date} /> <Pct v={r.exit_return} />
+            </span>
+          )
+        }
+        if (r.exit_state === 'open') {
+          const fraction = r.sessions_elapsed != null && r.window_sessions
+            ? ` · ${r.sessions_elapsed}/${r.window_sessions}` : ''
+          return <span className="muted" title={r.exit_note || undefined}>open{fraction}</span>
+        }
+        return <span className="muted" title={r.exit_note || 'this producer publishes no exit signal'}>–</span>
+      },
+    },
+    hasSim && {
+      key: 'sim_outcome', label: 'Sim exit',
+      title: 'stop/target simulation for this signal — simulated on daily high/low prices, historical, not advice',
+      render: (r) => {
+        if (r.sim_blocked_reason) {
+          return (
+            <span className="muted" title={`corporate-action review flagged: ${r.sim_blocked_reason}`}>
+              CA
+            </span>
+          )
+        }
+        const kind = r.sim_outcome === 'target' ? 'ok' : r.sim_outcome === 'stop' ? 'err' : 'muted'
+        return (
+          <span>
+            <Tag kind={kind}>{r.sim_outcome || '–'}</Tag>
+            {r.sim_ambiguous && (
+              <span className="warn"
+                    title="stop and target both triggered in the same daily bar — resolved as stop"> ⚠</span>
+            )}
+            {r.sim_exit_date && <span className="muted small"> {r.sim_exit_date}</span>}
+            {r.sim_return != null && <Pct v={r.sim_return} />}
+          </span>
+        )
+      },
     },
     !H.has('spark') && {
       key: 'spark', label: 'Trend', sortVal: (r) => r.ret_since,

@@ -119,6 +119,19 @@ a.tlink:hover { color: var(--accent); border-color: var(--accent); }
 a.dlink { color: var(--muted); text-decoration: none; border-bottom: 1px dotted transparent; }
 a.dlink:hover { color: var(--accent); border-color: var(--accent); }
 
+/* outbound quote/trade links, ticker page header — brand-coloured icon tiles */
+.symbol-links { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+a.symbol-link {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 999px; overflow: hidden;
+  text-decoration: none; border: 1px solid #0000;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+}
+a.symbol-link:hover { filter: brightness(1.12); transform: translateY(-1px); }
+a.symbol-link:focus-visible {
+  outline: none; box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+}
+
 .tag {
   display: inline-block; padding: 1px 8px; border-radius: 999px;
   font-size: 11px; font-weight: 600; border: 1px solid var(--border);
@@ -206,7 +219,7 @@ select, input {
 .hm-legend .hm-cell { width: 11px; height: 11px; }
 
 /* breadcrumb page header */
-.crumb { display: flex; align-items: center; gap: 12px; margin: 2px 0 12px; }
+.crumb { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin: 2px 0 12px; }
 .crumb-title { font-size: 19px; font-weight: 700; }
 
 .section-h { margin: 14px 0 6px; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
@@ -472,6 +485,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   nav a { flex: 0 0 auto; }
   .page-head { align-items: flex-start; flex-direction: column; gap: 7px; }
   .page-actions { flex-wrap: wrap; }
+  .symbol-links { margin-left: 0; flex-wrap: wrap; }
   .filter-date-grid { grid-template-columns: 1fr; }
   .filter-row { align-items: stretch; }
   .filter-row > label:not(.check) { min-width: calc(50% - 8px); flex: 1; }

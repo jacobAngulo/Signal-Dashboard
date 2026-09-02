@@ -7,11 +7,26 @@ import {
 import { PRODUCER_META } from './api.js'
 import { navigate } from './nav.js'
 import { fmtPct, fmtPx } from './format.js'
+import { C } from './theme.js'
 
+// Tooltips are the one floating surface in 2a, so they take the inset fill to
+// occlude the plot behind them -- still square, still ruled. The colours are
+// getters because this object is built at import time, before styles.css runs.
 export const TOOLTIP_STYLE = {
-  backgroundColor: '#1a2130', border: '1px solid #2c3648',
-  borderRadius: 6, fontSize: 12,
+  borderRadius: 0,
+  fontSize: 12,
+  fontFamily: "'IBM Plex Mono', ui-monospace, monospace",
+  get backgroundColor() { return C.inset },
+  get border() { return `1px solid ${C.ruleStrong}` },
 }
+
+// Axis labels are values, so they take the mono face and the faint ink like
+// every other number in 2a. recharts wants literal props, not a class.
+export const axisTick = (fontSize = 10) => ({
+  fontSize,
+  fill: C.faint,
+  fontFamily: "'IBM Plex Mono', ui-monospace, monospace",
+})
 
 const RANGE_DAYS = { '1D': 1, '5D': 5, '1M': 31, '3M': 93, '6M': 186, '1Y': 366 }
 
@@ -65,7 +80,7 @@ function Candle({ x, y, width, height, payload }) {
   const open = Number.isFinite(payload.open) ? payload.open : payload.close
   const close = payload.close
   const up = close >= open
-  const color = up ? '#3ecf8e' : '#f07070'
+  const color = up ? C.up : C.down
   const span = high - low || 1
   const valueY = (value) => y + ((high - value) / span) * height
   const openY = valueY(open), closeY = valueY(close)
@@ -78,7 +93,7 @@ function Candle({ x, y, width, height, payload }) {
       <line x1={cx} x2={cx} y1={y} y2={y + Math.max(height, 1)}
             stroke={color} strokeWidth="1" />
       <rect x={cx - bodyW / 2} y={bodyY} width={bodyW} height={bodyH}
-            fill={up ? '#163d2c' : color} stroke={color} strokeWidth="1" />
+            fill={up ? 'none' : color} stroke={color} strokeWidth="1" />
     </g>
   )
 }
@@ -88,7 +103,7 @@ function OHLCBar({ x, y, width, height, payload }) {
   const high = payload.high, low = payload.low
   const open = Number.isFinite(payload.open) ? payload.open : payload.close
   const close = payload.close
-  const color = close >= open ? '#3ecf8e' : '#f07070'
+  const color = close >= open ? C.up : C.down
   const span = high - low || 1
   const valueY = (value) => y + ((high - value) / span) * height
   const cx = x + width / 2
@@ -212,15 +227,15 @@ export function PriceChart({
       <ResponsiveContainer width="100%" height={height}>
         <ComposedChart data={prepared} margin={{ top: 18, right: 12, bottom: 0, left: 0 }}
                        accessibilityLayer>
-          <CartesianGrid stroke="#222b3a" vertical={false} />
-          <XAxis dataKey="chart_x" tick={{ fontSize: 10 }} minTickGap={52}
+          <CartesianGrid stroke={C.hair} vertical={false} />
+          <XAxis dataKey="chart_x" tick={axisTick(10)} minTickGap={52}
                  tickFormatter={(value) => intraday ? formatMarketTick(value) : value} />
-          <YAxis yAxisId="price" tick={{ fontSize: 10 }} width={58}
+          <YAxis yAxisId="price" tick={axisTick(10)} width={58}
                  domain={['auto', 'auto']} tickFormatter={(v) => fmtPx(v)} />
           <YAxis yAxisId="volume" hide domain={[0, maxVolume ? maxVolume * 4 : 1]} />
           <Tooltip content={<TradingTooltip />} />
           {maxVolume > 0 && (
-            <Bar yAxisId="volume" dataKey="volume" fill="#5b9cf6" opacity={0.18}
+            <Bar yAxisId="volume" dataKey="volume" fill={C.rule} opacity={1}
                  isAnimationActive={false} />
           )}
           {mode === 'candles' ? (
@@ -231,16 +246,16 @@ export function PriceChart({
                  isAnimationActive={false} />
           ) : mode === 'area' ? (
             <Area yAxisId="price" dataKey="close" name="close"
-                  stroke="#8ab4f8" fill="#315d913d" strokeWidth={1.7}
+                  stroke={PRODUCER_META.lstm.text} fill={C.inset} strokeWidth={1.7}
                   dot={false} isAnimationActive={false} />
           ) : (
-            <Line yAxisId="price" dataKey="close" name="close" stroke="#8ab4f8"
+            <Line yAxisId="price" dataKey="close" name="close" stroke={PRODUCER_META.lstm.text}
                   strokeWidth={1.7} dot={false} isAnimationActive={false} />
           )}
           {groups.map((group) => {
             const hasBuy = group.decisions.includes('BUY')
             const hasSell = group.decisions.includes('SELL')
-            const fill = hasBuy ? '#f6c453' : hasSell ? '#f07070' : '#8b96a8'
+            const fill = hasBuy ? C.pending : hasSell ? C.down : C.muted
             const label = group.decisions.length > 1
               ? `${hasBuy ? '▲' : hasSell ? '▼' : '•'}×${group.decisions.length}`
               : hasBuy ? '▲' : hasSell ? '▼' : '•'
@@ -248,7 +263,7 @@ export function PriceChart({
               <ReferenceDot key={group.x} yAxisId="price"
                             x={group.x} y={byX[group.x]} r={5}
                             fill={fill}
-                            stroke={PRODUCER_META[group.producers[0]]?.color || '#fff'}
+                            stroke={PRODUCER_META[group.producers[0]]?.color || C.text}
                             strokeWidth={2}
                             label={{ value: label, position: 'top', fontSize: 10, fill }} />
             )
@@ -298,15 +313,15 @@ export function HistoryChart({ history, producer, threshold, height = 180 }) {
   return (
     <ResponsiveContainer width="100%" height={height}>
       <LineChart data={history} margin={{ top: 8, right: 12, bottom: 0, left: 0 }} accessibilityLayer>
-        <CartesianGrid stroke="#222b3a" vertical={false} />
-        <XAxis dataKey="date" tick={{ fontSize: 10 }} minTickGap={40} />
-        <YAxis tick={{ fontSize: 10 }} width={44} domain={['auto', 'auto']} />
+        <CartesianGrid stroke={C.hair} vertical={false} />
+        <XAxis dataKey="date" tick={axisTick(10)} minTickGap={40} />
+        <YAxis tick={axisTick(10)} width={44} domain={['auto', 'auto']} />
         <Tooltip contentStyle={TOOLTIP_STYLE} />
         {threshold !== undefined && (
-          <ReferenceLine y={threshold} stroke="#f6c453" strokeDasharray="4 3"
-                         label={{ value: `signal threshold ${threshold}`, fontSize: 9, fill: '#f6c453', position: 'insideTopRight' }} />
+          <ReferenceLine y={threshold} stroke={C.pending} strokeDasharray="3 3"
+                         label={{ value: `signal threshold ${threshold}`, fontSize: 9, fill: C.pending, position: 'insideTopRight' }} />
         )}
-        <Line dataKey="metric" name={meta?.metric || 'metric'} stroke={meta?.color || '#888'}
+        <Line dataKey="metric" name={meta?.metric || 'metric'} stroke={meta?.color || C.muted}
               strokeWidth={1.5} dot={{ r: 1.5 }} connectNulls />
       </LineChart>
     </ResponsiveContainer>
@@ -328,12 +343,12 @@ export function PerfScatter({ points, producer, height = 240, yKey = 'ret_5d', y
   return (
     <ResponsiveContainer width="100%" height={height}>
       <ScatterChart margin={{ top: 8, right: 12, bottom: 4, left: 0 }} accessibilityLayer>
-        <CartesianGrid stroke="#222b3a" />
+        <CartesianGrid stroke={C.hair} />
         <XAxis dataKey="metric" name={meta?.metric || 'metric'} type="number"
-               tick={{ fontSize: 10 }} domain={['auto', 'auto']}
+               tick={axisTick(10)} domain={['auto', 'auto']}
                label={{ value: meta?.metric, position: 'insideBottomRight',
-                        offset: -2, fontSize: 10, fill: '#7a8699' }} />
-        <YAxis dataKey={yKey} name={yLabel} type="number" tick={{ fontSize: 10 }} width={48}
+                        offset: -2, fontSize: 10, fill: C.faint }} />
+        <YAxis dataKey={yKey} name={yLabel} type="number" tick={axisTick(10)} width={48}
                tickFormatter={(v) => `${(v * 100).toFixed(0)}%`} />
         <ZAxis range={[45, 46]} />
         <Tooltip
@@ -351,8 +366,8 @@ export function PerfScatter({ points, producer, height = 240, yKey = 'ret_5d', y
             )
           }}
         />
-        <ReferenceLine y={0} stroke="#556" />
-        <Scatter name={meta?.label || producer} data={pts} fill={meta?.color || '#888'}
+        <ReferenceLine y={0} stroke={C.rule} />
+        <Scatter name={meta?.label || producer} data={pts} fill={meta?.color || C.muted}
                  onClick={open} cursor="pointer" />
       </ScatterChart>
     </ResponsiveContainer>
@@ -365,16 +380,16 @@ export function DistHist({ bins, color, height = 190 }) {
   return (
     <ResponsiveContainer width="100%" height={height}>
       <BarChart data={bins} margin={{ top: 8, right: 12, bottom: 0, left: 0 }} barGap={0} accessibilityLayer>
-        <CartesianGrid stroke="#222b3a" vertical={false} />
-        <XAxis dataKey="label" tick={{ fontSize: 9 }} interval={1} />
-        <YAxis tick={{ fontSize: 10 }} width={40} tickFormatter={(v) => `${(v * 100).toFixed(0)}%`} />
+        <CartesianGrid stroke={C.hair} vertical={false} />
+        <XAxis dataKey="label" tick={axisTick(9)} interval={1} />
+        <YAxis tick={axisTick(10)} width={40} tickFormatter={(v) => `${(v * 100).toFixed(0)}%`} />
         <Tooltip contentStyle={TOOLTIP_STYLE}
                  formatter={(v, name, item) => [
                    `${(v * 100).toFixed(1)}% (${name === 'universe' ? item.payload.n_universe : item.payload.n_signals} rows)`,
                    name,
                  ]} />
         <Legend />
-        <Bar dataKey="universe" name="universe" fill="#3a4356" />
+        <Bar dataKey="universe" name="universe" fill={C.rule} />
         <Bar dataKey="signals" name="signals" fill={color} />
       </BarChart>
     </ResponsiveContainer>

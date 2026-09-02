@@ -2,18 +2,18 @@ import React, { useId, useMemo, useState } from 'react'
 import { PRODUCER_META } from './api.js'
 import { href } from './nav.js'
 import { signCls, fmtPct, fmtMoney } from './format.js'
+import { C, signColor } from './theme.js'
 
 export function Tag({ kind, children, title }) {
   return <span title={title} className={`tag tag-${kind || 'default'}`}>{children}</span>
 }
 
+// A producer reads as its own hue underlined, not as a filled chip -- the
+// stylesheet carries the three hues so nothing here mixes colour into a fill.
 export function ProducerTag({ producer }) {
-  const meta = PRODUCER_META[producer] || { label: producer, color: '#888' }
-  return (
-    <span className="tag" style={{ background: meta.color + '22', color: meta.color, borderColor: meta.color + '55' }}>
-      {meta.label}
-    </span>
-  )
+  const meta = PRODUCER_META[producer]
+  if (!meta) return <span className="tag tag-muted">{producer}</span>
+  return <span className={`tag tag-${producer}`}>{meta.label}</span>
 }
 
 export function StatusTag({ status, title }) {
@@ -89,14 +89,14 @@ export function MiniSpark({ spark, ret }) {
   const span = max - min || 1
   const X = (i) => 2 + (i / (px.length - 1)) * (w - 4)
   const Y = (v) => 2 + (1 - (v - min) / span) * (h - 4)
-  const color = ret === null || ret === undefined ? '#7d8899' : ret > 0 ? '#3ecf8e' : ret < 0 ? '#f07070' : '#7d8899'
+  const color = signColor(ret)
   const pts = px.map((v, i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ')
   return (
     <svg width={w} height={h} className="minispark" role="img"
          aria-label={`price trend${ret == null ? '' : `, ${fmtPct(ret)} since signal`}`}>
       <polyline points={pts} fill="none" stroke={color} strokeWidth="1.3" />
       {signal_i !== null && signal_i !== undefined && signal_i < px.length && (
-        <circle cx={X(signal_i)} cy={Y(px[signal_i])} r="2.6" fill="#f6c453" />
+        <circle cx={X(signal_i)} cy={Y(px[signal_i])} r="2.2" fill={C.pending} />
       )}
     </svg>
   )

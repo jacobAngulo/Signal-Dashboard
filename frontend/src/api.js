@@ -1,3 +1,5 @@
+import { token } from './theme.js'
+
 // All requests are relative ("api/...") so the app works at the root of
 // :8010 directly and behind the /signal-dashboard/ nginx prefix unchanged.
 export async function api(path, params, options = {}) {
@@ -43,8 +45,22 @@ export async function api(path, params, options = {}) {
   return res.json()
 }
 
+// One hue per producer, held apart by hue angle rather than by brightness:
+// blue LSTM, violet Intrinsic, cyan Foundry. `color` is the line/mark hue and
+// `text` the brighter on-canvas variant; both come from styles.css via theme.js
+// so the charts and the stylesheet cannot drift.
+// `color` is the mark hue, `text` the brighter on-canvas variant. Both are
+// getters: styles.css is imported after the component tree, so a token read at
+// module-evaluation time would land before the stylesheet applied.
+const producer = (label, metric, hue) => ({
+  label,
+  metric,
+  get color() { return token(`--${hue}`) },
+  get text() { return token(`--${hue}-text`) },
+})
+
 export const PRODUCER_META = {
-  lstm: { label: 'LSTM', color: '#5b9cf6', metric: 'adj_prob' },
-  intrinsic: { label: 'Intrinsic', color: '#3ecf8e', metric: 'discount' },
-  foundry: { label: 'Foundry', color: '#f6c453', metric: 'score' },
+  lstm: producer('LSTM', 'adj_prob', 'lstm'),
+  intrinsic: producer('Intrinsic', 'discount', 'intrinsic'),
+  foundry: producer('Foundry', 'score', 'foundry'),
 }

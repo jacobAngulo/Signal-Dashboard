@@ -4,6 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Signal Dashboard</title>
+    <!-- Theme 2a is an IBM Plex pairing: Plex Sans for prose, Plex Mono for
+         every number, label and tag. styles.css falls back to the system UI and
+         mono stacks, so the dashboard still reads correctly if these never
+         arrive (an offline client, or a blocked font host). -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
   </head>
   <body>
     <div id="root"></div>

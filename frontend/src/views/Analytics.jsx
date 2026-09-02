@@ -6,7 +6,8 @@ import {
 import { api, PRODUCER_META } from '../api.js'
 import { fmtPct } from '../format.js'
 import { Card, DateLink, ErrorBox, Pct, PerfTag, ProducerTag, Spinner, Stat, Table, TickerLink } from '../ui.jsx'
-import { DistHist, PerfScatter, TOOLTIP_STYLE } from '../charts.jsx'
+import { axisTick, DistHist, PerfScatter, TOOLTIP_STYLE } from '../charts.jsx'
+import { C } from '../theme.js'
 
 export default function Analytics() {
   const [data, setData] = useState(null)
@@ -108,15 +109,15 @@ export default function Analytics() {
       <Card title="Cumulative return — every BUY at close, equal weight, 1-day hold">
         <ResponsiveContainer width="100%" height={240}>
           <LineChart data={data.cumulative} accessibilityLayer>
-            <CartesianGrid stroke="#222b3a" vertical={false} />
-            <XAxis dataKey="date" tick={{ fontSize: 10 }} minTickGap={30} />
-            <YAxis tick={{ fontSize: 10 }} width={46} domain={['auto', 'auto']}
+            <CartesianGrid stroke={C.hair} vertical={false} />
+            <XAxis dataKey="date" tick={axisTick(10)} minTickGap={30} />
+            <YAxis tick={axisTick(10)} width={46} domain={['auto', 'auto']}
                    tickFormatter={(v) => `${((v - 1) * 100).toFixed(0)}%`} />
             <Tooltip contentStyle={TOOLTIP_STYLE} formatter={(v) => fmtPct(v - 1)} />
             <Legend />
-            <ReferenceLine y={1} stroke="#556" />
+            <ReferenceLine y={1} stroke={C.rule} />
             {producers.map((name) => {
-              const meta = PRODUCER_META[name] || { label: name, color: '#888' }
+              const meta = PRODUCER_META[name] || { label: name, color: C.muted }
               return <Line key={name} dataKey={name} name={meta.label} stroke={meta.color} dot={false} connectNulls />
             })}
           </LineChart>
@@ -125,7 +126,7 @@ export default function Analytics() {
 
       <div className="grid-2">
         {producers.map((name) => {
-          const meta = PRODUCER_META[name] || { label: name, color: '#888', metric: 'metric' }
+          const meta = PRODUCER_META[name] || { label: name, color: C.muted, metric: 'metric' }
           return (
             <Card key={name} title={`Where ${meta.label} signals sit in ${meta.metric}`}>
               <DistHist bins={data.histograms[name]} color={meta.color} />
@@ -138,13 +139,13 @@ export default function Analytics() {
         <Card title="BUY signals per day">
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={data.timeline} accessibilityLayer>
-              <CartesianGrid stroke="#222b3a" vertical={false} />
-              <XAxis dataKey="date" tick={{ fontSize: 10 }} minTickGap={30} />
-              <YAxis allowDecimals={false} tick={{ fontSize: 10 }} width={26} />
+              <CartesianGrid stroke={C.hair} vertical={false} />
+              <XAxis dataKey="date" tick={axisTick(10)} minTickGap={30} />
+              <YAxis allowDecimals={false} tick={axisTick(10)} width={26} />
               <Tooltip contentStyle={TOOLTIP_STYLE} />
               <Legend />
               {producers.map((name) => {
-                const meta = PRODUCER_META[name] || { label: name, color: '#888' }
+                const meta = PRODUCER_META[name] || { label: name, color: C.muted }
                 return <Bar key={name} dataKey={`${name}_buys`} name={meta.label} stackId="a" fill={meta.color} />
               })}
             </BarChart>
@@ -153,13 +154,13 @@ export default function Analytics() {
         <Card title="5-day performance by signal weekday">
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={data.weekday} accessibilityLayer>
-              <CartesianGrid stroke="#222b3a" vertical={false} />
-              <XAxis dataKey="day" tick={{ fontSize: 11 }} />
-              <YAxis tick={{ fontSize: 10 }} width={40} tickFormatter={(v) => `${(v * 100).toFixed(0)}%`} />
+              <CartesianGrid stroke={C.hair} vertical={false} />
+              <XAxis dataKey="day" tick={axisTick(11)} />
+              <YAxis tick={axisTick(10)} width={40} tickFormatter={(v) => `${(v * 100).toFixed(0)}%`} />
               <Tooltip contentStyle={TOOLTIP_STYLE}
                        formatter={(v, n, item) => [`${(v * 100).toFixed(1)}% (n=${item.payload.n})`, n]} />
-              <ReferenceLine y={0} stroke="#556" />
-              <Bar dataKey="avg" name="avg 5d return" fill="#8ab4f8" />
+              <ReferenceLine y={0} stroke={C.rule} />
+              <Bar dataKey="avg" name="avg 5d return" fill={PRODUCER_META.lstm.text} />
             </BarChart>
           </ResponsiveContainer>
         </Card>
@@ -167,7 +168,7 @@ export default function Analytics() {
 
       <div className="grid-2">
         {producers.map((name) => {
-          const meta = PRODUCER_META[name] || { label: name, color: '#888', metric: 'metric' }
+          const meta = PRODUCER_META[name] || { label: name, color: C.muted, metric: 'metric' }
           return <BucketCard key={name} title={`${meta.label}: fwd return by ${meta.metric} quartile`} buckets={data.buckets[name]} color={meta.color} />
         })}
       </div>
@@ -190,12 +191,12 @@ function BucketCard({ title, buckets, color }) {
     <Card title={title} right={<span className="muted small">avg 5-day fwd return</span>}>
       <ResponsiveContainer width="100%" height={180}>
         <BarChart data={chart} accessibilityLayer>
-          <CartesianGrid stroke="#222b3a" vertical={false} />
-          <XAxis dataKey="label" tick={{ fontSize: 9 }} interval={0} />
-          <YAxis tick={{ fontSize: 10 }} width={40} tickFormatter={(v) => `${(v * 100).toFixed(0)}%`} />
+          <CartesianGrid stroke={C.hair} vertical={false} />
+          <XAxis dataKey="label" tick={axisTick(9)} interval={0} />
+          <YAxis tick={axisTick(10)} width={40} tickFormatter={(v) => `${(v * 100).toFixed(0)}%`} />
           <Tooltip contentStyle={TOOLTIP_STYLE}
                    formatter={(v, n, item) => [`${(v * 100).toFixed(1)}% (n=${item.payload.n}, win ${item.payload.win5 === null ? '–' : (item.payload.win5 * 100).toFixed(0)}%)`, 'avg 5d']} />
-          <ReferenceLine y={0} stroke="#556" />
+          <ReferenceLine y={0} stroke={C.rule} />
           <Bar dataKey="avg5" fill={color} />
         </BarChart>
       </ResponsiveContainer>

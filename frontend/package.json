@@ -7,7 +7,8 @@
     "dev": "vite",
     "dev:fixtures": "API_FIXTURES=1 vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "design:snapshot": "node scripts/snapshot.mjs && python3 scripts/shrink.py"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -16,6 +17,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.2",
+    "playwright": "^1.62.1",
     "vite": "^5.4.10"
   }
 }

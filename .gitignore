@@ -5,3 +5,4 @@ frontend/dist/
 config.json
 .env.local
 *.log
+.DS_Store

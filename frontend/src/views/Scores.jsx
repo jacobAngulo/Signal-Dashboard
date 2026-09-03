@@ -73,7 +73,7 @@ export default function Scores({ producer: p0, date: d0 }) {
   const shownTo = data ? Math.min(offset + PAGE, data.total) : 0
 
   return (
-    <div>
+    <div className="scores-page">
       <h1 className="sr-only">Raw score browser</h1>
 
       <Card>
@@ -105,7 +105,7 @@ export default function Scores({ producer: p0, date: d0 }) {
 
       {err && <ErrorBox err={err} />}
       {!data ? <Spinner /> : (
-        <Card className={loading ? 'refetching' : ''}>
+        <Card className={`scores-results${loading ? ' refetching' : ''}`}>
           {data.rows.length ? (
             <div className="table-wrap score-table-wrap" aria-busy={loading}>
               <table>

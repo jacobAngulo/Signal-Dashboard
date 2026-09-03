@@ -31,13 +31,14 @@ export default function DayPage({ date }) {
   if (!data) return <Spinner />
 
   return (
-    <div>
+    <div className="day-page">
       <div className="crumb">
         {data.prev ? <a className="dlink" href={href('day', data.prev)}>‹ {data.prev}</a> : <span />}
         <h1 className="crumb-title">{data.date}</h1>
         {data.next ? <a className="dlink" href={href('day', data.next)}>{data.next} ›</a> : <span />}
       </div>
 
+      <div className="day-scroll">
       {Object.entries(data.producers).map(([name, p]) => (
         <Card className={`day-producer producer-${name}`}
           key={name}
@@ -83,6 +84,7 @@ export default function DayPage({ date }) {
           )}
         </Card>
       ))}
+      </div>
 
       <SignalDetail signal={sel} onClose={() => setSel(null)} />
     </div>

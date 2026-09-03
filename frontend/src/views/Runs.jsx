@@ -27,7 +27,7 @@ export default function Runs() {
     .filter((r) => !status || (status === 'ok' ? r.status === 'ok' : r.status && r.status !== 'ok'))
     .map((r) => ({ ...r, key: r.producer + r.date }))
   return (
-    <div>
+    <div className="runs-page">
       <h1 className="sr-only">Producer runs</h1>
 
       <Card title="Run calendar" className="run-calendar-card">
@@ -35,6 +35,7 @@ export default function Runs() {
       </Card>
 
       <Card
+        className="runs-records"
         title={`${rows.length} run records`}
         right={
           <div className="filter-row compact-filters">

@@ -249,6 +249,7 @@ a.symbol-link:focus-visible {
 .feedback-launcher span { color: var(--lstm-text); font-size: 10px; }
 .feedback-panel {
   position: absolute; right: 0; bottom: 42px; width: min(390px, calc(100vw - 24px));
+  max-height: calc(100dvh - 72px); overflow-y: auto;
   padding: 14px; background: var(--canvas); border: 1px solid var(--rule-strong);
   border-radius: 0; box-shadow: 0 20px 60px #000d;
 }
@@ -1499,4 +1500,258 @@ tr.selected td { background: var(--inset); box-shadow: inset 2px 0 0 var(--lstm)
 
   .facet.is-touched::before { left: -8px; }
   .facet-bounds input { max-width: 100%; }
+}
+
+/* ========================================================================
+   Viewport ownership
+
+   The application shell owns the viewport; the document never becomes a
+   scroller. Each route then gives its remaining height to the data regions
+   that already have sticky table headers or persistent controls. Keeping the
+   complete min-height:0 chain is essential: flex/grid children otherwise use
+   their content height and silently push overflow back onto the document. */
+html, body, #root { width: 100%; height: 100%; overflow: hidden; }
+body { overscroll-behavior: none; }
+.app {
+  height: 100dvh;
+  min-height: 0;
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.app > header {
+  position: relative;
+  top: auto;
+  flex: 0 0 auto;
+}
+.app > main {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+.route-view {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+.route-view > .spinner,
+.route-view > .error-box { height: 100%; }
+
+/* Overview: the queue and health rail are two independent work surfaces. */
+.triage,
+.triage-body,
+.triage-main {
+  height: 100%;
+  min-height: 0;
+}
+.triage { display: flex; flex-direction: column; }
+.triage > .error-box { flex: 0 0 auto; }
+.triage-body { flex: 1 1 auto; overflow: hidden; }
+.triage-main { display: flex; flex-direction: column; }
+.triage-main > .ledger-head { flex: 0 0 auto; }
+.triage-main > .led-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none !important;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.triage-rail {
+  position: static;
+  align-self: stretch;
+  min-height: 0;
+  max-height: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+/* Explore: summary and query controls stay visible while the ledger scrolls. */
+.explore {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.explore > .ledger-head,
+.explore > .query-bar,
+.explore > .chips,
+.explore > .error-box { flex: 0 0 auto; }
+.explore-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  align-items: stretch;
+  overflow: hidden;
+}
+.explore-results { height: 100%; min-height: 0; }
+.explore-results > .led-wrap {
+  height: 100%;
+  min-height: 0;
+  max-height: none !important;
+  overflow: auto !important;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.inspector {
+  /* `relative` rather than `static` so the sticky head inside still has a
+     containing block, and `top: auto` because the sticky offset these panels
+     carry higher up would otherwise push a relative box 62px down the page and
+     hand the same 62px to the clipped bottom. */
+  position: relative;
+  top: auto;
+  height: 100%;
+  min-height: 0;
+  max-height: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+/* Analytics and Day: the identifying controls stay put above one section. */
+.bands,
+.day-page {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.bands > .control-band,
+.day-page > .crumb { flex: 0 0 auto; }
+.analytics-scroll,
+.day-scroll,
+.lab-page-scroll {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  padding-right: 4px;
+}
+.analytics-scroll .band-head,
+.day-producer > .card-head {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  background: var(--canvas);
+}
+
+/* Runs and Scores: card chrome and pagination remain outside table scroll. */
+.runs-page,
+.scores-page {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.runs-page > .run-calendar-card,
+.scores-page > .card:first-of-type,
+.runs-page > .error-box,
+.scores-page > .error-box { flex: 0 0 auto; }
+.runs-records,
+.scores-results {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.runs-records > .card-head,
+.scores-results > .card-head,
+.scores-results > .pagination { flex: 0 0 auto; }
+.runs-records > .table-wrap,
+.scores-results > .table-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none !important;
+  overflow: auto !important;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+/* Ticker: the chart/ledger canvas and the context rail scroll independently. */
+.ticker-page,
+.ticker-body {
+  height: 100%;
+  min-height: 0;
+}
+.ticker-page { display: flex; flex-direction: column; overflow: hidden; }
+.ticker-page > .stale-banner { flex: 0 0 auto; }
+.ticker-body {
+  flex: 1 1 auto;
+  margin-bottom: 0;
+  overflow: hidden;
+}
+.ticker-main,
+.ticker-rail {
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.ticker-main { padding-right: 4px; }
+.ticker-rail { position: static; max-height: none; align-self: stretch; }
+.ticker-ledger-head { margin-top: 18px; }
+
+/* Lab: page chrome is fixed; both long columns use the remaining height. */
+.lab-page {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.lab-page > .page-head,
+.lab-page > .lab-nav { flex: 0 0 auto; }
+.lab-layout {
+  flex: 1 1 auto;
+  min-height: 0;
+  align-items: stretch;
+  overflow: hidden;
+}
+.lab-rail,
+.lab-results {
+  height: 100%;
+  min-height: 0;
+  max-height: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.lab-rail { position: relative; top: auto; }
+.lab-results { position: relative; padding-right: 4px; }
+.lab-results > .lab-readout {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+}
+
+/* Once two-column compositions stack, the route's content region becomes the
+   single local scroller. The global app header remains pinned on small screens
+   and no overflow is handed back to body. */
+@media (max-width: 1200px) {
+  .triage-body,
+  .explore-body,
+  .ticker-body { overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
+  .triage-main,
+  .triage-rail,
+  .explore-results,
+  .inspector,
+  .ticker-main,
+  .ticker-rail { height: auto; overflow: visible; }
+  .triage-main > .led-wrap,
+  .explore-results > .led-wrap { height: auto; max-height: 60vh !important; }
+}
+
+@media (max-width: 900px) {
+  .lab-layout { overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
+  .lab-rail,
+  .lab-results { height: auto; overflow: visible; }
 }

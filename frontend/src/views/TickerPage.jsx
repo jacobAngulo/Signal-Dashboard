@@ -334,6 +334,29 @@ export default function TickerPage({ ticker }) {
               on the price lane as markers only.
             </div>
           )}
+
+          <div className="ledger-head ticker-ledger-head">
+            <div>
+              <h2 className="ledger-title">{rows.length} signals for {data.ticker}</h2>
+              <div className="ledger-meta">
+                selecting a row drops the cursor into every lane above — the chart is the detail view
+              </div>
+            </div>
+            <div className="seg" role="group" aria-label="Filter by producer">
+              {['', ...s.producers]
+                .map((value) => [value, value ? PRODUCER_META[value]?.label || value : 'All'])
+                .map(([value, label]) => (
+                  <button key={value || 'all'} type="button"
+                          className={`seg-btn ${producer === value ? 'active' : ''}`}
+                          aria-pressed={producer === value}
+                          onClick={() => setProducer(value)}>{label}</button>
+                ))}
+            </div>
+          </div>
+
+          <SignalTable rows={rows} cols={TICKER_COLS}
+                       onSelect={setSel} onRow={setDetail} selectedId={sel?.id}
+                       empty="Never signaled — only present in score files" />
         </div>
 
         <aside className="ticker-rail">
@@ -402,28 +425,6 @@ export default function TickerPage({ ticker }) {
           )}
         </aside>
       </div>
-
-      <div className="ledger-head">
-        <div>
-          <h2 className="ledger-title">{rows.length} signals for {data.ticker}</h2>
-          <div className="ledger-meta">
-            selecting a row drops the cursor into every lane above — the chart is the detail view
-          </div>
-        </div>
-        <div className="seg" role="group" aria-label="Filter by producer">
-          {[['', 'All'], ...s.producers.map((p) => [p, PRODUCER_META[p]?.label || p])]
-            .map(([value, label]) => (
-              <button key={value || 'all'} type="button"
-                      className={`seg-btn ${producer === value ? 'active' : ''}`}
-                      aria-pressed={producer === value}
-                      onClick={() => setProducer(value)}>{label}</button>
-            ))}
-        </div>
-      </div>
-
-      <SignalTable rows={rows} cols={TICKER_COLS} maxHeight="52vh"
-                   onSelect={setSel} onRow={setDetail} selectedId={sel?.id}
-                   empty="Never signaled — only present in score files" />
 
       <SignalDetail signal={detail} rule={rule} onClose={() => setDetail(null)} />
     </div>

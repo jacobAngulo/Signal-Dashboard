@@ -26,6 +26,7 @@ const TITLES = { overview: null, explore: 'Explore', analytics: 'Analytics', run
 export default function App() {
   const route = useRoute()
   const [dataVersion, setDataVersion] = useState(0)
+  const mainRef = useRef(null)
 
   // The LSTM tab became the lab's curated view. Its old address is in people's
   // bookmarks, so it redirects rather than 404s.
@@ -33,9 +34,13 @@ export default function App() {
     if (route.page === 'lstm-windows') navigate('lab', 'lstm', 'curated')
   }, [route.page])
 
-  // Hash navigation keeps the old scroll position; a new page should start at the top.
+  // Hash navigation keeps element scroll positions. The document itself no
+  // longer scrolls, so reset every local surface when the route changes.
   useEffect(() => {
-    window.scrollTo(0, 0)
+    mainRef.current?.querySelectorAll('*').forEach((node) => {
+      if (node.scrollTop) node.scrollTop = 0
+      if (node.scrollLeft) node.scrollLeft = 0
+    })
     const part = route.page === 'ticker' || route.page === 'day'
       ? route.args[0] : TITLES[route.page]
     document.title = part ? `${part} · Signal Dashboard` : 'Signal Dashboard'
@@ -60,7 +65,7 @@ export default function App() {
           ))}
         </nav>
       </header>
-      <main id="main-content" tabIndex="-1">
+      <main ref={mainRef} id="main-content" tabIndex="-1" className={`route-${route.page}`}>
         <div className="route-view" key={dataVersion}>
         {route.page === 'overview' && <Overview />}
         {route.page === 'explore' && <Explore query={route.query} />}

@@ -373,6 +373,12 @@ def list_specs(dates, score_dates):
              {**lab, "outcome": "ret_since"}))
     # With the rows panel open, so the table has something to render.
     add(Spec("lab/lstm-rows.json", "/api/lab", {**lab, "limit": 100}))
+    # The disabled producer positions are still real UI states. Capture their
+    # explicit `available: false` contracts so fixture fallback never serves
+    # the LSTM payload and makes an unavailable producer look wired up.
+    for producer in ("intrinsic", "foundry"):
+        add(Spec(f"lab/{producer}.json", "/api/lab",
+                 {**lab, "producer": producer}))
     # The producers that are not wired up yet answer with their reason rather
     # than a slice. Recorded so the placeholder renders off fixtures, and so a
     # producer becoming available shows up here as a changed capture.

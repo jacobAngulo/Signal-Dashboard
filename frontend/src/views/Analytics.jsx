@@ -86,23 +86,25 @@ export default function Analytics() {
         </div>
       </div>
 
-      <div className={loading ? 'refetching' : ''} aria-busy={loading}>
-        <PayingBand data={data} producers={producers} />
-        <HorizonBand data={data} producers={producers} />
-        <StrengthBand data={data} producers={producers} />
-        <SupplyBand data={data} producers={producers} />
-        <DistributionBand data={data} producers={producers} />
-      </div>
+      <div className="analytics-scroll">
+        <div className={loading ? 'refetching' : ''} aria-busy={loading}>
+          <PayingBand data={data} producers={producers} />
+          <HorizonBand data={data} producers={producers} />
+          <StrengthBand data={data} producers={producers} />
+          <SupplyBand data={data} producers={producers} />
+          <DistributionBand data={data} producers={producers} />
+        </div>
 
-      {producer === 'lstm' && (
-        <section className="band">
-          <div className="band-head">
-            <h2>Which candidates did the model publish?</h2>
-            <span className="band-note">the LSTM tab, in place — every scored window this producer retained</span>
-          </div>
-          <LstmWindows embedded />
-        </section>
-      )}
+        {producer === 'lstm' && (
+          <section className="band">
+            <div className="band-head">
+              <h2>Which candidates did the model publish?</h2>
+              <span className="band-note">the LSTM tab, in place — every scored window this producer retained</span>
+            </div>
+            <LstmWindows embedded />
+          </section>
+        )}
+      </div>
     </div>
   )
 }

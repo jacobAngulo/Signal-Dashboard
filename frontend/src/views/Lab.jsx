@@ -776,18 +776,18 @@ export default function Lab({ producer = 'lstm', view = 'free' }) {
     </>
   )
 
-  if (curated) return <>{chrome}<LstmWindows embedded /></>
-  if (err) return <>{chrome}<ErrorBox err={err} /></>
-  if (!data) return <>{chrome}<Spinner /></>
+  if (curated) return <div className="lab-page">{chrome}<div className="lab-page-scroll"><LstmWindows embedded /></div></div>
+  if (err) return <div className="lab-page">{chrome}<ErrorBox err={err} /></div>
+  if (!data) return <div className="lab-page">{chrome}<Spinner /></div>
   if (data.available === false) {
     return (
-      <>
+      <div className="lab-page">
         {chrome}
         <Card>
           <EmptyState title={`${producerMeta?.label || producer} is not wired up yet`}
                       detail={data.note} />
         </Card>
-      </>
+      </div>
     )
   }
 
@@ -827,7 +827,7 @@ export default function Lab({ producer = 'lstm', view = 'free' }) {
   }
 
   return (
-    <div>
+    <div className="lab-page">
       {chrome}
 
       <div className={`lab-layout${loading ? ' is-loading' : ''}`}>

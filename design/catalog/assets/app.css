@@ -1032,7 +1032,7 @@ tr.selected td { background: var(--inset); box-shadow: inset 2px 0 0 var(--lstm)
    layout on each one would strobe, so only fade once it is slow enough to
    notice. */
 .lab-layout.is-loading .lab-grid,
-.lab-layout.is-loading .readout-stats {
+.readout-stats.is-loading {
   opacity: 0.55;
   transition: opacity 120ms linear 350ms;
 }
@@ -1322,22 +1322,26 @@ tr.selected td { background: var(--inset); box-shadow: inset 2px 0 0 var(--lstm)
 
 .lab-results { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 
+/* Inside `.lab-nav`, right of the producer and view toggles: the card already
+   provides the panel, so the readout keeps only its own row layout. */
 .lab-readout {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 12px;
   align-items: flex-end;
-  border: 1px solid var(--rule);
-  border-radius: 8px;
-  background: var(--panel);
-  padding: 10px 14px;
+  margin-left: auto;
 }
+/* Sized to hold the row: at natural width the measure select alone is 216px,
+   which pushed the whole group onto a second line of the card. */
+.lab-readout select { width: 150px; }
+.lab-readout input { width: 48px; }
 
 .readout-stats {
   display: flex;
-  gap: 18px;
+  gap: 14px;
   margin-left: auto;
   align-items: baseline;
+  font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
 
@@ -1724,12 +1728,6 @@ body { overscroll-behavior: none; }
 }
 .lab-rail { position: relative; top: auto; }
 .lab-results { position: relative; padding-right: 4px; }
-.lab-results > .lab-readout {
-  position: sticky;
-  top: 0;
-  z-index: 4;
-}
-
 /* Once two-column compositions stack, the route's content region becomes the
    single local scroller. The global app header remains pinned on small screens
    and no overflow is handed back to body. */

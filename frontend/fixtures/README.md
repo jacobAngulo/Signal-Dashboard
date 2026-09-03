@@ -69,3 +69,23 @@ frontend bug forever after. The script is read-only against every producer.
 A new endpoint, or a filter worth having a real response for, goes in
 `list_specs()` in that script. The dev server picks up a re-recorded manifest
 without a restart.
+
+## Derived responses
+
+Five entries in `api/index.json` carry `"derived": true`, and every one of them
+is a `/api/lab` response under `api/lab/`. They were **not** produced by a
+capture run: `/api/lab` did not exist yet the last time the recorder had a box
+with the producer data, and without them the vector lab cannot render off
+fixtures at all. Their shape and their producer notes are taken from
+`LAB_PRODUCERS` and `lab_slice` in `backend/main.py`, so they match the contract
+the API states — but the numbers in the LSTM slices are derived from the
+recorded signal set, not measured by the backend.
+
+Do not reason about lab data from them. The specs are already registered in
+`list_specs()`, so the next real run on the data box overwrites all five and the
+flag should be dropped with it. Nothing else in this set is derived; the flag
+exists so that stays checkable:
+
+```bash
+jq '.responses[] | select(.derived)' api/index.json
+```

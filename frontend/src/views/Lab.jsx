@@ -732,6 +732,34 @@ export default function Lab({ producer = 'lstm', view = 'free' }) {
   const producers = data?.producers?.length ? data.producers : FALLBACK_PRODUCERS
   const producerMeta = producers.find((p) => p.key === producer)
   const curated = producer === 'lstm' && view === 'curated'
+  const summary = data?.summary || {}
+  const outcomeLabel = (data?.outcomes || []).find((o) => o.key === data?.outcome)?.label
+    || data?.outcome
+
+  // The measure controls and the slice readout describe the free-form grid, so
+  // they only exist when there is one: curated brings its own controls, and an
+  // unavailable producer has nothing to measure.
+  const readout = curated || !data || data.available === false ? null : (
+    <div className="lab-readout">
+      <label>Measure
+        <select value={outcome} onChange={(e) => setOutcome(e.target.value)}>
+          {(data.outcomes || []).map((o) => (
+            <option key={o.key} value={o.key}>{o.label}</option>
+          ))}
+        </select>
+      </label>
+      <label>Buckets
+        <input type="number" min="2" max="12" value={buckets}
+               onChange={(e) => setBuckets(Number(e.target.value) || 5)} />
+      </label>
+      {/* Below this a bucket is not ranked, so one lucky three-row bucket
+          cannot crown a vector. */}
+      <label>Min bucket
+        <input type="number" min="1" max="5000" value={minBucket}
+               onChange={(e) => setMinBucket(Number(e.target.value) || 1)} />
+      </label>
+    </div>
+  )
 
   const chrome = (
     <>
@@ -762,6 +790,7 @@ export default function Lab({ producer = 'lstm', view = 'free' }) {
                       onClick={() => navigate('lab', producer, 'curated')}>Curated</button>
             </div>
           )}
+          {readout}
         </div>
       </Card>
     </>
@@ -784,8 +813,6 @@ export default function Lab({ producer = 'lstm', view = 'free' }) {
 
   const vectors = data.vectors || []
   const breakdowns = data.breakdowns || []
-  const summary = data.summary || {}
-  const outcomeLabel = (data.outcomes || []).find((o) => o.key === data.outcome)?.label || data.outcome
   const query = q.trim().toLowerCase()
   // The rail is ordered the way the cards are, not alphabetically: the vector
   // that separates the outcome most should be the first control under your
@@ -863,28 +890,16 @@ export default function Lab({ producer = 'lstm', view = 'free' }) {
         </aside>
 
         <div className="lab-results">
-          <div className="lab-readout">
-            <label>Measure
-              <select value={outcome} onChange={(e) => setOutcome(e.target.value)}>
-                {(data.outcomes || []).map((o) => (
-                  <option key={o.key} value={o.key}>{o.label}</option>
-                ))}
-              </select>
-            </label>
-            <label>Buckets
-              <input type="number" min="2" max="12" value={buckets}
-                     onChange={(e) => setBuckets(Number(e.target.value) || 5)} />
-            </label>
-            {/* Below this a bucket is not ranked, so one lucky three-row
-                bucket cannot crown a vector. */}
-            <label>Min bucket
-              <input type="number" min="1" max="5000" value={minBucket}
-                     onChange={(e) => setMinBucket(Number(e.target.value) || 1)} />
-            </label>
-            <div className="readout-stats">
-              {/* Rows and measured are different numbers whenever the outcome
-                  is still pending for part of the slice, and every average on
-                  this page belongs to the second one. */}
+          <div className="lab-grid-head">
+            <h2>Vectors</h2>
+            <span className="muted small">
+              bucketed by {outcomeLabel.toLowerCase()}, ordered by bucket spread;
+              the ones that cannot be ranked follow
+            </span>
+            {/* Rows and measured are different numbers whenever the outcome is
+                still pending for part of the slice, and every average on this
+                page belongs to the second one. */}
+            <div className={`readout-stats${loading ? ' is-loading' : ''}`}>
               <span><b>{(data.measured || 0).toLocaleString()}</b>
                 <span className="muted"> measured</span></span>
               <span className={signCls(num(summary.avg_5d))}>{fmtPct(summary.avg_5d)}
@@ -894,14 +909,6 @@ export default function Lab({ producer = 'lstm', view = 'free' }) {
               <span>{summary.wr_5d === null || summary.wr_5d === undefined
                 ? '–' : fmtPct(summary.wr_5d, 0)}<span className="muted"> win 5d</span></span>
             </div>
-          </div>
-
-          <div className="lab-grid-head">
-            <h2>Vectors</h2>
-            <span className="muted small">
-              bucketed by {outcomeLabel.toLowerCase()}, ordered by spread between
-              best and worst bucket; the ones that cannot be ranked follow
-            </span>
           </div>
 
           {!breakdowns.length ? (

@@ -1,2289 +1,2325 @@
 {
- "generated_by": "scripts/capture_api_fixtures.py",
- "captured_at": "2026-09-01T23:22:52+00:00",
- "window": {
-  "from": "2026-08-20",
-  "to": "2026-09-02",
-  "dates": [
-   "2026-08-20",
-   "2026-08-21",
-   "2026-08-24",
-   "2026-08-25",
-   "2026-08-26",
-   "2026-08-27",
-   "2026-08-28",
-   "2026-08-31",
-   "2026-09-01",
-   "2026-09-02"
-  ]
- },
- "score_dates": {
-  "lstm": [
-   "2026-08-19",
-   "2026-08-20",
-   "2026-08-21",
-   "2026-08-24",
-   "2026-08-25",
-   "2026-08-26",
-   "2026-08-27",
-   "2026-08-28",
-   "2026-08-31",
-   "2026-09-01"
+  "generated_by": "scripts/capture_api_fixtures.py",
+  "captured_at": "2026-09-01T23:22:52+00:00",
+  "window": {
+    "from": "2026-08-20",
+    "to": "2026-09-02",
+    "dates": [
+      "2026-08-20",
+      "2026-08-21",
+      "2026-08-24",
+      "2026-08-25",
+      "2026-08-26",
+      "2026-08-27",
+      "2026-08-28",
+      "2026-08-31",
+      "2026-09-01",
+      "2026-09-02"
+    ]
+  },
+  "score_dates": {
+    "lstm": [
+      "2026-08-19",
+      "2026-08-20",
+      "2026-08-21",
+      "2026-08-24",
+      "2026-08-25",
+      "2026-08-26",
+      "2026-08-27",
+      "2026-08-28",
+      "2026-08-31",
+      "2026-09-01"
+    ],
+    "intrinsic": [
+      "2026-08-03",
+      "2026-08-04",
+      "2026-08-05",
+      "2026-08-06",
+      "2026-08-07",
+      "2026-08-10",
+      "2026-08-11",
+      "2026-08-12",
+      "2026-08-13",
+      "2026-08-14"
+    ],
+    "foundry": [
+      "2026-08-20",
+      "2026-08-21",
+      "2026-08-24",
+      "2026-08-25",
+      "2026-08-26",
+      "2026-08-27",
+      "2026-08-28",
+      "2026-08-31",
+      "2026-09-01",
+      "2026-09-02"
+    ]
+  },
+  "tickers": [
+    "NVR",
+    "AAPL",
+    "POLE",
+    "FJET",
+    "NVDA",
+    "AMZN",
+    "AMD",
+    "NXXT",
+    "SER",
+    "ASML",
+    "BAFN",
+    "MIDD",
+    "RRX",
+    "CXAI",
+    "MRK",
+    "MRNA",
+    "GOOGL",
+    "RBLX",
+    "MU",
+    "CABO"
   ],
-  "intrinsic": [
-   "2026-08-03",
-   "2026-08-04",
-   "2026-08-05",
-   "2026-08-06",
-   "2026-08-07",
-   "2026-08-10",
-   "2026-08-11",
-   "2026-08-12",
-   "2026-08-13",
-   "2026-08-14"
+  "counts": {
+    "responses": 372,
+    "bytes": 15373294
+  },
+  "price_build_errors": [],
+  "responses": [
+    {
+      "key": "GET /api/analytics",
+      "file": "analytics.json",
+      "status": 200,
+      "bytes": 60080
+    },
+    {
+      "key": "GET /api/analytics?producer=foundry",
+      "file": "analytics/foundry.json",
+      "status": 200,
+      "bytes": 17776
+    },
+    {
+      "key": "GET /api/analytics?producer=intrinsic",
+      "file": "analytics/intrinsic.json",
+      "status": 200,
+      "bytes": 24842
+    },
+    {
+      "key": "GET /api/analytics?producer=lstm",
+      "file": "analytics/lstm.json",
+      "status": 200,
+      "bytes": 29783
+    },
+    {
+      "key": "GET /api/analytics?date_from=2026-08-20&date_to=2026-09-02",
+      "file": "analytics/window.json",
+      "status": 200,
+      "bytes": 19081
+    },
+    {
+      "key": "GET /api/day/2026-08-20",
+      "file": "day/2026-08-20.json",
+      "status": 200,
+      "bytes": 180671
+    },
+    {
+      "key": "GET /api/day/2026-08-21",
+      "file": "day/2026-08-21.json",
+      "status": 200,
+      "bytes": 178938
+    },
+    {
+      "key": "GET /api/day/2026-08-24",
+      "file": "day/2026-08-24.json",
+      "status": 200,
+      "bytes": 177407
+    },
+    {
+      "key": "GET /api/day/2026-08-25",
+      "file": "day/2026-08-25.json",
+      "status": 200,
+      "bytes": 173218
+    },
+    {
+      "key": "GET /api/day/2026-08-26",
+      "file": "day/2026-08-26.json",
+      "status": 200,
+      "bytes": 173992
+    },
+    {
+      "key": "GET /api/day/2026-08-27",
+      "file": "day/2026-08-27.json",
+      "status": 200,
+      "bytes": 172657
+    },
+    {
+      "key": "GET /api/day/2026-08-28",
+      "file": "day/2026-08-28.json",
+      "status": 200,
+      "bytes": 176353
+    },
+    {
+      "key": "GET /api/day/2026-08-31",
+      "file": "day/2026-08-31.json",
+      "status": 200,
+      "bytes": 171153
+    },
+    {
+      "key": "GET /api/day/2026-09-01",
+      "file": "day/2026-09-01.json",
+      "status": 200,
+      "bytes": 167307
+    },
+    {
+      "key": "GET /api/day/2026-09-02",
+      "file": "day/2026-09-02.json",
+      "status": 200,
+      "bytes": 137228
+    },
+    {
+      "key": "GET /api/health",
+      "file": "health.json",
+      "status": 200,
+      "bytes": 384
+    },
+    {
+      "key": "GET /api/lstm/windows?dir=desc&group_by=date&limit=100&offset=0&sort=date",
+      "file": "lstm-windows/by-date.json",
+      "status": 200,
+      "bytes": 210511
+    },
+    {
+      "key": "GET /api/lstm/windows?dir=desc&group_by=horizon&limit=100&offset=0&sort=date",
+      "file": "lstm-windows/default.json",
+      "status": 200,
+      "bytes": 187981
+    },
+    {
+      "key": "GET /api/lstm/windows?dir=desc&group_by=horizon&limit=100&offset=100&sort=date",
+      "file": "lstm-windows/page-2.json",
+      "status": 200,
+      "bytes": 188169
+    },
+    {
+      "key": "GET /api/lstm/windows?dir=desc&group_by=horizon&limit=100&offset=0&picks_only=true&sort=date",
+      "file": "lstm-windows/picks-only.json",
+      "status": 200,
+      "bytes": 154981
+    },
+    {
+      "key": "GET /api/lstm/windows?dir=desc&group_by=horizon&limit=100&offset=0&resolved_only=true&sort=date",
+      "file": "lstm-windows/resolved-only.json",
+      "status": 200,
+      "bytes": 193082
+    },
+    {
+      "key": "GET /api/overview",
+      "file": "overview.json",
+      "status": 200,
+      "bytes": 112762
+    },
+    {
+      "key": "GET /api/runs",
+      "file": "runs.json",
+      "status": 200,
+      "bytes": 90804
+    },
+    {
+      "key": "GET /api/scores/foundry/2026-08-20?dir=desc&limit=100&offset=0",
+      "file": "scores/foundry/2026-08-20.json",
+      "status": 200,
+      "bytes": 58374
+    },
+    {
+      "key": "GET /api/scores/foundry/2026-08-21?dir=desc&limit=100&offset=0",
+      "file": "scores/foundry/2026-08-21.json",
+      "status": 200,
+      "bytes": 58175
+    },
+    {
+      "key": "GET /api/scores/foundry/2026-08-24?dir=desc&limit=100&offset=0",
+      "file": "scores/foundry/2026-08-24.json",
+      "status": 200,
+      "bytes": 58441
+    },
+    {
+      "key": "GET /api/scores/foundry/2026-08-25?dir=desc&limit=100&offset=0",
+      "file": "scores/foundry/2026-08-25.json",
+      "status": 200,
+      "bytes": 58089
+    },
+    {
+      "key": "GET /api/scores/foundry/2026-08-26?dir=desc&limit=100&offset=0",
+      "file": "scores/foundry/2026-08-26.json",
+      "status": 200,
+      "bytes": 58214
+    },
+    {
+      "key": "GET /api/scores/foundry/2026-08-27?dir=desc&limit=100&offset=0",
+      "file": "scores/foundry/2026-08-27.json",
+      "status": 200,
+      "bytes": 58120
+    },
+    {
+      "key": "GET /api/scores/foundry/2026-08-28?dir=desc&limit=100&offset=0",
+      "file": "scores/foundry/2026-08-28.json",
+      "status": 200,
+      "bytes": 58297
+    },
+    {
+      "key": "GET /api/scores/foundry/2026-08-31?dir=desc&limit=100&offset=0",
+      "file": "scores/foundry/2026-08-31.json",
+      "status": 200,
+      "bytes": 58244
+    },
+    {
+      "key": "GET /api/scores/foundry/2026-09-01?dir=desc&limit=100&offset=0",
+      "file": "scores/foundry/2026-09-01.json",
+      "status": 200,
+      "bytes": 58231
+    },
+    {
+      "key": "GET /api/scores/foundry/2026-09-02?dir=desc&limit=100&offset=0",
+      "file": "scores/foundry/2026-09-02.json",
+      "status": 200,
+      "bytes": 58228
+    },
+    {
+      "key": "GET /api/scores/intrinsic/2026-08-03?dir=desc&limit=100&offset=0",
+      "file": "scores/intrinsic/2026-08-03.json",
+      "status": 200,
+      "bytes": 117639
+    },
+    {
+      "key": "GET /api/scores/intrinsic/2026-08-04?dir=desc&limit=100&offset=0",
+      "file": "scores/intrinsic/2026-08-04.json",
+      "status": 200,
+      "bytes": 117723
+    },
+    {
+      "key": "GET /api/scores/intrinsic/2026-08-05?dir=desc&limit=100&offset=0",
+      "file": "scores/intrinsic/2026-08-05.json",
+      "status": 200,
+      "bytes": 117683
+    },
+    {
+      "key": "GET /api/scores/intrinsic/2026-08-06?dir=desc&limit=100&offset=0",
+      "file": "scores/intrinsic/2026-08-06.json",
+      "status": 200,
+      "bytes": 117726
+    },
+    {
+      "key": "GET /api/scores/intrinsic/2026-08-07?dir=desc&limit=100&offset=0",
+      "file": "scores/intrinsic/2026-08-07.json",
+      "status": 200,
+      "bytes": 117648
+    },
+    {
+      "key": "GET /api/scores/intrinsic/2026-08-10?dir=desc&limit=100&offset=0",
+      "file": "scores/intrinsic/2026-08-10.json",
+      "status": 200,
+      "bytes": 117646
+    },
+    {
+      "key": "GET /api/scores/intrinsic/2026-08-11?dir=desc&limit=100&offset=0",
+      "file": "scores/intrinsic/2026-08-11.json",
+      "status": 200,
+      "bytes": 117579
+    },
+    {
+      "key": "GET /api/scores/intrinsic/2026-08-12?dir=desc&limit=100&offset=0",
+      "file": "scores/intrinsic/2026-08-12.json",
+      "status": 200,
+      "bytes": 117521
+    },
+    {
+      "key": "GET /api/scores/intrinsic/2026-08-13?dir=desc&limit=100&offset=0",
+      "file": "scores/intrinsic/2026-08-13.json",
+      "status": 200,
+      "bytes": 117582
+    },
+    {
+      "key": "GET /api/scores/intrinsic/2026-08-14?dir=desc&limit=100&offset=0",
+      "file": "scores/intrinsic/2026-08-14.json",
+      "status": 200,
+      "bytes": 117552
+    },
+    {
+      "key": "GET /api/scores/lstm/2026-08-19?dir=desc&limit=100&offset=0",
+      "file": "scores/lstm/2026-08-19.json",
+      "status": 200,
+      "bytes": 169516
+    },
+    {
+      "key": "GET /api/scores/lstm/2026-08-20?dir=desc&limit=100&offset=0",
+      "file": "scores/lstm/2026-08-20.json",
+      "status": 200,
+      "bytes": 169389
+    },
+    {
+      "key": "GET /api/scores/lstm/2026-08-21?dir=desc&limit=100&offset=0",
+      "file": "scores/lstm/2026-08-21.json",
+      "status": 200,
+      "bytes": 169407
+    },
+    {
+      "key": "GET /api/scores/lstm/2026-08-24?dir=desc&limit=100&offset=0",
+      "file": "scores/lstm/2026-08-24.json",
+      "status": 200,
+      "bytes": 169311
+    },
+    {
+      "key": "GET /api/scores/lstm/2026-08-25?dir=desc&limit=100&offset=0",
+      "file": "scores/lstm/2026-08-25.json",
+      "status": 200,
+      "bytes": 169404
+    },
+    {
+      "key": "GET /api/scores/lstm/2026-08-26?dir=desc&limit=100&offset=0",
+      "file": "scores/lstm/2026-08-26.json",
+      "status": 200,
+      "bytes": 169478
+    },
+    {
+      "key": "GET /api/scores/lstm/2026-08-27?dir=desc&limit=100&offset=0",
+      "file": "scores/lstm/2026-08-27.json",
+      "status": 200,
+      "bytes": 169423
+    },
+    {
+      "key": "GET /api/scores/lstm/2026-08-28?dir=desc&limit=100&offset=0",
+      "file": "scores/lstm/2026-08-28.json",
+      "status": 200,
+      "bytes": 169374
+    },
+    {
+      "key": "GET /api/scores/lstm/2026-08-31?dir=desc&limit=100&offset=0",
+      "file": "scores/lstm/2026-08-31.json",
+      "status": 200,
+      "bytes": 169303
+    },
+    {
+      "key": "GET /api/scores/lstm/2026-09-01?dir=desc&limit=100&offset=0",
+      "file": "scores/lstm/2026-09-01.json",
+      "status": 200,
+      "bytes": 169511
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-07-13%3AALBT",
+      "file": "signal/foundry-2026-07-13-ALBT.json",
+      "status": 200,
+      "bytes": 3412
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-07-13%3ABURU",
+      "file": "signal/foundry-2026-07-13-BURU.json",
+      "status": 200,
+      "bytes": 3507
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-07-14%3ABACC",
+      "file": "signal/foundry-2026-07-14-BACC.json",
+      "status": 200,
+      "bytes": 3220
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-07-14%3ALPAA",
+      "file": "signal/foundry-2026-07-14-LPAA.json",
+      "status": 200,
+      "bytes": 3209
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-07-14%3AUSBC",
+      "file": "signal/foundry-2026-07-14-USBC.json",
+      "status": 200,
+      "bytes": 3208
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-07-17%3ASHFS",
+      "file": "signal/foundry-2026-07-17-SHFS.json",
+      "status": 200,
+      "bytes": 3619
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-07-21%3AAAPL",
+      "file": "signal/foundry-2026-07-21-AAPL.json",
+      "status": 200,
+      "bytes": 4499
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-07-22%3AMBAV",
+      "file": "signal/foundry-2026-07-22-MBAV.json",
+      "status": 200,
+      "bytes": 3142
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-07-23%3AOPTX",
+      "file": "signal/foundry-2026-07-23-OPTX.json",
+      "status": 200,
+      "bytes": 3238
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-07-24%3AAMD",
+      "file": "signal/foundry-2026-07-24-AMD.json",
+      "status": 200,
+      "bytes": 4101
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-07-27%3AAMD",
+      "file": "signal/foundry-2026-07-27-AMD.json",
+      "status": 200,
+      "bytes": 4173
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-07-29%3ASDOT",
+      "file": "signal/foundry-2026-07-29-SDOT.json",
+      "status": 200,
+      "bytes": 3248
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-07-31%3AMBRX",
+      "file": "signal/foundry-2026-07-31-MBRX.json",
+      "status": 200,
+      "bytes": 4027
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-07-31%3AMSFT",
+      "file": "signal/foundry-2026-07-31-MSFT.json",
+      "status": 200,
+      "bytes": 3736
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-03%3ANET",
+      "file": "signal/foundry-2026-08-03-NET.json",
+      "status": 200,
+      "bytes": 3600
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-05%3ANET",
+      "file": "signal/foundry-2026-08-05-NET.json",
+      "status": 200,
+      "bytes": 4272
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-07%3AMYSZ",
+      "file": "signal/foundry-2026-08-07-MYSZ.json",
+      "status": 200,
+      "bytes": 3238
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-07%3APLTR",
+      "file": "signal/foundry-2026-08-07-PLTR.json",
+      "status": 200,
+      "bytes": 3683
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-10%3AVBNB",
+      "file": "signal/foundry-2026-08-10-VBNB.json",
+      "status": 200,
+      "bytes": 3180
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-11%3AYHC",
+      "file": "signal/foundry-2026-08-11-YHC.json",
+      "status": 200,
+      "bytes": 3242
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-12%3AGOOGL",
+      "file": "signal/foundry-2026-08-12-GOOGL.json",
+      "status": 200,
+      "bytes": 3967
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-13%3AAAPL",
+      "file": "signal/foundry-2026-08-13-AAPL.json",
+      "status": 200,
+      "bytes": 3639
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-18%3AGOOGL",
+      "file": "signal/foundry-2026-08-18-GOOGL.json",
+      "status": 200,
+      "bytes": 4493
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-19%3ACXAI",
+      "file": "signal/foundry-2026-08-19-CXAI.json",
+      "status": 200,
+      "bytes": 3239
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-19%3AMRK",
+      "file": "signal/foundry-2026-08-19-MRK.json",
+      "status": 200,
+      "bytes": 4207
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-19%3AMRNA",
+      "file": "signal/foundry-2026-08-19-MRNA.json",
+      "status": 200,
+      "bytes": 4592
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-21%3ABAFN",
+      "file": "signal/foundry-2026-08-21-BAFN.json",
+      "status": 200,
+      "bytes": 4500
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-24%3ANVDA",
+      "file": "signal/foundry-2026-08-24-NVDA.json",
+      "status": 200,
+      "bytes": 5022
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-25%3AAAPL",
+      "file": "signal/foundry-2026-08-25-AAPL.json",
+      "status": 200,
+      "bytes": 5168
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-25%3AAMD",
+      "file": "signal/foundry-2026-08-25-AMD.json",
+      "status": 200,
+      "bytes": 3618
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-25%3ANXXT",
+      "file": "signal/foundry-2026-08-25-NXXT.json",
+      "status": 200,
+      "bytes": 3233
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-25%3ASER",
+      "file": "signal/foundry-2026-08-25-SER.json",
+      "status": 200,
+      "bytes": 3268
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-26%3AAMZN",
+      "file": "signal/foundry-2026-08-26-AMZN.json",
+      "status": 200,
+      "bytes": 3852
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-27%3AFJET",
+      "file": "signal/foundry-2026-08-27-FJET.json",
+      "status": 200,
+      "bytes": 3250
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-27%3ANVDA",
+      "file": "signal/foundry-2026-08-27-NVDA.json",
+      "status": 200,
+      "bytes": 5197
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-31%3AAAPL",
+      "file": "signal/foundry-2026-08-31-AAPL.json",
+      "status": 200,
+      "bytes": 4491
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-08-31%3APOLE",
+      "file": "signal/foundry-2026-08-31-POLE.json",
+      "status": 200,
+      "bytes": 3189
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AA",
+      "file": "signal/foundry-2026-09-02-A.json",
+      "status": 200,
+      "bytes": 3168
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AAAPL",
+      "file": "signal/foundry-2026-09-02-AAPL.json",
+      "status": 200,
+      "bytes": 3972
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AADSE",
+      "file": "signal/foundry-2026-09-02-ADSE.json",
+      "status": 200,
+      "bytes": 3175
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AAIN",
+      "file": "signal/foundry-2026-09-02-AIN.json",
+      "status": 200,
+      "bytes": 3185
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AALMR",
+      "file": "signal/foundry-2026-09-02-ALMR.json",
+      "status": 200,
+      "bytes": 3305
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AAMRZ",
+      "file": "signal/foundry-2026-09-02-AMRZ.json",
+      "status": 200,
+      "bytes": 3288
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AAMTB",
+      "file": "signal/foundry-2026-09-02-AMTB.json",
+      "status": 200,
+      "bytes": 3180
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AAUID",
+      "file": "signal/foundry-2026-09-02-AUID.json",
+      "status": 200,
+      "bytes": 3307
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ABLTH",
+      "file": "signal/foundry-2026-09-02-BLTH.json",
+      "status": 200,
+      "bytes": 3270
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ABRFH",
+      "file": "signal/foundry-2026-09-02-BRFH.json",
+      "status": 200,
+      "bytes": 3286
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ABRLS",
+      "file": "signal/foundry-2026-09-02-BRLS.json",
+      "status": 200,
+      "bytes": 3315
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ABRNS",
+      "file": "signal/foundry-2026-09-02-BRNS.json",
+      "status": 200,
+      "bytes": 3319
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ABSBR",
+      "file": "signal/foundry-2026-09-02-BSBR.json",
+      "status": 200,
+      "bytes": 3203
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ABYND",
+      "file": "signal/foundry-2026-09-02-BYND.json",
+      "status": 200,
+      "bytes": 3279
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ACAR",
+      "file": "signal/foundry-2026-09-02-CAR.json",
+      "status": 200,
+      "bytes": 3228
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ACDT",
+      "file": "signal/foundry-2026-09-02-CDT.json",
+      "status": 200,
+      "bytes": 3292
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ACHGG",
+      "file": "signal/foundry-2026-09-02-CHGG.json",
+      "status": 200,
+      "bytes": 3139
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ACJMB",
+      "file": "signal/foundry-2026-09-02-CJMB.json",
+      "status": 200,
+      "bytes": 3290
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ACLGN",
+      "file": "signal/foundry-2026-09-02-CLGN.json",
+      "status": 200,
+      "bytes": 3198
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ACLMT",
+      "file": "signal/foundry-2026-09-02-CLMT.json",
+      "status": 200,
+      "bytes": 3355
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ACOF",
+      "file": "signal/foundry-2026-09-02-COF.json",
+      "status": 200,
+      "bytes": 3258
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ACRDO",
+      "file": "signal/foundry-2026-09-02-CRDO.json",
+      "status": 200,
+      "bytes": 3276
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ACSWC",
+      "file": "signal/foundry-2026-09-02-CSWC.json",
+      "status": 200,
+      "bytes": 3279
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ACYAB",
+      "file": "signal/foundry-2026-09-02-CYAB.json",
+      "status": 200,
+      "bytes": 3215
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ADAIC",
+      "file": "signal/foundry-2026-09-02-DAIC.json",
+      "status": 200,
+      "bytes": 3297
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ADELL",
+      "file": "signal/foundry-2026-09-02-DELL.json",
+      "status": 200,
+      "bytes": 3251
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AEBS",
+      "file": "signal/foundry-2026-09-02-EBS.json",
+      "status": 200,
+      "bytes": 3169
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AERO",
+      "file": "signal/foundry-2026-09-02-ERO.json",
+      "status": 200,
+      "bytes": 3181
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AEXOD",
+      "file": "signal/foundry-2026-09-02-EXOD.json",
+      "status": 200,
+      "bytes": 3301
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AFBDT",
+      "file": "signal/foundry-2026-09-02-FBDT.json",
+      "status": 200,
+      "bytes": 3116
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AFC",
+      "file": "signal/foundry-2026-09-02-FC.json",
+      "status": 200,
+      "bytes": 3289
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AFLYE",
+      "file": "signal/foundry-2026-09-02-FLYE.json",
+      "status": 200,
+      "bytes": 3156
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AFNGR",
+      "file": "signal/foundry-2026-09-02-FNGR.json",
+      "status": 200,
+      "bytes": 3194
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AFXHO",
+      "file": "signal/foundry-2026-09-02-FXHO.json",
+      "status": 200,
+      "bytes": 3078
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AGLRE",
+      "file": "signal/foundry-2026-09-02-GLRE.json",
+      "status": 200,
+      "bytes": 3320
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AGPRO",
+      "file": "signal/foundry-2026-09-02-GPRO.json",
+      "status": 200,
+      "bytes": 3130
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AGTLB",
+      "file": "signal/foundry-2026-09-02-GTLB.json",
+      "status": 200,
+      "bytes": 3229
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AHLX",
+      "file": "signal/foundry-2026-09-02-HLX.json",
+      "status": 200,
+      "bytes": 3266
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AHWH",
+      "file": "signal/foundry-2026-09-02-HWH.json",
+      "status": 200,
+      "bytes": 3317
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AICL",
+      "file": "signal/foundry-2026-09-02-ICL.json",
+      "status": 200,
+      "bytes": 3137
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AINBS",
+      "file": "signal/foundry-2026-09-02-INBS.json",
+      "status": 200,
+      "bytes": 3220
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AINLX",
+      "file": "signal/foundry-2026-09-02-INLX.json",
+      "status": 200,
+      "bytes": 3310
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AIOND",
+      "file": "signal/foundry-2026-09-02-IOND.json",
+      "status": 200,
+      "bytes": 3137
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AIPST",
+      "file": "signal/foundry-2026-09-02-IPST.json",
+      "status": 200,
+      "bytes": 3390
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AJONE",
+      "file": "signal/foundry-2026-09-02-JONE.json",
+      "status": 200,
+      "bytes": 3135
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AKFY",
+      "file": "signal/foundry-2026-09-02-KFY.json",
+      "status": 200,
+      "bytes": 3217
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3AKZIA",
+      "file": "signal/foundry-2026-09-02-KZIA.json",
+      "status": 200,
+      "bytes": 3117
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ALAMR",
+      "file": "signal/foundry-2026-09-02-LAMR.json",
+      "status": 200,
+      "bytes": 3146
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ALBTYA",
+      "file": "signal/foundry-2026-09-02-LBTYA.json",
+      "status": 200,
+      "bytes": 3199
+    },
+    {
+      "key": "GET /api/signal?id=foundry%3A2026-09-02%3ALGL",
+      "file": "signal/foundry-2026-09-02-LGL.json",
+      "status": 200,
+      "bytes": 3210
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-05-21%3AGFR%3A0",
+      "file": "signal/intrinsic-2026-05-21-GFR-0.json",
+      "status": 200,
+      "bytes": 1808
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-05-22%3AGFR%3A0",
+      "file": "signal/intrinsic-2026-05-22-GFR-0.json",
+      "status": 200,
+      "bytes": 1810
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-05-26%3ACALM%3A0",
+      "file": "signal/intrinsic-2026-05-26-CALM-0.json",
+      "status": 200,
+      "bytes": 1815
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-05-29%3AAFGB%3A0",
+      "file": "signal/intrinsic-2026-05-29-AFGB-0.json",
+      "status": 200,
+      "bytes": 1826
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-06-04%3AGFR%3A0",
+      "file": "signal/intrinsic-2026-06-04-GFR-0.json",
+      "status": 200,
+      "bytes": 1814
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-06-05%3ACALM%3A0",
+      "file": "signal/intrinsic-2026-06-05-CALM-0.json",
+      "status": 200,
+      "bytes": 1811
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-06-08%3ACALM%3A0",
+      "file": "signal/intrinsic-2026-06-08-CALM-0.json",
+      "status": 200,
+      "bytes": 1816
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-06-09%3AACIC%3A0",
+      "file": "signal/intrinsic-2026-06-09-ACIC-0.json",
+      "status": 200,
+      "bytes": 1957
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-06-11%3AFVRR%3A0",
+      "file": "signal/intrinsic-2026-06-11-FVRR-0.json",
+      "status": 200,
+      "bytes": 1815
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-06-12%3ACALM%3A0",
+      "file": "signal/intrinsic-2026-06-12-CALM-0.json",
+      "status": 200,
+      "bytes": 1813
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-06-15%3AFVRR%3A0",
+      "file": "signal/intrinsic-2026-06-15-FVRR-0.json",
+      "status": 200,
+      "bytes": 1817
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-06-16%3ABKNG%3A0",
+      "file": "signal/intrinsic-2026-06-16-BKNG-0.json",
+      "status": 200,
+      "bytes": 1817
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-06-17%3AGDEV%3A0",
+      "file": "signal/intrinsic-2026-06-17-GDEV-0.json",
+      "status": 200,
+      "bytes": 1819
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-06-18%3ACALM%3A0",
+      "file": "signal/intrinsic-2026-06-18-CALM-0.json",
+      "status": 200,
+      "bytes": 1818
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-06-22%3ACALM%3A0",
+      "file": "signal/intrinsic-2026-06-22-CALM-0.json",
+      "status": 200,
+      "bytes": 1813
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-06-24%3ADLNG%3A0",
+      "file": "signal/intrinsic-2026-06-24-DLNG-0.json",
+      "status": 200,
+      "bytes": 1793
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-06-25%3AORMP%3A0",
+      "file": "signal/intrinsic-2026-06-25-ORMP-0.json",
+      "status": 200,
+      "bytes": 1811
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-06-26%3AORMP%3A0",
+      "file": "signal/intrinsic-2026-06-26-ORMP-0.json",
+      "status": 200,
+      "bytes": 1812
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-06-29%3AGAMB%3A0",
+      "file": "signal/intrinsic-2026-06-29-GAMB-0.json",
+      "status": 200,
+      "bytes": 1944
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-06-30%3AORMP%3A0",
+      "file": "signal/intrinsic-2026-06-30-ORMP-0.json",
+      "status": 200,
+      "bytes": 1811
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-07-01%3AGAMB%3A0",
+      "file": "signal/intrinsic-2026-07-01-GAMB-0.json",
+      "status": 200,
+      "bytes": 1942
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-07-02%3AGAMB%3A0",
+      "file": "signal/intrinsic-2026-07-02-GAMB-0.json",
+      "status": 200,
+      "bytes": 1942
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-07-06%3AGAMB%3A0",
+      "file": "signal/intrinsic-2026-07-06-GAMB-0.json",
+      "status": 200,
+      "bytes": 1940
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-07-07%3AGAMB%3A0",
+      "file": "signal/intrinsic-2026-07-07-GAMB-0.json",
+      "status": 200,
+      "bytes": 1942
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-07-09%3AGAMB%3A0",
+      "file": "signal/intrinsic-2026-07-09-GAMB-0.json",
+      "status": 200,
+      "bytes": 1940
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-07-10%3AGAMB%3A0",
+      "file": "signal/intrinsic-2026-07-10-GAMB-0.json",
+      "status": 200,
+      "bytes": 1938
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-07-14%3ARAIL%3A0",
+      "file": "signal/intrinsic-2026-07-14-RAIL-0.json",
+      "status": 200,
+      "bytes": 1781
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-07-20%3AEGO%3A0",
+      "file": "signal/intrinsic-2026-07-20-EGO-0.json",
+      "status": 200,
+      "bytes": 1778
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-07-22%3ADH%3A0",
+      "file": "signal/intrinsic-2026-07-22-DH-0.json",
+      "status": 200,
+      "bytes": 1784
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-07-23%3ADH%3A0",
+      "file": "signal/intrinsic-2026-07-23-DH-0.json",
+      "status": 200,
+      "bytes": 1782
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-07-24%3ASDHC%3A0",
+      "file": "signal/intrinsic-2026-07-24-SDHC-0.json",
+      "status": 200,
+      "bytes": 1794
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-07-27%3ACHTR%3A0",
+      "file": "signal/intrinsic-2026-07-27-CHTR-0.json",
+      "status": 200,
+      "bytes": 1789
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-07-28%3APMTS%3A0",
+      "file": "signal/intrinsic-2026-07-28-PMTS-0.json",
+      "status": 200,
+      "bytes": 1783
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-07-29%3ADH%3A0",
+      "file": "signal/intrinsic-2026-07-29-DH-0.json",
+      "status": 200,
+      "bytes": 1780
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-07-30%3AFVRR%3A0",
+      "file": "signal/intrinsic-2026-07-30-FVRR-0.json",
+      "status": 200,
+      "bytes": 1784
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-07-31%3APMTS%3A0",
+      "file": "signal/intrinsic-2026-07-31-PMTS-0.json",
+      "status": 200,
+      "bytes": 1780
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-08-03%3ADH%3A0",
+      "file": "signal/intrinsic-2026-08-03-DH-0.json",
+      "status": 200,
+      "bytes": 1787
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-08-04%3AFVRR%3A0",
+      "file": "signal/intrinsic-2026-08-04-FVRR-0.json",
+      "status": 200,
+      "bytes": 1821
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-08-05%3AFVRR%3A0",
+      "file": "signal/intrinsic-2026-08-05-FVRR-0.json",
+      "status": 200,
+      "bytes": 1818
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-08-06%3AMAX%3A0",
+      "file": "signal/intrinsic-2026-08-06-MAX-0.json",
+      "status": 200,
+      "bytes": 1811
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-08-07%3AFVRR%3A0",
+      "file": "signal/intrinsic-2026-08-07-FVRR-0.json",
+      "status": 200,
+      "bytes": 1820
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-08-10%3ACABO%3A0",
+      "file": "signal/intrinsic-2026-08-10-CABO-0.json",
+      "status": 200,
+      "bytes": 1823
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-08-11%3AEGO%3A0",
+      "file": "signal/intrinsic-2026-08-11-EGO-0.json",
+      "status": 200,
+      "bytes": 1841
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-08-12%3ADH%3A0",
+      "file": "signal/intrinsic-2026-08-12-DH-0.json",
+      "status": 200,
+      "bytes": 1814
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-08-13%3AEGO%3A0",
+      "file": "signal/intrinsic-2026-08-13-EGO-0.json",
+      "status": 200,
+      "bytes": 1813
+    },
+    {
+      "key": "GET /api/signal?id=intrinsic%3A2026-08-14%3ACABO%3A0",
+      "file": "signal/intrinsic-2026-08-14-CABO-0.json",
+      "status": 200,
+      "bytes": 1821
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-05-22%3AASTI%3A0",
+      "file": "signal/lstm-2026-05-22-ASTI-0.json",
+      "status": 200,
+      "bytes": 1779
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-05-26%3AFLNT%3A0",
+      "file": "signal/lstm-2026-05-26-FLNT-0.json",
+      "status": 200,
+      "bytes": 1780
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-05-29%3AZCMD%3A0",
+      "file": "signal/lstm-2026-05-29-ZCMD-0.json",
+      "status": 200,
+      "bytes": 2659
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-06-01%3AOMH%3A0",
+      "file": "signal/lstm-2026-06-01-OMH-0.json",
+      "status": 200,
+      "bytes": 2311
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-06-02%3AADTX%3A0",
+      "file": "signal/lstm-2026-06-02-ADTX-0.json",
+      "status": 200,
+      "bytes": 2018
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-06-03%3AADTX%3A0",
+      "file": "signal/lstm-2026-06-03-ADTX-0.json",
+      "status": 200,
+      "bytes": 2018
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-06-04%3AADTX%3A0",
+      "file": "signal/lstm-2026-06-04-ADTX-0.json",
+      "status": 200,
+      "bytes": 2012
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-06-05%3AADTX%3A0",
+      "file": "signal/lstm-2026-06-05-ADTX-0.json",
+      "status": 200,
+      "bytes": 2045
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-06-08%3AOMH%3A0",
+      "file": "signal/lstm-2026-06-08-OMH-0.json",
+      "status": 200,
+      "bytes": 2308
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-06-09%3AADTX%3A0",
+      "file": "signal/lstm-2026-06-09-ADTX-0.json",
+      "status": 200,
+      "bytes": 2015
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-06-10%3AAEC%3A0",
+      "file": "signal/lstm-2026-06-10-AEC-0.json",
+      "status": 200,
+      "bytes": 1744
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-06-11%3AYYGH%3A0",
+      "file": "signal/lstm-2026-06-11-YYGH-0.json",
+      "status": 200,
+      "bytes": 2065
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-06-12%3AADTX%3A0",
+      "file": "signal/lstm-2026-06-12-ADTX-0.json",
+      "status": 200,
+      "bytes": 2014
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-06-15%3ACPOP%3A0",
+      "file": "signal/lstm-2026-06-15-CPOP-0.json",
+      "status": 200,
+      "bytes": 1991
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-06-16%3AADTX%3A0",
+      "file": "signal/lstm-2026-06-16-ADTX-0.json",
+      "status": 200,
+      "bytes": 2021
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-06-17%3ADUO%3A0",
+      "file": "signal/lstm-2026-06-17-DUO-0.json",
+      "status": 200,
+      "bytes": 1793
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-06-18%3AADTX%3A0",
+      "file": "signal/lstm-2026-06-18-ADTX-0.json",
+      "status": 200,
+      "bytes": 2022
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-06-22%3AHUYA%3A0",
+      "file": "signal/lstm-2026-06-22-HUYA-0.json",
+      "status": 200,
+      "bytes": 1788
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-06-24%3AADTX%3A0",
+      "file": "signal/lstm-2026-06-24-ADTX-0.json",
+      "status": 200,
+      "bytes": 1809
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-06-25%3ALIMN%3A0",
+      "file": "signal/lstm-2026-06-25-LIMN-0.json",
+      "status": 200,
+      "bytes": 1783
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-06-26%3ADUO%3A0",
+      "file": "signal/lstm-2026-06-26-DUO-0.json",
+      "status": 200,
+      "bytes": 1788
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-06-29%3ADUO%3A0",
+      "file": "signal/lstm-2026-06-29-DUO-0.json",
+      "status": 200,
+      "bytes": 1787
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-06-30%3ANXTC%3A0",
+      "file": "signal/lstm-2026-06-30-NXTC-0.json",
+      "status": 200,
+      "bytes": 1956
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-01%3APSIG%3A0",
+      "file": "signal/lstm-2026-07-01-PSIG-0.json",
+      "status": 200,
+      "bytes": 1767
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-02%3ANCRA%3A0",
+      "file": "signal/lstm-2026-07-02-NCRA-0.json",
+      "status": 200,
+      "bytes": 2074
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-06%3ABJDX%3A0",
+      "file": "signal/lstm-2026-07-06-BJDX-0.json",
+      "status": 200,
+      "bytes": 1727
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-07%3AYHC%3A0",
+      "file": "signal/lstm-2026-07-07-YHC-0.json",
+      "status": 200,
+      "bytes": 1788
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-08%3AAEMD%3A0",
+      "file": "signal/lstm-2026-07-08-AEMD-0.json",
+      "status": 200,
+      "bytes": 1962
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-09%3AFTFT%3A0",
+      "file": "signal/lstm-2026-07-09-FTFT-0.json",
+      "status": 200,
+      "bytes": 2244
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-10%3ANXTC%3A0",
+      "file": "signal/lstm-2026-07-10-NXTC-0.json",
+      "status": 200,
+      "bytes": 1991
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-13%3AAPVO%3A0",
+      "file": "signal/lstm-2026-07-13-APVO-0.json",
+      "status": 200,
+      "bytes": 1758
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-14%3ADBGI%3A0",
+      "file": "signal/lstm-2026-07-14-DBGI-0.json",
+      "status": 200,
+      "bytes": 1955
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-15%3AECOR%3A0",
+      "file": "signal/lstm-2026-07-15-ECOR-0.json",
+      "status": 200,
+      "bytes": 1738
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-16%3AECOR%3A0",
+      "file": "signal/lstm-2026-07-16-ECOR-0.json",
+      "status": 200,
+      "bytes": 1736
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-17%3ASONM%3A0",
+      "file": "signal/lstm-2026-07-17-SONM-0.json",
+      "status": 200,
+      "bytes": 1748
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-20%3AACLS%3A0",
+      "file": "signal/lstm-2026-07-20-ACLS-0.json",
+      "status": 200,
+      "bytes": 2421
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-21%3ABHE%3A0",
+      "file": "signal/lstm-2026-07-21-BHE-0.json",
+      "status": 200,
+      "bytes": 2430
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-22%3ABHE%3A0",
+      "file": "signal/lstm-2026-07-22-BHE-0.json",
+      "status": 200,
+      "bytes": 2426
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-23%3AADI%3A0",
+      "file": "signal/lstm-2026-07-23-ADI-0.json",
+      "status": 200,
+      "bytes": 2425
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-24%3ABHE%3A0",
+      "file": "signal/lstm-2026-07-24-BHE-0.json",
+      "status": 200,
+      "bytes": 2417
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-27%3AALAB%3A0",
+      "file": "signal/lstm-2026-07-27-ALAB-0.json",
+      "status": 200,
+      "bytes": 2418
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-28%3AAMAT%3A0",
+      "file": "signal/lstm-2026-07-28-AMAT-0.json",
+      "status": 200,
+      "bytes": 2423
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-29%3AAMD%3A0",
+      "file": "signal/lstm-2026-07-29-AMD-0.json",
+      "status": 200,
+      "bytes": 2425
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-30%3AAMD%3A0",
+      "file": "signal/lstm-2026-07-30-AMD-0.json",
+      "status": 200,
+      "bytes": 2424
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-07-31%3AAMD%3A0",
+      "file": "signal/lstm-2026-07-31-AMD-0.json",
+      "status": 200,
+      "bytes": 2435
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-03%3AAPVO%3A0",
+      "file": "signal/lstm-2026-08-03-APVO-0.json",
+      "status": 200,
+      "bytes": 2409
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-04%3AAMD%3A0",
+      "file": "signal/lstm-2026-08-04-AMD-0.json",
+      "status": 200,
+      "bytes": 2417
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-05%3AAGL%3A0",
+      "file": "signal/lstm-2026-08-05-AGL-0.json",
+      "status": 200,
+      "bytes": 2419
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-06%3AAMBQ%3A0",
+      "file": "signal/lstm-2026-08-06-AMBQ-0.json",
+      "status": 200,
+      "bytes": 2416
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-07%3ABAND%3A0",
+      "file": "signal/lstm-2026-08-07-BAND-0.json",
+      "status": 200,
+      "bytes": 2424
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-10%3AASML%3A0",
+      "file": "signal/lstm-2026-08-10-ASML-0.json",
+      "status": 200,
+      "bytes": 2436
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-11%3AASML%3A0",
+      "file": "signal/lstm-2026-08-11-ASML-0.json",
+      "status": 200,
+      "bytes": 2440
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-12%3AAPVO%3A0",
+      "file": "signal/lstm-2026-08-12-APVO-0.json",
+      "status": 200,
+      "bytes": 2415
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-13%3AAPVO%3A0",
+      "file": "signal/lstm-2026-08-13-APVO-0.json",
+      "status": 200,
+      "bytes": 2428
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-14%3AASML%3A0",
+      "file": "signal/lstm-2026-08-14-ASML-0.json",
+      "status": 200,
+      "bytes": 2439
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-17%3AMU%3A0",
+      "file": "signal/lstm-2026-08-17-MU-0.json",
+      "status": 200,
+      "bytes": 2432
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-18%3ARBLX%3A0",
+      "file": "signal/lstm-2026-08-18-RBLX-0.json",
+      "status": 200,
+      "bytes": 2416
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-19%3AASML%3A0",
+      "file": "signal/lstm-2026-08-19-ASML-0.json",
+      "status": 200,
+      "bytes": 2443
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-20%3ARRX%3A0",
+      "file": "signal/lstm-2026-08-20-RRX-0.json",
+      "status": 200,
+      "bytes": 2425
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-21%3AMIDD%3A0",
+      "file": "signal/lstm-2026-08-21-MIDD-0.json",
+      "status": 200,
+      "bytes": 2425
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-24%3AASML%3A0",
+      "file": "signal/lstm-2026-08-24-ASML-0.json",
+      "status": 200,
+      "bytes": 2451
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-25%3AASML%3A0",
+      "file": "signal/lstm-2026-08-25-ASML-0.json",
+      "status": 200,
+      "bytes": 2438
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-26%3ANVR%3A0",
+      "file": "signal/lstm-2026-08-26-NVR-0.json",
+      "status": 200,
+      "bytes": 2435
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-27%3ANVR%3A0",
+      "file": "signal/lstm-2026-08-27-NVR-0.json",
+      "status": 200,
+      "bytes": 2432
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-28%3ANVR%3A0",
+      "file": "signal/lstm-2026-08-28-NVR-0.json",
+      "status": 200,
+      "bytes": 2433
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-08-31%3ANVR%3A0",
+      "file": "signal/lstm-2026-08-31-NVR-0.json",
+      "status": 200,
+      "bytes": 2401
+    },
+    {
+      "key": "GET /api/signal?id=lstm%3A2026-09-01%3ANVR%3A0",
+      "file": "signal/lstm-2026-09-01-NVR-0.json",
+      "status": 200,
+      "bytes": 2400
+    },
+    {
+      "key": "GET /api/signals?buys_only=false&exit_window=20&limit=75&offset=0&spark=true&trailing=false",
+      "file": "signals/all-decisions.json",
+      "status": 200,
+      "bytes": 120216
+    },
+    {
+      "key": "GET /api/signals?buys_only=true&exit_window=20&limit=75&offset=0&spark=true&stop_pct=0.05&target_pct=0.1&trailing=false",
+      "file": "signals/exit-rule.json",
+      "status": 200,
+      "bytes": 135022
+    },
+    {
+      "key": "GET /api/signals?buys_only=true&exit_window=20&limit=75&offset=0&producer=foundry&spark=true&trailing=false",
+      "file": "signals/foundry.json",
+      "status": 200,
+      "bytes": 68553
+    },
+    {
+      "key": "GET /api/signals?buys_only=true&exit_window=20&limit=75&offset=0&producer=intrinsic&spark=true&trailing=false",
+      "file": "signals/intrinsic.json",
+      "status": 200,
+      "bytes": 78105
+    },
+    {
+      "key": "GET /api/signals?buys_only=true&exit_window=20&limit=75&offset=0&producer=lstm&spark=true&trailing=false",
+      "file": "signals/lstm.json",
+      "status": 200,
+      "bytes": 125494
+    },
+    {
+      "key": "GET /api/signals?buys_only=true&exit_window=20&limit=75&offset=0&spark=true&trailing=false",
+      "file": "signals/page-1.json",
+      "status": 200,
+      "bytes": 121433
+    },
+    {
+      "key": "GET /api/signals?buys_only=true&exit_window=20&limit=75&offset=75&spark=true&trailing=false",
+      "file": "signals/page-2.json",
+      "status": 200,
+      "bytes": 133711
+    },
+    {
+      "key": "GET /api/signals?buys_only=true&date_from=2026-08-20&date_to=2026-09-02&exit_window=20&limit=75&offset=0&spark=true&trailing=false",
+      "file": "signals/window.json",
+      "status": 200,
+      "bytes": 31026
+    },
+    {
+      "key": "GET /api/ticker/AAPL?exit_window=20&trailing=false",
+      "file": "ticker/AAPL.json",
+      "status": 200,
+      "bytes": 132207
+    },
+    {
+      "key": "GET /api/ticker/AAPL/chart?interval=1Hour&window=1M",
+      "file": "ticker/AAPL/chart-1Hour-1M.json",
+      "status": 200,
+      "bytes": 206545
+    },
+    {
+      "key": "GET /api/ticker/AAPL/chart?interval=5Min&window=5D",
+      "file": "ticker/AAPL/chart-5Min-5D.json",
+      "status": 200,
+      "bytes": 265787
+    },
+    {
+      "key": "GET /api/ticker/AMD?exit_window=20&trailing=false",
+      "file": "ticker/AMD.json",
+      "status": 200,
+      "bytes": 94434
+    },
+    {
+      "key": "GET /api/ticker/AMD/chart?interval=1Hour&window=1M",
+      "file": "ticker/AMD/chart-1Hour-1M.json",
+      "status": 200,
+      "bytes": 178521
+    },
+    {
+      "key": "GET /api/ticker/AMD/chart?interval=5Min&window=5D",
+      "file": "ticker/AMD/chart-5Min-5D.json",
+      "status": 200,
+      "bytes": 241087
+    },
+    {
+      "key": "GET /api/ticker/AMZN?exit_window=20&trailing=false",
+      "file": "ticker/AMZN.json",
+      "status": 200,
+      "bytes": 106708
+    },
+    {
+      "key": "GET /api/ticker/AMZN/chart?interval=1Hour&window=1M",
+      "file": "ticker/AMZN/chart-1Hour-1M.json",
+      "status": 200,
+      "bytes": 179950
+    },
+    {
+      "key": "GET /api/ticker/AMZN/chart?interval=5Min&window=5D",
+      "file": "ticker/AMZN/chart-5Min-5D.json",
+      "status": 200,
+      "bytes": 244607
+    },
+    {
+      "key": "GET /api/ticker/ASML?exit_window=20&trailing=false",
+      "file": "ticker/ASML.json",
+      "status": 200,
+      "bytes": 84216
+    },
+    {
+      "key": "GET /api/ticker/ASML/chart?interval=1Hour&window=1M",
+      "file": "ticker/ASML/chart-1Hour-1M.json",
+      "status": 200,
+      "bytes": 167219
+    },
+    {
+      "key": "GET /api/ticker/ASML/chart?interval=5Min&window=5D",
+      "file": "ticker/ASML/chart-5Min-5D.json",
+      "status": 200,
+      "bytes": 239839
+    },
+    {
+      "key": "GET /api/ticker/BAFN?exit_window=20&trailing=false",
+      "file": "ticker/BAFN.json",
+      "status": 200,
+      "bytes": 79653
+    },
+    {
+      "key": "GET /api/ticker/BAFN/chart?interval=1Hour&window=1M",
+      "file": "ticker/BAFN/chart-1Hour-1M.json",
+      "status": 200,
+      "bytes": 43199
+    },
+    {
+      "key": "GET /api/ticker/BAFN/chart?interval=5Min&window=5D",
+      "file": "ticker/BAFN/chart-5Min-5D.json",
+      "status": 200,
+      "bytes": 18463
+    },
+    {
+      "key": "GET /api/ticker/CABO?exit_window=20&trailing=false",
+      "file": "ticker/CABO.json",
+      "status": 200,
+      "bytes": 73273
+    },
+    {
+      "key": "GET /api/ticker/CABO/chart?interval=1Hour&window=1M",
+      "file": "ticker/CABO/chart-1Hour-1M.json",
+      "status": 200,
+      "bytes": 124809
+    },
+    {
+      "key": "GET /api/ticker/CABO/chart?interval=5Min&window=5D",
+      "file": "ticker/CABO/chart-5Min-5D.json",
+      "status": 200,
+      "bytes": 57886
+    },
+    {
+      "key": "GET /api/ticker/CXAI?exit_window=20&trailing=false",
+      "file": "ticker/CXAI.json",
+      "status": 200,
+      "bytes": 66041
+    },
+    {
+      "key": "GET /api/ticker/CXAI/chart?interval=1Hour&window=1M",
+      "file": "ticker/CXAI/chart-1Hour-1M.json",
+      "status": 200,
+      "bytes": 132802
+    },
+    {
+      "key": "GET /api/ticker/CXAI/chart?interval=5Min&window=5D",
+      "file": "ticker/CXAI/chart-5Min-5D.json",
+      "status": 200,
+      "bytes": 31823
+    },
+    {
+      "key": "GET /api/ticker/FJET?exit_window=20&trailing=false",
+      "file": "ticker/FJET.json",
+      "status": 200,
+      "bytes": 56533
+    },
+    {
+      "key": "GET /api/ticker/FJET/chart?interval=1Hour&window=1M",
+      "file": "ticker/FJET/chart-1Hour-1M.json",
+      "status": 200,
+      "bytes": 139600
+    },
+    {
+      "key": "GET /api/ticker/FJET/chart?interval=5Min&window=5D",
+      "file": "ticker/FJET/chart-5Min-5D.json",
+      "status": 200,
+      "bytes": 87568
+    },
+    {
+      "key": "GET /api/ticker/GOOGL?exit_window=20&trailing=false",
+      "file": "ticker/GOOGL.json",
+      "status": 200,
+      "bytes": 125405
+    },
+    {
+      "key": "GET /api/ticker/GOOGL/chart?interval=1Hour&window=1M",
+      "file": "ticker/GOOGL/chart-1Hour-1M.json",
+      "status": 200,
+      "bytes": 203323
+    },
+    {
+      "key": "GET /api/ticker/GOOGL/chart?interval=5Min&window=5D",
+      "file": "ticker/GOOGL/chart-5Min-5D.json",
+      "status": 200,
+      "bytes": 256625
+    },
+    {
+      "key": "GET /api/ticker/MIDD?exit_window=20&trailing=false",
+      "file": "ticker/MIDD.json",
+      "status": 200,
+      "bytes": 71293
+    },
+    {
+      "key": "GET /api/ticker/MIDD/chart?interval=1Hour&window=1M",
+      "file": "ticker/MIDD/chart-1Hour-1M.json",
+      "status": 200,
+      "bytes": 147229
+    },
+    {
+      "key": "GET /api/ticker/MIDD/chart?interval=5Min&window=5D",
+      "file": "ticker/MIDD/chart-5Min-5D.json",
+      "status": 200,
+      "bytes": 138189
+    },
+    {
+      "key": "GET /api/ticker/MRK?exit_window=20&trailing=false",
+      "file": "ticker/MRK.json",
+      "status": 200,
+      "bytes": 68172
+    },
+    {
+      "key": "GET /api/ticker/MRK/chart?interval=1Hour&window=1M",
+      "file": "ticker/MRK/chart-1Hour-1M.json",
+      "status": 200,
+      "bytes": 145230
+    },
+    {
+      "key": "GET /api/ticker/MRK/chart?interval=5Min&window=5D",
+      "file": "ticker/MRK/chart-5Min-5D.json",
+      "status": 200,
+      "bytes": 216954
+    },
+    {
+      "key": "GET /api/ticker/MRNA?exit_window=20&trailing=false",
+      "file": "ticker/MRNA.json",
+      "status": 200,
+      "bytes": 74870
+    },
+    {
+      "key": "GET /api/ticker/MRNA/chart?interval=1Hour&window=1M",
+      "file": "ticker/MRNA/chart-1Hour-1M.json",
+      "status": 200,
+      "bytes": 147728
+    },
+    {
+      "key": "GET /api/ticker/MRNA/chart?interval=5Min&window=5D",
+      "file": "ticker/MRNA/chart-5Min-5D.json",
+      "status": 200,
+      "bytes": 215475
+    },
+    {
+      "key": "GET /api/ticker/MU?exit_window=20&trailing=false",
+      "file": "ticker/MU.json",
+      "status": 200,
+      "bytes": 81904
+    },
+    {
+      "key": "GET /api/ticker/MU/chart?interval=1Hour&window=1M",
+      "file": "ticker/MU/chart-1Hour-1M.json",
+      "status": 200,
+      "bytes": 177312
+    },
+    {
+      "key": "GET /api/ticker/MU/chart?interval=5Min&window=5D",
+      "file": "ticker/MU/chart-5Min-5D.json",
+      "status": 200,
+      "bytes": 224943
+    },
+    {
+      "key": "GET /api/ticker/NVDA?exit_window=20&trailing=false",
+      "file": "ticker/NVDA.json",
+      "status": 200,
+      "bytes": 109185
+    },
+    {
+      "key": "GET /api/ticker/NVDA/chart?interval=1Hour&window=1M",
+      "file": "ticker/NVDA/chart-1Hour-1M.json",
+      "status": 200,
+      "bytes": 207260
+    },
+    {
+      "key": "GET /api/ticker/NVDA/chart?interval=5Min&window=5D",
+      "file": "ticker/NVDA/chart-5Min-5D.json",
+      "status": 200,
+      "bytes": 274220
+    },
+    {
+      "key": "GET /api/ticker/NVR?exit_window=20&trailing=false",
+      "file": "ticker/NVR.json",
+      "status": 200,
+      "bytes": 74678
+    },
+    {
+      "key": "GET /api/ticker/NVR/chart?interval=1Hour&window=1M",
+      "file": "ticker/NVR/chart-1Hour-1M.json",
+      "status": 200,
+      "bytes": 140837
+    },
+    {
+      "key": "GET /api/ticker/NVR/chart?interval=5Min&window=5D",
+      "file": "ticker/NVR/chart-5Min-5D.json",
+      "status": 200,
+      "bytes": 107343
+    },
+    {
+      "key": "GET /api/ticker/NXXT?exit_window=20&trailing=false",
+      "file": "ticker/NXXT.json",
+      "status": 200,
+      "bytes": 72407
+    },
+    {
+      "key": "GET /api/ticker/NXXT/chart?interval=1Hour&window=1M",
+      "file": "ticker/NXXT/chart-1Hour-1M.json",
+      "status": 200,
+      "bytes": 142814
+    },
+    {
+      "key": "GET /api/ticker/NXXT/chart?interval=5Min&window=5D",
+      "file": "ticker/NXXT/chart-5Min-5D.json",
+      "status": 200,
+      "bytes": 65387
+    },
+    {
+      "key": "GET /api/ticker/POLE?exit_window=20&trailing=false",
+      "file": "ticker/POLE.json",
+      "status": 200,
+      "bytes": 6307
+    },
+    {
+      "key": "GET /api/ticker/POLE/chart?interval=1Hour&window=1M",
+      "file": "ticker/POLE/chart-1Hour-1M.json",
+      "status": 200,
+      "bytes": 4877
+    },
+    {
+      "key": "GET /api/ticker/POLE/chart?interval=5Min&window=5D",
+      "file": "ticker/POLE/chart-5Min-5D.json",
+      "status": 200,
+      "bytes": 4876
+    },
+    {
+      "key": "GET /api/ticker/RBLX?exit_window=20&trailing=false",
+      "file": "ticker/RBLX.json",
+      "status": 200,
+      "bytes": 71737
+    },
+    {
+      "key": "GET /api/ticker/RBLX/chart?interval=1Hour&window=1M",
+      "file": "ticker/RBLX/chart-1Hour-1M.json",
+      "status": 200,
+      "bytes": 140988
+    },
+    {
+      "key": "GET /api/ticker/RBLX/chart?interval=5Min&window=5D",
+      "file": "ticker/RBLX/chart-5Min-5D.json",
+      "status": 200,
+      "bytes": 209088
+    },
+    {
+      "key": "GET /api/ticker/RRX?exit_window=20&trailing=false",
+      "file": "ticker/RRX.json",
+      "status": 200,
+      "bytes": 61603
+    },
+    {
+      "key": "GET /api/ticker/RRX/chart?interval=1Hour&window=1M",
+      "file": "ticker/RRX/chart-1Hour-1M.json",
+      "status": 200,
+      "bytes": 143710
+    },
+    {
+      "key": "GET /api/ticker/RRX/chart?interval=5Min&window=5D",
+      "file": "ticker/RRX/chart-5Min-5D.json",
+      "status": 200,
+      "bytes": 183835
+    },
+    {
+      "key": "GET /api/ticker/SER?exit_window=20&trailing=false",
+      "file": "ticker/SER.json",
+      "status": 200,
+      "bytes": 55905
+    },
+    {
+      "key": "GET /api/ticker/SER/chart?interval=1Hour&window=1M",
+      "file": "ticker/SER/chart-1Hour-1M.json",
+      "status": 200,
+      "bytes": 75050
+    },
+    {
+      "key": "GET /api/ticker/SER/chart?interval=5Min&window=5D",
+      "file": "ticker/SER/chart-5Min-5D.json",
+      "status": 200,
+      "bytes": 19385
+    },
+    {
+      "key": "GET /api/tickers?q=a",
+      "file": "tickers/q-a.json",
+      "status": 200,
+      "bytes": 2205
+    },
+    {
+      "key": "GET /api/tickers?q=AAPL",
+      "file": "tickers/q-aapl.json",
+      "status": 200,
+      "bytes": 167
+    },
+    {
+      "key": "GET /api/tickers?q=AMD",
+      "file": "tickers/q-amd.json",
+      "status": 200,
+      "bytes": 166
+    },
+    {
+      "key": "GET /api/tickers?q=AMZN",
+      "file": "tickers/q-amzn.json",
+      "status": 200,
+      "bytes": 167
+    },
+    {
+      "key": "GET /api/tickers?q=ASML",
+      "file": "tickers/q-asml.json",
+      "status": 200,
+      "bytes": 167
+    },
+    {
+      "key": "GET /api/tickers?q=b",
+      "file": "tickers/q-b.json",
+      "status": 200,
+      "bytes": 2024
+    },
+    {
+      "key": "GET /api/tickers?q=BAFN",
+      "file": "tickers/q-bafn.json",
+      "status": 200,
+      "bytes": 167
+    },
+    {
+      "key": "GET /api/tickers?q=c",
+      "file": "tickers/q-c.json",
+      "status": 200,
+      "bytes": 2105
+    },
+    {
+      "key": "GET /api/tickers?q=CABO",
+      "file": "tickers/q-cabo.json",
+      "status": 200,
+      "bytes": 167
+    },
+    {
+      "key": "GET /api/tickers?q=CXAI",
+      "file": "tickers/q-cxai.json",
+      "status": 200,
+      "bytes": 167
+    },
+    {
+      "key": "GET /api/tickers?q=d",
+      "file": "tickers/q-d.json",
+      "status": 200,
+      "bytes": 2068
+    },
+    {
+      "key": "GET /api/tickers?q=e",
+      "file": "tickers/q-e.json",
+      "status": 200,
+      "bytes": 2024
+    },
+    {
+      "key": "GET /api/tickers?q=f",
+      "file": "tickers/q-f.json",
+      "status": 200,
+      "bytes": 2043
+    },
+    {
+      "key": "GET /api/tickers?q=FJET",
+      "file": "tickers/q-fjet.json",
+      "status": 200,
+      "bytes": 138
+    },
+    {
+      "key": "GET /api/tickers?q=g",
+      "file": "tickers/q-g.json",
+      "status": 200,
+      "bytes": 2058
+    },
+    {
+      "key": "GET /api/tickers?q=GOOGL",
+      "file": "tickers/q-googl.json",
+      "status": 200,
+      "bytes": 168
+    },
+    {
+      "key": "GET /api/tickers?q=h",
+      "file": "tickers/q-h.json",
+      "status": 200,
+      "bytes": 1975
+    },
+    {
+      "key": "GET /api/tickers?q=i",
+      "file": "tickers/q-i.json",
+      "status": 200,
+      "bytes": 1825
+    },
+    {
+      "key": "GET /api/tickers?q=j",
+      "file": "tickers/q-j.json",
+      "status": 200,
+      "bytes": 1904
+    },
+    {
+      "key": "GET /api/tickers?q=k",
+      "file": "tickers/q-k.json",
+      "status": 200,
+      "bytes": 1911
+    },
+    {
+      "key": "GET /api/tickers?q=l",
+      "file": "tickers/q-l.json",
+      "status": 200,
+      "bytes": 2012
+    },
+    {
+      "key": "GET /api/tickers?q=m",
+      "file": "tickers/q-m.json",
+      "status": 200,
+      "bytes": 2108
+    },
+    {
+      "key": "GET /api/tickers?q=MIDD",
+      "file": "tickers/q-midd.json",
+      "status": 200,
+      "bytes": 167
+    },
+    {
+      "key": "GET /api/tickers?q=MRK",
+      "file": "tickers/q-mrk.json",
+      "status": 200,
+      "bytes": 556
+    },
+    {
+      "key": "GET /api/tickers?q=MRNA",
+      "file": "tickers/q-mrna.json",
+      "status": 200,
+      "bytes": 167
+    },
+    {
+      "key": "GET /api/tickers?q=MU",
+      "file": "tickers/q-mu.json",
+      "status": 200,
+      "bytes": 1687
+    },
+    {
+      "key": "GET /api/tickers?q=n",
+      "file": "tickers/q-n.json",
+      "status": 200,
+      "bytes": 2019
+    },
+    {
+      "key": "GET /api/tickers?q=NVDA",
+      "file": "tickers/q-nvda.json",
+      "status": 200,
+      "bytes": 167
+    },
+    {
+      "key": "GET /api/tickers?q=NVR",
+      "file": "tickers/q-nvr.json",
+      "status": 200,
+      "bytes": 554
+    },
+    {
+      "key": "GET /api/tickers?q=NXXT",
+      "file": "tickers/q-nxxt.json",
+      "status": 200,
+      "bytes": 167
+    },
+    {
+      "key": "GET /api/tickers?q=o",
+      "file": "tickers/q-o.json",
+      "status": 200,
+      "bytes": 1906
+    },
+    {
+      "key": "GET /api/tickers?q=p",
+      "file": "tickers/q-p.json",
+      "status": 200,
+      "bytes": 1986
+    },
+    {
+      "key": "GET /api/tickers?q=POLE",
+      "file": "tickers/q-pole.json",
+      "status": 200,
+      "bytes": 138
+    },
+    {
+      "key": "GET /api/tickers?q=q",
+      "file": "tickers/q-q.json",
+      "status": 200,
+      "bytes": 1868
+    },
+    {
+      "key": "GET /api/tickers?q=r",
+      "file": "tickers/q-r.json",
+      "status": 200,
+      "bytes": 1891
+    },
+    {
+      "key": "GET /api/tickers?q=RBLX",
+      "file": "tickers/q-rblx.json",
+      "status": 200,
+      "bytes": 167
+    },
+    {
+      "key": "GET /api/tickers?q=RRX",
+      "file": "tickers/q-rrx.json",
+      "status": 200,
+      "bytes": 166
+    },
+    {
+      "key": "GET /api/tickers?q=s",
+      "file": "tickers/q-s.json",
+      "status": 200,
+      "bytes": 1993
+    },
+    {
+      "key": "GET /api/tickers?q=SER",
+      "file": "tickers/q-ser.json",
+      "status": 200,
+      "bytes": 415
+    },
+    {
+      "key": "GET /api/tickers?q=t",
+      "file": "tickers/q-t.json",
+      "status": 200,
+      "bytes": 1780
+    },
+    {
+      "key": "GET /api/tickers?q=u",
+      "file": "tickers/q-u.json",
+      "status": 200,
+      "bytes": 1800
+    },
+    {
+      "key": "GET /api/tickers?q=v",
+      "file": "tickers/q-v.json",
+      "status": 200,
+      "bytes": 1788
+    },
+    {
+      "key": "GET /api/tickers?q=w",
+      "file": "tickers/q-w.json",
+      "status": 200,
+      "bytes": 1720
+    },
+    {
+      "key": "GET /api/tickers?q=x",
+      "file": "tickers/q-x.json",
+      "status": 200,
+      "bytes": 1837
+    },
+    {
+      "key": "GET /api/tickers?q=y",
+      "file": "tickers/q-y.json",
+      "status": 200,
+      "bytes": 1809
+    },
+    {
+      "key": "GET /api/tickers?q=z",
+      "file": "tickers/q-z.json",
+      "status": 200,
+      "bytes": 1775
+    },
+    {
+      "key": "GET /api/lab?buckets=5&dir=desc&limit=1&min_bucket=20&offset=0&outcome=ret_5d&producer=lstm&sort=date",
+      "file": "lab/lstm.json",
+      "status": 200,
+      "bytes": 103975,
+      "derived": true
+    },
+    {
+      "key": "GET /api/lab?buckets=5&dir=desc&limit=1&min_bucket=20&offset=0&outcome=ret_since&producer=lstm&sort=date",
+      "file": "lab/lstm-since-signal.json",
+      "status": 200,
+      "bytes": 106455,
+      "derived": true
+    },
+    {
+      "key": "GET /api/lab?buckets=5&dir=desc&limit=100&min_bucket=20&offset=0&outcome=ret_5d&producer=lstm&sort=date",
+      "file": "lab/lstm-rows.json",
+      "status": 200,
+      "bytes": 237579,
+      "derived": true
+    },
+    {
+      "key": "GET /api/lab?buckets=5&dir=desc&limit=1&min_bucket=20&offset=0&outcome=ret_5d&producer=intrinsic&sort=date",
+      "file": "lab/intrinsic.json",
+      "status": 200,
+      "bytes": 916,
+      "derived": true
+    },
+    {
+      "key": "GET /api/lab?buckets=5&dir=desc&limit=1&min_bucket=20&offset=0&outcome=ret_5d&producer=foundry&sort=date",
+      "file": "lab/foundry.json",
+      "status": 200,
+      "bytes": 911,
+      "derived": true
+    }
   ],
-  "foundry": [
-   "2026-08-20",
-   "2026-08-21",
-   "2026-08-24",
-   "2026-08-25",
-   "2026-08-26",
-   "2026-08-27",
-   "2026-08-28",
-   "2026-08-31",
-   "2026-09-01",
-   "2026-09-02"
-  ]
- },
- "tickers": [
-  "NVR",
-  "AAPL",
-  "POLE",
-  "FJET",
-  "NVDA",
-  "AMZN",
-  "AMD",
-  "NXXT",
-  "SER",
-  "ASML",
-  "BAFN",
-  "MIDD",
-  "RRX",
-  "CXAI",
-  "MRK",
-  "MRNA",
-  "GOOGL",
-  "RBLX",
-  "MU",
-  "CABO"
- ],
- "counts": {
-  "responses": 367,
-  "bytes": 15373294
- },
- "price_build_errors": [],
- "responses": [
-  {
-   "key": "GET /api/analytics",
-   "file": "analytics.json",
-   "status": 200,
-   "bytes": 60080
-  },
-  {
-   "key": "GET /api/analytics?producer=foundry",
-   "file": "analytics/foundry.json",
-   "status": 200,
-   "bytes": 17776
-  },
-  {
-   "key": "GET /api/analytics?producer=intrinsic",
-   "file": "analytics/intrinsic.json",
-   "status": 200,
-   "bytes": 24842
-  },
-  {
-   "key": "GET /api/analytics?producer=lstm",
-   "file": "analytics/lstm.json",
-   "status": 200,
-   "bytes": 29783
-  },
-  {
-   "key": "GET /api/analytics?date_from=2026-08-20&date_to=2026-09-02",
-   "file": "analytics/window.json",
-   "status": 200,
-   "bytes": 19081
-  },
-  {
-   "key": "GET /api/day/2026-08-20",
-   "file": "day/2026-08-20.json",
-   "status": 200,
-   "bytes": 180671
-  },
-  {
-   "key": "GET /api/day/2026-08-21",
-   "file": "day/2026-08-21.json",
-   "status": 200,
-   "bytes": 178938
-  },
-  {
-   "key": "GET /api/day/2026-08-24",
-   "file": "day/2026-08-24.json",
-   "status": 200,
-   "bytes": 177407
-  },
-  {
-   "key": "GET /api/day/2026-08-25",
-   "file": "day/2026-08-25.json",
-   "status": 200,
-   "bytes": 173218
-  },
-  {
-   "key": "GET /api/day/2026-08-26",
-   "file": "day/2026-08-26.json",
-   "status": 200,
-   "bytes": 173992
-  },
-  {
-   "key": "GET /api/day/2026-08-27",
-   "file": "day/2026-08-27.json",
-   "status": 200,
-   "bytes": 172657
-  },
-  {
-   "key": "GET /api/day/2026-08-28",
-   "file": "day/2026-08-28.json",
-   "status": 200,
-   "bytes": 176353
-  },
-  {
-   "key": "GET /api/day/2026-08-31",
-   "file": "day/2026-08-31.json",
-   "status": 200,
-   "bytes": 171153
-  },
-  {
-   "key": "GET /api/day/2026-09-01",
-   "file": "day/2026-09-01.json",
-   "status": 200,
-   "bytes": 167307
-  },
-  {
-   "key": "GET /api/day/2026-09-02",
-   "file": "day/2026-09-02.json",
-   "status": 200,
-   "bytes": 137228
-  },
-  {
-   "key": "GET /api/health",
-   "file": "health.json",
-   "status": 200,
-   "bytes": 384
-  },
-  {
-   "key": "GET /api/lstm/windows?dir=desc&group_by=date&limit=100&offset=0&sort=date",
-   "file": "lstm-windows/by-date.json",
-   "status": 200,
-   "bytes": 210511
-  },
-  {
-   "key": "GET /api/lstm/windows?dir=desc&group_by=horizon&limit=100&offset=0&sort=date",
-   "file": "lstm-windows/default.json",
-   "status": 200,
-   "bytes": 187981
-  },
-  {
-   "key": "GET /api/lstm/windows?dir=desc&group_by=horizon&limit=100&offset=100&sort=date",
-   "file": "lstm-windows/page-2.json",
-   "status": 200,
-   "bytes": 188169
-  },
-  {
-   "key": "GET /api/lstm/windows?dir=desc&group_by=horizon&limit=100&offset=0&picks_only=true&sort=date",
-   "file": "lstm-windows/picks-only.json",
-   "status": 200,
-   "bytes": 154981
-  },
-  {
-   "key": "GET /api/lstm/windows?dir=desc&group_by=horizon&limit=100&offset=0&resolved_only=true&sort=date",
-   "file": "lstm-windows/resolved-only.json",
-   "status": 200,
-   "bytes": 193082
-  },
-  {
-   "key": "GET /api/overview",
-   "file": "overview.json",
-   "status": 200,
-   "bytes": 112762
-  },
-  {
-   "key": "GET /api/runs",
-   "file": "runs.json",
-   "status": 200,
-   "bytes": 90804
-  },
-  {
-   "key": "GET /api/scores/foundry/2026-08-20?dir=desc&limit=100&offset=0",
-   "file": "scores/foundry/2026-08-20.json",
-   "status": 200,
-   "bytes": 58374
-  },
-  {
-   "key": "GET /api/scores/foundry/2026-08-21?dir=desc&limit=100&offset=0",
-   "file": "scores/foundry/2026-08-21.json",
-   "status": 200,
-   "bytes": 58175
-  },
-  {
-   "key": "GET /api/scores/foundry/2026-08-24?dir=desc&limit=100&offset=0",
-   "file": "scores/foundry/2026-08-24.json",
-   "status": 200,
-   "bytes": 58441
-  },
-  {
-   "key": "GET /api/scores/foundry/2026-08-25?dir=desc&limit=100&offset=0",
-   "file": "scores/foundry/2026-08-25.json",
-   "status": 200,
-   "bytes": 58089
-  },
-  {
-   "key": "GET /api/scores/foundry/2026-08-26?dir=desc&limit=100&offset=0",
-   "file": "scores/foundry/2026-08-26.json",
-   "status": 200,
-   "bytes": 58214
-  },
-  {
-   "key": "GET /api/scores/foundry/2026-08-27?dir=desc&limit=100&offset=0",
-   "file": "scores/foundry/2026-08-27.json",
-   "status": 200,
-   "bytes": 58120
-  },
-  {
-   "key": "GET /api/scores/foundry/2026-08-28?dir=desc&limit=100&offset=0",
-   "file": "scores/foundry/2026-08-28.json",
-   "status": 200,
-   "bytes": 58297
-  },
-  {
-   "key": "GET /api/scores/foundry/2026-08-31?dir=desc&limit=100&offset=0",
-   "file": "scores/foundry/2026-08-31.json",
-   "status": 200,
-   "bytes": 58244
-  },
-  {
-   "key": "GET /api/scores/foundry/2026-09-01?dir=desc&limit=100&offset=0",
-   "file": "scores/foundry/2026-09-01.json",
-   "status": 200,
-   "bytes": 58231
-  },
-  {
-   "key": "GET /api/scores/foundry/2026-09-02?dir=desc&limit=100&offset=0",
-   "file": "scores/foundry/2026-09-02.json",
-   "status": 200,
-   "bytes": 58228
-  },
-  {
-   "key": "GET /api/scores/intrinsic/2026-08-03?dir=desc&limit=100&offset=0",
-   "file": "scores/intrinsic/2026-08-03.json",
-   "status": 200,
-   "bytes": 117639
-  },
-  {
-   "key": "GET /api/scores/intrinsic/2026-08-04?dir=desc&limit=100&offset=0",
-   "file": "scores/intrinsic/2026-08-04.json",
-   "status": 200,
-   "bytes": 117723
-  },
-  {
-   "key": "GET /api/scores/intrinsic/2026-08-05?dir=desc&limit=100&offset=0",
-   "file": "scores/intrinsic/2026-08-05.json",
-   "status": 200,
-   "bytes": 117683
-  },
-  {
-   "key": "GET /api/scores/intrinsic/2026-08-06?dir=desc&limit=100&offset=0",
-   "file": "scores/intrinsic/2026-08-06.json",
-   "status": 200,
-   "bytes": 117726
-  },
-  {
-   "key": "GET /api/scores/intrinsic/2026-08-07?dir=desc&limit=100&offset=0",
-   "file": "scores/intrinsic/2026-08-07.json",
-   "status": 200,
-   "bytes": 117648
-  },
-  {
-   "key": "GET /api/scores/intrinsic/2026-08-10?dir=desc&limit=100&offset=0",
-   "file": "scores/intrinsic/2026-08-10.json",
-   "status": 200,
-   "bytes": 117646
-  },
-  {
-   "key": "GET /api/scores/intrinsic/2026-08-11?dir=desc&limit=100&offset=0",
-   "file": "scores/intrinsic/2026-08-11.json",
-   "status": 200,
-   "bytes": 117579
-  },
-  {
-   "key": "GET /api/scores/intrinsic/2026-08-12?dir=desc&limit=100&offset=0",
-   "file": "scores/intrinsic/2026-08-12.json",
-   "status": 200,
-   "bytes": 117521
-  },
-  {
-   "key": "GET /api/scores/intrinsic/2026-08-13?dir=desc&limit=100&offset=0",
-   "file": "scores/intrinsic/2026-08-13.json",
-   "status": 200,
-   "bytes": 117582
-  },
-  {
-   "key": "GET /api/scores/intrinsic/2026-08-14?dir=desc&limit=100&offset=0",
-   "file": "scores/intrinsic/2026-08-14.json",
-   "status": 200,
-   "bytes": 117552
-  },
-  {
-   "key": "GET /api/scores/lstm/2026-08-19?dir=desc&limit=100&offset=0",
-   "file": "scores/lstm/2026-08-19.json",
-   "status": 200,
-   "bytes": 169516
-  },
-  {
-   "key": "GET /api/scores/lstm/2026-08-20?dir=desc&limit=100&offset=0",
-   "file": "scores/lstm/2026-08-20.json",
-   "status": 200,
-   "bytes": 169389
-  },
-  {
-   "key": "GET /api/scores/lstm/2026-08-21?dir=desc&limit=100&offset=0",
-   "file": "scores/lstm/2026-08-21.json",
-   "status": 200,
-   "bytes": 169407
-  },
-  {
-   "key": "GET /api/scores/lstm/2026-08-24?dir=desc&limit=100&offset=0",
-   "file": "scores/lstm/2026-08-24.json",
-   "status": 200,
-   "bytes": 169311
-  },
-  {
-   "key": "GET /api/scores/lstm/2026-08-25?dir=desc&limit=100&offset=0",
-   "file": "scores/lstm/2026-08-25.json",
-   "status": 200,
-   "bytes": 169404
-  },
-  {
-   "key": "GET /api/scores/lstm/2026-08-26?dir=desc&limit=100&offset=0",
-   "file": "scores/lstm/2026-08-26.json",
-   "status": 200,
-   "bytes": 169478
-  },
-  {
-   "key": "GET /api/scores/lstm/2026-08-27?dir=desc&limit=100&offset=0",
-   "file": "scores/lstm/2026-08-27.json",
-   "status": 200,
-   "bytes": 169423
-  },
-  {
-   "key": "GET /api/scores/lstm/2026-08-28?dir=desc&limit=100&offset=0",
-   "file": "scores/lstm/2026-08-28.json",
-   "status": 200,
-   "bytes": 169374
-  },
-  {
-   "key": "GET /api/scores/lstm/2026-08-31?dir=desc&limit=100&offset=0",
-   "file": "scores/lstm/2026-08-31.json",
-   "status": 200,
-   "bytes": 169303
-  },
-  {
-   "key": "GET /api/scores/lstm/2026-09-01?dir=desc&limit=100&offset=0",
-   "file": "scores/lstm/2026-09-01.json",
-   "status": 200,
-   "bytes": 169511
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-07-13%3AALBT",
-   "file": "signal/foundry-2026-07-13-ALBT.json",
-   "status": 200,
-   "bytes": 3412
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-07-13%3ABURU",
-   "file": "signal/foundry-2026-07-13-BURU.json",
-   "status": 200,
-   "bytes": 3507
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-07-14%3ABACC",
-   "file": "signal/foundry-2026-07-14-BACC.json",
-   "status": 200,
-   "bytes": 3220
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-07-14%3ALPAA",
-   "file": "signal/foundry-2026-07-14-LPAA.json",
-   "status": 200,
-   "bytes": 3209
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-07-14%3AUSBC",
-   "file": "signal/foundry-2026-07-14-USBC.json",
-   "status": 200,
-   "bytes": 3208
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-07-17%3ASHFS",
-   "file": "signal/foundry-2026-07-17-SHFS.json",
-   "status": 200,
-   "bytes": 3619
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-07-21%3AAAPL",
-   "file": "signal/foundry-2026-07-21-AAPL.json",
-   "status": 200,
-   "bytes": 4499
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-07-22%3AMBAV",
-   "file": "signal/foundry-2026-07-22-MBAV.json",
-   "status": 200,
-   "bytes": 3142
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-07-23%3AOPTX",
-   "file": "signal/foundry-2026-07-23-OPTX.json",
-   "status": 200,
-   "bytes": 3238
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-07-24%3AAMD",
-   "file": "signal/foundry-2026-07-24-AMD.json",
-   "status": 200,
-   "bytes": 4101
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-07-27%3AAMD",
-   "file": "signal/foundry-2026-07-27-AMD.json",
-   "status": 200,
-   "bytes": 4173
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-07-29%3ASDOT",
-   "file": "signal/foundry-2026-07-29-SDOT.json",
-   "status": 200,
-   "bytes": 3248
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-07-31%3AMBRX",
-   "file": "signal/foundry-2026-07-31-MBRX.json",
-   "status": 200,
-   "bytes": 4027
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-07-31%3AMSFT",
-   "file": "signal/foundry-2026-07-31-MSFT.json",
-   "status": 200,
-   "bytes": 3736
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-03%3ANET",
-   "file": "signal/foundry-2026-08-03-NET.json",
-   "status": 200,
-   "bytes": 3600
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-05%3ANET",
-   "file": "signal/foundry-2026-08-05-NET.json",
-   "status": 200,
-   "bytes": 4272
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-07%3AMYSZ",
-   "file": "signal/foundry-2026-08-07-MYSZ.json",
-   "status": 200,
-   "bytes": 3238
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-07%3APLTR",
-   "file": "signal/foundry-2026-08-07-PLTR.json",
-   "status": 200,
-   "bytes": 3683
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-10%3AVBNB",
-   "file": "signal/foundry-2026-08-10-VBNB.json",
-   "status": 200,
-   "bytes": 3180
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-11%3AYHC",
-   "file": "signal/foundry-2026-08-11-YHC.json",
-   "status": 200,
-   "bytes": 3242
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-12%3AGOOGL",
-   "file": "signal/foundry-2026-08-12-GOOGL.json",
-   "status": 200,
-   "bytes": 3967
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-13%3AAAPL",
-   "file": "signal/foundry-2026-08-13-AAPL.json",
-   "status": 200,
-   "bytes": 3639
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-18%3AGOOGL",
-   "file": "signal/foundry-2026-08-18-GOOGL.json",
-   "status": 200,
-   "bytes": 4493
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-19%3ACXAI",
-   "file": "signal/foundry-2026-08-19-CXAI.json",
-   "status": 200,
-   "bytes": 3239
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-19%3AMRK",
-   "file": "signal/foundry-2026-08-19-MRK.json",
-   "status": 200,
-   "bytes": 4207
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-19%3AMRNA",
-   "file": "signal/foundry-2026-08-19-MRNA.json",
-   "status": 200,
-   "bytes": 4592
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-21%3ABAFN",
-   "file": "signal/foundry-2026-08-21-BAFN.json",
-   "status": 200,
-   "bytes": 4500
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-24%3ANVDA",
-   "file": "signal/foundry-2026-08-24-NVDA.json",
-   "status": 200,
-   "bytes": 5022
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-25%3AAAPL",
-   "file": "signal/foundry-2026-08-25-AAPL.json",
-   "status": 200,
-   "bytes": 5168
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-25%3AAMD",
-   "file": "signal/foundry-2026-08-25-AMD.json",
-   "status": 200,
-   "bytes": 3618
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-25%3ANXXT",
-   "file": "signal/foundry-2026-08-25-NXXT.json",
-   "status": 200,
-   "bytes": 3233
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-25%3ASER",
-   "file": "signal/foundry-2026-08-25-SER.json",
-   "status": 200,
-   "bytes": 3268
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-26%3AAMZN",
-   "file": "signal/foundry-2026-08-26-AMZN.json",
-   "status": 200,
-   "bytes": 3852
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-27%3AFJET",
-   "file": "signal/foundry-2026-08-27-FJET.json",
-   "status": 200,
-   "bytes": 3250
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-27%3ANVDA",
-   "file": "signal/foundry-2026-08-27-NVDA.json",
-   "status": 200,
-   "bytes": 5197
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-31%3AAAPL",
-   "file": "signal/foundry-2026-08-31-AAPL.json",
-   "status": 200,
-   "bytes": 4491
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-08-31%3APOLE",
-   "file": "signal/foundry-2026-08-31-POLE.json",
-   "status": 200,
-   "bytes": 3189
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AA",
-   "file": "signal/foundry-2026-09-02-A.json",
-   "status": 200,
-   "bytes": 3168
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AAAPL",
-   "file": "signal/foundry-2026-09-02-AAPL.json",
-   "status": 200,
-   "bytes": 3972
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AADSE",
-   "file": "signal/foundry-2026-09-02-ADSE.json",
-   "status": 200,
-   "bytes": 3175
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AAIN",
-   "file": "signal/foundry-2026-09-02-AIN.json",
-   "status": 200,
-   "bytes": 3185
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AALMR",
-   "file": "signal/foundry-2026-09-02-ALMR.json",
-   "status": 200,
-   "bytes": 3305
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AAMRZ",
-   "file": "signal/foundry-2026-09-02-AMRZ.json",
-   "status": 200,
-   "bytes": 3288
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AAMTB",
-   "file": "signal/foundry-2026-09-02-AMTB.json",
-   "status": 200,
-   "bytes": 3180
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AAUID",
-   "file": "signal/foundry-2026-09-02-AUID.json",
-   "status": 200,
-   "bytes": 3307
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ABLTH",
-   "file": "signal/foundry-2026-09-02-BLTH.json",
-   "status": 200,
-   "bytes": 3270
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ABRFH",
-   "file": "signal/foundry-2026-09-02-BRFH.json",
-   "status": 200,
-   "bytes": 3286
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ABRLS",
-   "file": "signal/foundry-2026-09-02-BRLS.json",
-   "status": 200,
-   "bytes": 3315
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ABRNS",
-   "file": "signal/foundry-2026-09-02-BRNS.json",
-   "status": 200,
-   "bytes": 3319
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ABSBR",
-   "file": "signal/foundry-2026-09-02-BSBR.json",
-   "status": 200,
-   "bytes": 3203
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ABYND",
-   "file": "signal/foundry-2026-09-02-BYND.json",
-   "status": 200,
-   "bytes": 3279
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ACAR",
-   "file": "signal/foundry-2026-09-02-CAR.json",
-   "status": 200,
-   "bytes": 3228
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ACDT",
-   "file": "signal/foundry-2026-09-02-CDT.json",
-   "status": 200,
-   "bytes": 3292
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ACHGG",
-   "file": "signal/foundry-2026-09-02-CHGG.json",
-   "status": 200,
-   "bytes": 3139
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ACJMB",
-   "file": "signal/foundry-2026-09-02-CJMB.json",
-   "status": 200,
-   "bytes": 3290
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ACLGN",
-   "file": "signal/foundry-2026-09-02-CLGN.json",
-   "status": 200,
-   "bytes": 3198
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ACLMT",
-   "file": "signal/foundry-2026-09-02-CLMT.json",
-   "status": 200,
-   "bytes": 3355
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ACOF",
-   "file": "signal/foundry-2026-09-02-COF.json",
-   "status": 200,
-   "bytes": 3258
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ACRDO",
-   "file": "signal/foundry-2026-09-02-CRDO.json",
-   "status": 200,
-   "bytes": 3276
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ACSWC",
-   "file": "signal/foundry-2026-09-02-CSWC.json",
-   "status": 200,
-   "bytes": 3279
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ACYAB",
-   "file": "signal/foundry-2026-09-02-CYAB.json",
-   "status": 200,
-   "bytes": 3215
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ADAIC",
-   "file": "signal/foundry-2026-09-02-DAIC.json",
-   "status": 200,
-   "bytes": 3297
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ADELL",
-   "file": "signal/foundry-2026-09-02-DELL.json",
-   "status": 200,
-   "bytes": 3251
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AEBS",
-   "file": "signal/foundry-2026-09-02-EBS.json",
-   "status": 200,
-   "bytes": 3169
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AERO",
-   "file": "signal/foundry-2026-09-02-ERO.json",
-   "status": 200,
-   "bytes": 3181
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AEXOD",
-   "file": "signal/foundry-2026-09-02-EXOD.json",
-   "status": 200,
-   "bytes": 3301
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AFBDT",
-   "file": "signal/foundry-2026-09-02-FBDT.json",
-   "status": 200,
-   "bytes": 3116
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AFC",
-   "file": "signal/foundry-2026-09-02-FC.json",
-   "status": 200,
-   "bytes": 3289
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AFLYE",
-   "file": "signal/foundry-2026-09-02-FLYE.json",
-   "status": 200,
-   "bytes": 3156
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AFNGR",
-   "file": "signal/foundry-2026-09-02-FNGR.json",
-   "status": 200,
-   "bytes": 3194
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AFXHO",
-   "file": "signal/foundry-2026-09-02-FXHO.json",
-   "status": 200,
-   "bytes": 3078
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AGLRE",
-   "file": "signal/foundry-2026-09-02-GLRE.json",
-   "status": 200,
-   "bytes": 3320
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AGPRO",
-   "file": "signal/foundry-2026-09-02-GPRO.json",
-   "status": 200,
-   "bytes": 3130
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AGTLB",
-   "file": "signal/foundry-2026-09-02-GTLB.json",
-   "status": 200,
-   "bytes": 3229
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AHLX",
-   "file": "signal/foundry-2026-09-02-HLX.json",
-   "status": 200,
-   "bytes": 3266
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AHWH",
-   "file": "signal/foundry-2026-09-02-HWH.json",
-   "status": 200,
-   "bytes": 3317
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AICL",
-   "file": "signal/foundry-2026-09-02-ICL.json",
-   "status": 200,
-   "bytes": 3137
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AINBS",
-   "file": "signal/foundry-2026-09-02-INBS.json",
-   "status": 200,
-   "bytes": 3220
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AINLX",
-   "file": "signal/foundry-2026-09-02-INLX.json",
-   "status": 200,
-   "bytes": 3310
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AIOND",
-   "file": "signal/foundry-2026-09-02-IOND.json",
-   "status": 200,
-   "bytes": 3137
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AIPST",
-   "file": "signal/foundry-2026-09-02-IPST.json",
-   "status": 200,
-   "bytes": 3390
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AJONE",
-   "file": "signal/foundry-2026-09-02-JONE.json",
-   "status": 200,
-   "bytes": 3135
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AKFY",
-   "file": "signal/foundry-2026-09-02-KFY.json",
-   "status": 200,
-   "bytes": 3217
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3AKZIA",
-   "file": "signal/foundry-2026-09-02-KZIA.json",
-   "status": 200,
-   "bytes": 3117
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ALAMR",
-   "file": "signal/foundry-2026-09-02-LAMR.json",
-   "status": 200,
-   "bytes": 3146
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ALBTYA",
-   "file": "signal/foundry-2026-09-02-LBTYA.json",
-   "status": 200,
-   "bytes": 3199
-  },
-  {
-   "key": "GET /api/signal?id=foundry%3A2026-09-02%3ALGL",
-   "file": "signal/foundry-2026-09-02-LGL.json",
-   "status": 200,
-   "bytes": 3210
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-05-21%3AGFR%3A0",
-   "file": "signal/intrinsic-2026-05-21-GFR-0.json",
-   "status": 200,
-   "bytes": 1808
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-05-22%3AGFR%3A0",
-   "file": "signal/intrinsic-2026-05-22-GFR-0.json",
-   "status": 200,
-   "bytes": 1810
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-05-26%3ACALM%3A0",
-   "file": "signal/intrinsic-2026-05-26-CALM-0.json",
-   "status": 200,
-   "bytes": 1815
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-05-29%3AAFGB%3A0",
-   "file": "signal/intrinsic-2026-05-29-AFGB-0.json",
-   "status": 200,
-   "bytes": 1826
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-06-04%3AGFR%3A0",
-   "file": "signal/intrinsic-2026-06-04-GFR-0.json",
-   "status": 200,
-   "bytes": 1814
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-06-05%3ACALM%3A0",
-   "file": "signal/intrinsic-2026-06-05-CALM-0.json",
-   "status": 200,
-   "bytes": 1811
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-06-08%3ACALM%3A0",
-   "file": "signal/intrinsic-2026-06-08-CALM-0.json",
-   "status": 200,
-   "bytes": 1816
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-06-09%3AACIC%3A0",
-   "file": "signal/intrinsic-2026-06-09-ACIC-0.json",
-   "status": 200,
-   "bytes": 1957
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-06-11%3AFVRR%3A0",
-   "file": "signal/intrinsic-2026-06-11-FVRR-0.json",
-   "status": 200,
-   "bytes": 1815
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-06-12%3ACALM%3A0",
-   "file": "signal/intrinsic-2026-06-12-CALM-0.json",
-   "status": 200,
-   "bytes": 1813
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-06-15%3AFVRR%3A0",
-   "file": "signal/intrinsic-2026-06-15-FVRR-0.json",
-   "status": 200,
-   "bytes": 1817
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-06-16%3ABKNG%3A0",
-   "file": "signal/intrinsic-2026-06-16-BKNG-0.json",
-   "status": 200,
-   "bytes": 1817
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-06-17%3AGDEV%3A0",
-   "file": "signal/intrinsic-2026-06-17-GDEV-0.json",
-   "status": 200,
-   "bytes": 1819
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-06-18%3ACALM%3A0",
-   "file": "signal/intrinsic-2026-06-18-CALM-0.json",
-   "status": 200,
-   "bytes": 1818
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-06-22%3ACALM%3A0",
-   "file": "signal/intrinsic-2026-06-22-CALM-0.json",
-   "status": 200,
-   "bytes": 1813
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-06-24%3ADLNG%3A0",
-   "file": "signal/intrinsic-2026-06-24-DLNG-0.json",
-   "status": 200,
-   "bytes": 1793
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-06-25%3AORMP%3A0",
-   "file": "signal/intrinsic-2026-06-25-ORMP-0.json",
-   "status": 200,
-   "bytes": 1811
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-06-26%3AORMP%3A0",
-   "file": "signal/intrinsic-2026-06-26-ORMP-0.json",
-   "status": 200,
-   "bytes": 1812
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-06-29%3AGAMB%3A0",
-   "file": "signal/intrinsic-2026-06-29-GAMB-0.json",
-   "status": 200,
-   "bytes": 1944
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-06-30%3AORMP%3A0",
-   "file": "signal/intrinsic-2026-06-30-ORMP-0.json",
-   "status": 200,
-   "bytes": 1811
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-07-01%3AGAMB%3A0",
-   "file": "signal/intrinsic-2026-07-01-GAMB-0.json",
-   "status": 200,
-   "bytes": 1942
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-07-02%3AGAMB%3A0",
-   "file": "signal/intrinsic-2026-07-02-GAMB-0.json",
-   "status": 200,
-   "bytes": 1942
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-07-06%3AGAMB%3A0",
-   "file": "signal/intrinsic-2026-07-06-GAMB-0.json",
-   "status": 200,
-   "bytes": 1940
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-07-07%3AGAMB%3A0",
-   "file": "signal/intrinsic-2026-07-07-GAMB-0.json",
-   "status": 200,
-   "bytes": 1942
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-07-09%3AGAMB%3A0",
-   "file": "signal/intrinsic-2026-07-09-GAMB-0.json",
-   "status": 200,
-   "bytes": 1940
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-07-10%3AGAMB%3A0",
-   "file": "signal/intrinsic-2026-07-10-GAMB-0.json",
-   "status": 200,
-   "bytes": 1938
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-07-14%3ARAIL%3A0",
-   "file": "signal/intrinsic-2026-07-14-RAIL-0.json",
-   "status": 200,
-   "bytes": 1781
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-07-20%3AEGO%3A0",
-   "file": "signal/intrinsic-2026-07-20-EGO-0.json",
-   "status": 200,
-   "bytes": 1778
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-07-22%3ADH%3A0",
-   "file": "signal/intrinsic-2026-07-22-DH-0.json",
-   "status": 200,
-   "bytes": 1784
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-07-23%3ADH%3A0",
-   "file": "signal/intrinsic-2026-07-23-DH-0.json",
-   "status": 200,
-   "bytes": 1782
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-07-24%3ASDHC%3A0",
-   "file": "signal/intrinsic-2026-07-24-SDHC-0.json",
-   "status": 200,
-   "bytes": 1794
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-07-27%3ACHTR%3A0",
-   "file": "signal/intrinsic-2026-07-27-CHTR-0.json",
-   "status": 200,
-   "bytes": 1789
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-07-28%3APMTS%3A0",
-   "file": "signal/intrinsic-2026-07-28-PMTS-0.json",
-   "status": 200,
-   "bytes": 1783
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-07-29%3ADH%3A0",
-   "file": "signal/intrinsic-2026-07-29-DH-0.json",
-   "status": 200,
-   "bytes": 1780
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-07-30%3AFVRR%3A0",
-   "file": "signal/intrinsic-2026-07-30-FVRR-0.json",
-   "status": 200,
-   "bytes": 1784
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-07-31%3APMTS%3A0",
-   "file": "signal/intrinsic-2026-07-31-PMTS-0.json",
-   "status": 200,
-   "bytes": 1780
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-08-03%3ADH%3A0",
-   "file": "signal/intrinsic-2026-08-03-DH-0.json",
-   "status": 200,
-   "bytes": 1787
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-08-04%3AFVRR%3A0",
-   "file": "signal/intrinsic-2026-08-04-FVRR-0.json",
-   "status": 200,
-   "bytes": 1821
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-08-05%3AFVRR%3A0",
-   "file": "signal/intrinsic-2026-08-05-FVRR-0.json",
-   "status": 200,
-   "bytes": 1818
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-08-06%3AMAX%3A0",
-   "file": "signal/intrinsic-2026-08-06-MAX-0.json",
-   "status": 200,
-   "bytes": 1811
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-08-07%3AFVRR%3A0",
-   "file": "signal/intrinsic-2026-08-07-FVRR-0.json",
-   "status": 200,
-   "bytes": 1820
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-08-10%3ACABO%3A0",
-   "file": "signal/intrinsic-2026-08-10-CABO-0.json",
-   "status": 200,
-   "bytes": 1823
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-08-11%3AEGO%3A0",
-   "file": "signal/intrinsic-2026-08-11-EGO-0.json",
-   "status": 200,
-   "bytes": 1841
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-08-12%3ADH%3A0",
-   "file": "signal/intrinsic-2026-08-12-DH-0.json",
-   "status": 200,
-   "bytes": 1814
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-08-13%3AEGO%3A0",
-   "file": "signal/intrinsic-2026-08-13-EGO-0.json",
-   "status": 200,
-   "bytes": 1813
-  },
-  {
-   "key": "GET /api/signal?id=intrinsic%3A2026-08-14%3ACABO%3A0",
-   "file": "signal/intrinsic-2026-08-14-CABO-0.json",
-   "status": 200,
-   "bytes": 1821
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-05-22%3AASTI%3A0",
-   "file": "signal/lstm-2026-05-22-ASTI-0.json",
-   "status": 200,
-   "bytes": 1779
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-05-26%3AFLNT%3A0",
-   "file": "signal/lstm-2026-05-26-FLNT-0.json",
-   "status": 200,
-   "bytes": 1780
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-05-29%3AZCMD%3A0",
-   "file": "signal/lstm-2026-05-29-ZCMD-0.json",
-   "status": 200,
-   "bytes": 2659
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-06-01%3AOMH%3A0",
-   "file": "signal/lstm-2026-06-01-OMH-0.json",
-   "status": 200,
-   "bytes": 2311
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-06-02%3AADTX%3A0",
-   "file": "signal/lstm-2026-06-02-ADTX-0.json",
-   "status": 200,
-   "bytes": 2018
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-06-03%3AADTX%3A0",
-   "file": "signal/lstm-2026-06-03-ADTX-0.json",
-   "status": 200,
-   "bytes": 2018
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-06-04%3AADTX%3A0",
-   "file": "signal/lstm-2026-06-04-ADTX-0.json",
-   "status": 200,
-   "bytes": 2012
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-06-05%3AADTX%3A0",
-   "file": "signal/lstm-2026-06-05-ADTX-0.json",
-   "status": 200,
-   "bytes": 2045
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-06-08%3AOMH%3A0",
-   "file": "signal/lstm-2026-06-08-OMH-0.json",
-   "status": 200,
-   "bytes": 2308
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-06-09%3AADTX%3A0",
-   "file": "signal/lstm-2026-06-09-ADTX-0.json",
-   "status": 200,
-   "bytes": 2015
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-06-10%3AAEC%3A0",
-   "file": "signal/lstm-2026-06-10-AEC-0.json",
-   "status": 200,
-   "bytes": 1744
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-06-11%3AYYGH%3A0",
-   "file": "signal/lstm-2026-06-11-YYGH-0.json",
-   "status": 200,
-   "bytes": 2065
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-06-12%3AADTX%3A0",
-   "file": "signal/lstm-2026-06-12-ADTX-0.json",
-   "status": 200,
-   "bytes": 2014
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-06-15%3ACPOP%3A0",
-   "file": "signal/lstm-2026-06-15-CPOP-0.json",
-   "status": 200,
-   "bytes": 1991
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-06-16%3AADTX%3A0",
-   "file": "signal/lstm-2026-06-16-ADTX-0.json",
-   "status": 200,
-   "bytes": 2021
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-06-17%3ADUO%3A0",
-   "file": "signal/lstm-2026-06-17-DUO-0.json",
-   "status": 200,
-   "bytes": 1793
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-06-18%3AADTX%3A0",
-   "file": "signal/lstm-2026-06-18-ADTX-0.json",
-   "status": 200,
-   "bytes": 2022
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-06-22%3AHUYA%3A0",
-   "file": "signal/lstm-2026-06-22-HUYA-0.json",
-   "status": 200,
-   "bytes": 1788
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-06-24%3AADTX%3A0",
-   "file": "signal/lstm-2026-06-24-ADTX-0.json",
-   "status": 200,
-   "bytes": 1809
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-06-25%3ALIMN%3A0",
-   "file": "signal/lstm-2026-06-25-LIMN-0.json",
-   "status": 200,
-   "bytes": 1783
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-06-26%3ADUO%3A0",
-   "file": "signal/lstm-2026-06-26-DUO-0.json",
-   "status": 200,
-   "bytes": 1788
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-06-29%3ADUO%3A0",
-   "file": "signal/lstm-2026-06-29-DUO-0.json",
-   "status": 200,
-   "bytes": 1787
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-06-30%3ANXTC%3A0",
-   "file": "signal/lstm-2026-06-30-NXTC-0.json",
-   "status": 200,
-   "bytes": 1956
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-01%3APSIG%3A0",
-   "file": "signal/lstm-2026-07-01-PSIG-0.json",
-   "status": 200,
-   "bytes": 1767
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-02%3ANCRA%3A0",
-   "file": "signal/lstm-2026-07-02-NCRA-0.json",
-   "status": 200,
-   "bytes": 2074
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-06%3ABJDX%3A0",
-   "file": "signal/lstm-2026-07-06-BJDX-0.json",
-   "status": 200,
-   "bytes": 1727
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-07%3AYHC%3A0",
-   "file": "signal/lstm-2026-07-07-YHC-0.json",
-   "status": 200,
-   "bytes": 1788
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-08%3AAEMD%3A0",
-   "file": "signal/lstm-2026-07-08-AEMD-0.json",
-   "status": 200,
-   "bytes": 1962
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-09%3AFTFT%3A0",
-   "file": "signal/lstm-2026-07-09-FTFT-0.json",
-   "status": 200,
-   "bytes": 2244
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-10%3ANXTC%3A0",
-   "file": "signal/lstm-2026-07-10-NXTC-0.json",
-   "status": 200,
-   "bytes": 1991
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-13%3AAPVO%3A0",
-   "file": "signal/lstm-2026-07-13-APVO-0.json",
-   "status": 200,
-   "bytes": 1758
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-14%3ADBGI%3A0",
-   "file": "signal/lstm-2026-07-14-DBGI-0.json",
-   "status": 200,
-   "bytes": 1955
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-15%3AECOR%3A0",
-   "file": "signal/lstm-2026-07-15-ECOR-0.json",
-   "status": 200,
-   "bytes": 1738
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-16%3AECOR%3A0",
-   "file": "signal/lstm-2026-07-16-ECOR-0.json",
-   "status": 200,
-   "bytes": 1736
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-17%3ASONM%3A0",
-   "file": "signal/lstm-2026-07-17-SONM-0.json",
-   "status": 200,
-   "bytes": 1748
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-20%3AACLS%3A0",
-   "file": "signal/lstm-2026-07-20-ACLS-0.json",
-   "status": 200,
-   "bytes": 2421
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-21%3ABHE%3A0",
-   "file": "signal/lstm-2026-07-21-BHE-0.json",
-   "status": 200,
-   "bytes": 2430
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-22%3ABHE%3A0",
-   "file": "signal/lstm-2026-07-22-BHE-0.json",
-   "status": 200,
-   "bytes": 2426
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-23%3AADI%3A0",
-   "file": "signal/lstm-2026-07-23-ADI-0.json",
-   "status": 200,
-   "bytes": 2425
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-24%3ABHE%3A0",
-   "file": "signal/lstm-2026-07-24-BHE-0.json",
-   "status": 200,
-   "bytes": 2417
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-27%3AALAB%3A0",
-   "file": "signal/lstm-2026-07-27-ALAB-0.json",
-   "status": 200,
-   "bytes": 2418
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-28%3AAMAT%3A0",
-   "file": "signal/lstm-2026-07-28-AMAT-0.json",
-   "status": 200,
-   "bytes": 2423
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-29%3AAMD%3A0",
-   "file": "signal/lstm-2026-07-29-AMD-0.json",
-   "status": 200,
-   "bytes": 2425
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-30%3AAMD%3A0",
-   "file": "signal/lstm-2026-07-30-AMD-0.json",
-   "status": 200,
-   "bytes": 2424
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-07-31%3AAMD%3A0",
-   "file": "signal/lstm-2026-07-31-AMD-0.json",
-   "status": 200,
-   "bytes": 2435
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-03%3AAPVO%3A0",
-   "file": "signal/lstm-2026-08-03-APVO-0.json",
-   "status": 200,
-   "bytes": 2409
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-04%3AAMD%3A0",
-   "file": "signal/lstm-2026-08-04-AMD-0.json",
-   "status": 200,
-   "bytes": 2417
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-05%3AAGL%3A0",
-   "file": "signal/lstm-2026-08-05-AGL-0.json",
-   "status": 200,
-   "bytes": 2419
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-06%3AAMBQ%3A0",
-   "file": "signal/lstm-2026-08-06-AMBQ-0.json",
-   "status": 200,
-   "bytes": 2416
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-07%3ABAND%3A0",
-   "file": "signal/lstm-2026-08-07-BAND-0.json",
-   "status": 200,
-   "bytes": 2424
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-10%3AASML%3A0",
-   "file": "signal/lstm-2026-08-10-ASML-0.json",
-   "status": 200,
-   "bytes": 2436
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-11%3AASML%3A0",
-   "file": "signal/lstm-2026-08-11-ASML-0.json",
-   "status": 200,
-   "bytes": 2440
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-12%3AAPVO%3A0",
-   "file": "signal/lstm-2026-08-12-APVO-0.json",
-   "status": 200,
-   "bytes": 2415
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-13%3AAPVO%3A0",
-   "file": "signal/lstm-2026-08-13-APVO-0.json",
-   "status": 200,
-   "bytes": 2428
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-14%3AASML%3A0",
-   "file": "signal/lstm-2026-08-14-ASML-0.json",
-   "status": 200,
-   "bytes": 2439
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-17%3AMU%3A0",
-   "file": "signal/lstm-2026-08-17-MU-0.json",
-   "status": 200,
-   "bytes": 2432
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-18%3ARBLX%3A0",
-   "file": "signal/lstm-2026-08-18-RBLX-0.json",
-   "status": 200,
-   "bytes": 2416
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-19%3AASML%3A0",
-   "file": "signal/lstm-2026-08-19-ASML-0.json",
-   "status": 200,
-   "bytes": 2443
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-20%3ARRX%3A0",
-   "file": "signal/lstm-2026-08-20-RRX-0.json",
-   "status": 200,
-   "bytes": 2425
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-21%3AMIDD%3A0",
-   "file": "signal/lstm-2026-08-21-MIDD-0.json",
-   "status": 200,
-   "bytes": 2425
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-24%3AASML%3A0",
-   "file": "signal/lstm-2026-08-24-ASML-0.json",
-   "status": 200,
-   "bytes": 2451
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-25%3AASML%3A0",
-   "file": "signal/lstm-2026-08-25-ASML-0.json",
-   "status": 200,
-   "bytes": 2438
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-26%3ANVR%3A0",
-   "file": "signal/lstm-2026-08-26-NVR-0.json",
-   "status": 200,
-   "bytes": 2435
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-27%3ANVR%3A0",
-   "file": "signal/lstm-2026-08-27-NVR-0.json",
-   "status": 200,
-   "bytes": 2432
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-28%3ANVR%3A0",
-   "file": "signal/lstm-2026-08-28-NVR-0.json",
-   "status": 200,
-   "bytes": 2433
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-08-31%3ANVR%3A0",
-   "file": "signal/lstm-2026-08-31-NVR-0.json",
-   "status": 200,
-   "bytes": 2401
-  },
-  {
-   "key": "GET /api/signal?id=lstm%3A2026-09-01%3ANVR%3A0",
-   "file": "signal/lstm-2026-09-01-NVR-0.json",
-   "status": 200,
-   "bytes": 2400
-  },
-  {
-   "key": "GET /api/signals?buys_only=false&exit_window=20&limit=75&offset=0&spark=true&trailing=false",
-   "file": "signals/all-decisions.json",
-   "status": 200,
-   "bytes": 120216
-  },
-  {
-   "key": "GET /api/signals?buys_only=true&exit_window=20&limit=75&offset=0&spark=true&stop_pct=0.05&target_pct=0.1&trailing=false",
-   "file": "signals/exit-rule.json",
-   "status": 200,
-   "bytes": 135022
-  },
-  {
-   "key": "GET /api/signals?buys_only=true&exit_window=20&limit=75&offset=0&producer=foundry&spark=true&trailing=false",
-   "file": "signals/foundry.json",
-   "status": 200,
-   "bytes": 68553
-  },
-  {
-   "key": "GET /api/signals?buys_only=true&exit_window=20&limit=75&offset=0&producer=intrinsic&spark=true&trailing=false",
-   "file": "signals/intrinsic.json",
-   "status": 200,
-   "bytes": 78105
-  },
-  {
-   "key": "GET /api/signals?buys_only=true&exit_window=20&limit=75&offset=0&producer=lstm&spark=true&trailing=false",
-   "file": "signals/lstm.json",
-   "status": 200,
-   "bytes": 125494
-  },
-  {
-   "key": "GET /api/signals?buys_only=true&exit_window=20&limit=75&offset=0&spark=true&trailing=false",
-   "file": "signals/page-1.json",
-   "status": 200,
-   "bytes": 121433
-  },
-  {
-   "key": "GET /api/signals?buys_only=true&exit_window=20&limit=75&offset=75&spark=true&trailing=false",
-   "file": "signals/page-2.json",
-   "status": 200,
-   "bytes": 133711
-  },
-  {
-   "key": "GET /api/signals?buys_only=true&date_from=2026-08-20&date_to=2026-09-02&exit_window=20&limit=75&offset=0&spark=true&trailing=false",
-   "file": "signals/window.json",
-   "status": 200,
-   "bytes": 31026
-  },
-  {
-   "key": "GET /api/ticker/AAPL?exit_window=20&trailing=false",
-   "file": "ticker/AAPL.json",
-   "status": 200,
-   "bytes": 132207
-  },
-  {
-   "key": "GET /api/ticker/AAPL/chart?interval=1Hour&window=1M",
-   "file": "ticker/AAPL/chart-1Hour-1M.json",
-   "status": 200,
-   "bytes": 206545
-  },
-  {
-   "key": "GET /api/ticker/AAPL/chart?interval=5Min&window=5D",
-   "file": "ticker/AAPL/chart-5Min-5D.json",
-   "status": 200,
-   "bytes": 265787
-  },
-  {
-   "key": "GET /api/ticker/AMD?exit_window=20&trailing=false",
-   "file": "ticker/AMD.json",
-   "status": 200,
-   "bytes": 94434
-  },
-  {
-   "key": "GET /api/ticker/AMD/chart?interval=1Hour&window=1M",
-   "file": "ticker/AMD/chart-1Hour-1M.json",
-   "status": 200,
-   "bytes": 178521
-  },
-  {
-   "key": "GET /api/ticker/AMD/chart?interval=5Min&window=5D",
-   "file": "ticker/AMD/chart-5Min-5D.json",
-   "status": 200,
-   "bytes": 241087
-  },
-  {
-   "key": "GET /api/ticker/AMZN?exit_window=20&trailing=false",
-   "file": "ticker/AMZN.json",
-   "status": 200,
-   "bytes": 106708
-  },
-  {
-   "key": "GET /api/ticker/AMZN/chart?interval=1Hour&window=1M",
-   "file": "ticker/AMZN/chart-1Hour-1M.json",
-   "status": 200,
-   "bytes": 179950
-  },
-  {
-   "key": "GET /api/ticker/AMZN/chart?interval=5Min&window=5D",
-   "file": "ticker/AMZN/chart-5Min-5D.json",
-   "status": 200,
-   "bytes": 244607
-  },
-  {
-   "key": "GET /api/ticker/ASML?exit_window=20&trailing=false",
-   "file": "ticker/ASML.json",
-   "status": 200,
-   "bytes": 84216
-  },
-  {
-   "key": "GET /api/ticker/ASML/chart?interval=1Hour&window=1M",
-   "file": "ticker/ASML/chart-1Hour-1M.json",
-   "status": 200,
-   "bytes": 167219
-  },
-  {
-   "key": "GET /api/ticker/ASML/chart?interval=5Min&window=5D",
-   "file": "ticker/ASML/chart-5Min-5D.json",
-   "status": 200,
-   "bytes": 239839
-  },
-  {
-   "key": "GET /api/ticker/BAFN?exit_window=20&trailing=false",
-   "file": "ticker/BAFN.json",
-   "status": 200,
-   "bytes": 79653
-  },
-  {
-   "key": "GET /api/ticker/BAFN/chart?interval=1Hour&window=1M",
-   "file": "ticker/BAFN/chart-1Hour-1M.json",
-   "status": 200,
-   "bytes": 43199
-  },
-  {
-   "key": "GET /api/ticker/BAFN/chart?interval=5Min&window=5D",
-   "file": "ticker/BAFN/chart-5Min-5D.json",
-   "status": 200,
-   "bytes": 18463
-  },
-  {
-   "key": "GET /api/ticker/CABO?exit_window=20&trailing=false",
-   "file": "ticker/CABO.json",
-   "status": 200,
-   "bytes": 73273
-  },
-  {
-   "key": "GET /api/ticker/CABO/chart?interval=1Hour&window=1M",
-   "file": "ticker/CABO/chart-1Hour-1M.json",
-   "status": 200,
-   "bytes": 124809
-  },
-  {
-   "key": "GET /api/ticker/CABO/chart?interval=5Min&window=5D",
-   "file": "ticker/CABO/chart-5Min-5D.json",
-   "status": 200,
-   "bytes": 57886
-  },
-  {
-   "key": "GET /api/ticker/CXAI?exit_window=20&trailing=false",
-   "file": "ticker/CXAI.json",
-   "status": 200,
-   "bytes": 66041
-  },
-  {
-   "key": "GET /api/ticker/CXAI/chart?interval=1Hour&window=1M",
-   "file": "ticker/CXAI/chart-1Hour-1M.json",
-   "status": 200,
-   "bytes": 132802
-  },
-  {
-   "key": "GET /api/ticker/CXAI/chart?interval=5Min&window=5D",
-   "file": "ticker/CXAI/chart-5Min-5D.json",
-   "status": 200,
-   "bytes": 31823
-  },
-  {
-   "key": "GET /api/ticker/FJET?exit_window=20&trailing=false",
-   "file": "ticker/FJET.json",
-   "status": 200,
-   "bytes": 56533
-  },
-  {
-   "key": "GET /api/ticker/FJET/chart?interval=1Hour&window=1M",
-   "file": "ticker/FJET/chart-1Hour-1M.json",
-   "status": 200,
-   "bytes": 139600
-  },
-  {
-   "key": "GET /api/ticker/FJET/chart?interval=5Min&window=5D",
-   "file": "ticker/FJET/chart-5Min-5D.json",
-   "status": 200,
-   "bytes": 87568
-  },
-  {
-   "key": "GET /api/ticker/GOOGL?exit_window=20&trailing=false",
-   "file": "ticker/GOOGL.json",
-   "status": 200,
-   "bytes": 125405
-  },
-  {
-   "key": "GET /api/ticker/GOOGL/chart?interval=1Hour&window=1M",
-   "file": "ticker/GOOGL/chart-1Hour-1M.json",
-   "status": 200,
-   "bytes": 203323
-  },
-  {
-   "key": "GET /api/ticker/GOOGL/chart?interval=5Min&window=5D",
-   "file": "ticker/GOOGL/chart-5Min-5D.json",
-   "status": 200,
-   "bytes": 256625
-  },
-  {
-   "key": "GET /api/ticker/MIDD?exit_window=20&trailing=false",
-   "file": "ticker/MIDD.json",
-   "status": 200,
-   "bytes": 71293
-  },
-  {
-   "key": "GET /api/ticker/MIDD/chart?interval=1Hour&window=1M",
-   "file": "ticker/MIDD/chart-1Hour-1M.json",
-   "status": 200,
-   "bytes": 147229
-  },
-  {
-   "key": "GET /api/ticker/MIDD/chart?interval=5Min&window=5D",
-   "file": "ticker/MIDD/chart-5Min-5D.json",
-   "status": 200,
-   "bytes": 138189
-  },
-  {
-   "key": "GET /api/ticker/MRK?exit_window=20&trailing=false",
-   "file": "ticker/MRK.json",
-   "status": 200,
-   "bytes": 68172
-  },
-  {
-   "key": "GET /api/ticker/MRK/chart?interval=1Hour&window=1M",
-   "file": "ticker/MRK/chart-1Hour-1M.json",
-   "status": 200,
-   "bytes": 145230
-  },
-  {
-   "key": "GET /api/ticker/MRK/chart?interval=5Min&window=5D",
-   "file": "ticker/MRK/chart-5Min-5D.json",
-   "status": 200,
-   "bytes": 216954
-  },
-  {
-   "key": "GET /api/ticker/MRNA?exit_window=20&trailing=false",
-   "file": "ticker/MRNA.json",
-   "status": 200,
-   "bytes": 74870
-  },
-  {
-   "key": "GET /api/ticker/MRNA/chart?interval=1Hour&window=1M",
-   "file": "ticker/MRNA/chart-1Hour-1M.json",
-   "status": 200,
-   "bytes": 147728
-  },
-  {
-   "key": "GET /api/ticker/MRNA/chart?interval=5Min&window=5D",
-   "file": "ticker/MRNA/chart-5Min-5D.json",
-   "status": 200,
-   "bytes": 215475
-  },
-  {
-   "key": "GET /api/ticker/MU?exit_window=20&trailing=false",
-   "file": "ticker/MU.json",
-   "status": 200,
-   "bytes": 81904
-  },
-  {
-   "key": "GET /api/ticker/MU/chart?interval=1Hour&window=1M",
-   "file": "ticker/MU/chart-1Hour-1M.json",
-   "status": 200,
-   "bytes": 177312
-  },
-  {
-   "key": "GET /api/ticker/MU/chart?interval=5Min&window=5D",
-   "file": "ticker/MU/chart-5Min-5D.json",
-   "status": 200,
-   "bytes": 224943
-  },
-  {
-   "key": "GET /api/ticker/NVDA?exit_window=20&trailing=false",
-   "file": "ticker/NVDA.json",
-   "status": 200,
-   "bytes": 109185
-  },
-  {
-   "key": "GET /api/ticker/NVDA/chart?interval=1Hour&window=1M",
-   "file": "ticker/NVDA/chart-1Hour-1M.json",
-   "status": 200,
-   "bytes": 207260
-  },
-  {
-   "key": "GET /api/ticker/NVDA/chart?interval=5Min&window=5D",
-   "file": "ticker/NVDA/chart-5Min-5D.json",
-   "status": 200,
-   "bytes": 274220
-  },
-  {
-   "key": "GET /api/ticker/NVR?exit_window=20&trailing=false",
-   "file": "ticker/NVR.json",
-   "status": 200,
-   "bytes": 74678
-  },
-  {
-   "key": "GET /api/ticker/NVR/chart?interval=1Hour&window=1M",
-   "file": "ticker/NVR/chart-1Hour-1M.json",
-   "status": 200,
-   "bytes": 140837
-  },
-  {
-   "key": "GET /api/ticker/NVR/chart?interval=5Min&window=5D",
-   "file": "ticker/NVR/chart-5Min-5D.json",
-   "status": 200,
-   "bytes": 107343
-  },
-  {
-   "key": "GET /api/ticker/NXXT?exit_window=20&trailing=false",
-   "file": "ticker/NXXT.json",
-   "status": 200,
-   "bytes": 72407
-  },
-  {
-   "key": "GET /api/ticker/NXXT/chart?interval=1Hour&window=1M",
-   "file": "ticker/NXXT/chart-1Hour-1M.json",
-   "status": 200,
-   "bytes": 142814
-  },
-  {
-   "key": "GET /api/ticker/NXXT/chart?interval=5Min&window=5D",
-   "file": "ticker/NXXT/chart-5Min-5D.json",
-   "status": 200,
-   "bytes": 65387
-  },
-  {
-   "key": "GET /api/ticker/POLE?exit_window=20&trailing=false",
-   "file": "ticker/POLE.json",
-   "status": 200,
-   "bytes": 6307
-  },
-  {
-   "key": "GET /api/ticker/POLE/chart?interval=1Hour&window=1M",
-   "file": "ticker/POLE/chart-1Hour-1M.json",
-   "status": 200,
-   "bytes": 4877
-  },
-  {
-   "key": "GET /api/ticker/POLE/chart?interval=5Min&window=5D",
-   "file": "ticker/POLE/chart-5Min-5D.json",
-   "status": 200,
-   "bytes": 4876
-  },
-  {
-   "key": "GET /api/ticker/RBLX?exit_window=20&trailing=false",
-   "file": "ticker/RBLX.json",
-   "status": 200,
-   "bytes": 71737
-  },
-  {
-   "key": "GET /api/ticker/RBLX/chart?interval=1Hour&window=1M",
-   "file": "ticker/RBLX/chart-1Hour-1M.json",
-   "status": 200,
-   "bytes": 140988
-  },
-  {
-   "key": "GET /api/ticker/RBLX/chart?interval=5Min&window=5D",
-   "file": "ticker/RBLX/chart-5Min-5D.json",
-   "status": 200,
-   "bytes": 209088
-  },
-  {
-   "key": "GET /api/ticker/RRX?exit_window=20&trailing=false",
-   "file": "ticker/RRX.json",
-   "status": 200,
-   "bytes": 61603
-  },
-  {
-   "key": "GET /api/ticker/RRX/chart?interval=1Hour&window=1M",
-   "file": "ticker/RRX/chart-1Hour-1M.json",
-   "status": 200,
-   "bytes": 143710
-  },
-  {
-   "key": "GET /api/ticker/RRX/chart?interval=5Min&window=5D",
-   "file": "ticker/RRX/chart-5Min-5D.json",
-   "status": 200,
-   "bytes": 183835
-  },
-  {
-   "key": "GET /api/ticker/SER?exit_window=20&trailing=false",
-   "file": "ticker/SER.json",
-   "status": 200,
-   "bytes": 55905
-  },
-  {
-   "key": "GET /api/ticker/SER/chart?interval=1Hour&window=1M",
-   "file": "ticker/SER/chart-1Hour-1M.json",
-   "status": 200,
-   "bytes": 75050
-  },
-  {
-   "key": "GET /api/ticker/SER/chart?interval=5Min&window=5D",
-   "file": "ticker/SER/chart-5Min-5D.json",
-   "status": 200,
-   "bytes": 19385
-  },
-  {
-   "key": "GET /api/tickers?q=a",
-   "file": "tickers/q-a.json",
-   "status": 200,
-   "bytes": 2205
-  },
-  {
-   "key": "GET /api/tickers?q=AAPL",
-   "file": "tickers/q-aapl.json",
-   "status": 200,
-   "bytes": 167
-  },
-  {
-   "key": "GET /api/tickers?q=AMD",
-   "file": "tickers/q-amd.json",
-   "status": 200,
-   "bytes": 166
-  },
-  {
-   "key": "GET /api/tickers?q=AMZN",
-   "file": "tickers/q-amzn.json",
-   "status": 200,
-   "bytes": 167
-  },
-  {
-   "key": "GET /api/tickers?q=ASML",
-   "file": "tickers/q-asml.json",
-   "status": 200,
-   "bytes": 167
-  },
-  {
-   "key": "GET /api/tickers?q=b",
-   "file": "tickers/q-b.json",
-   "status": 200,
-   "bytes": 2024
-  },
-  {
-   "key": "GET /api/tickers?q=BAFN",
-   "file": "tickers/q-bafn.json",
-   "status": 200,
-   "bytes": 167
-  },
-  {
-   "key": "GET /api/tickers?q=c",
-   "file": "tickers/q-c.json",
-   "status": 200,
-   "bytes": 2105
-  },
-  {
-   "key": "GET /api/tickers?q=CABO",
-   "file": "tickers/q-cabo.json",
-   "status": 200,
-   "bytes": 167
-  },
-  {
-   "key": "GET /api/tickers?q=CXAI",
-   "file": "tickers/q-cxai.json",
-   "status": 200,
-   "bytes": 167
-  },
-  {
-   "key": "GET /api/tickers?q=d",
-   "file": "tickers/q-d.json",
-   "status": 200,
-   "bytes": 2068
-  },
-  {
-   "key": "GET /api/tickers?q=e",
-   "file": "tickers/q-e.json",
-   "status": 200,
-   "bytes": 2024
-  },
-  {
-   "key": "GET /api/tickers?q=f",
-   "file": "tickers/q-f.json",
-   "status": 200,
-   "bytes": 2043
-  },
-  {
-   "key": "GET /api/tickers?q=FJET",
-   "file": "tickers/q-fjet.json",
-   "status": 200,
-   "bytes": 138
-  },
-  {
-   "key": "GET /api/tickers?q=g",
-   "file": "tickers/q-g.json",
-   "status": 200,
-   "bytes": 2058
-  },
-  {
-   "key": "GET /api/tickers?q=GOOGL",
-   "file": "tickers/q-googl.json",
-   "status": 200,
-   "bytes": 168
-  },
-  {
-   "key": "GET /api/tickers?q=h",
-   "file": "tickers/q-h.json",
-   "status": 200,
-   "bytes": 1975
-  },
-  {
-   "key": "GET /api/tickers?q=i",
-   "file": "tickers/q-i.json",
-   "status": 200,
-   "bytes": 1825
-  },
-  {
-   "key": "GET /api/tickers?q=j",
-   "file": "tickers/q-j.json",
-   "status": 200,
-   "bytes": 1904
-  },
-  {
-   "key": "GET /api/tickers?q=k",
-   "file": "tickers/q-k.json",
-   "status": 200,
-   "bytes": 1911
-  },
-  {
-   "key": "GET /api/tickers?q=l",
-   "file": "tickers/q-l.json",
-   "status": 200,
-   "bytes": 2012
-  },
-  {
-   "key": "GET /api/tickers?q=m",
-   "file": "tickers/q-m.json",
-   "status": 200,
-   "bytes": 2108
-  },
-  {
-   "key": "GET /api/tickers?q=MIDD",
-   "file": "tickers/q-midd.json",
-   "status": 200,
-   "bytes": 167
-  },
-  {
-   "key": "GET /api/tickers?q=MRK",
-   "file": "tickers/q-mrk.json",
-   "status": 200,
-   "bytes": 556
-  },
-  {
-   "key": "GET /api/tickers?q=MRNA",
-   "file": "tickers/q-mrna.json",
-   "status": 200,
-   "bytes": 167
-  },
-  {
-   "key": "GET /api/tickers?q=MU",
-   "file": "tickers/q-mu.json",
-   "status": 200,
-   "bytes": 1687
-  },
-  {
-   "key": "GET /api/tickers?q=n",
-   "file": "tickers/q-n.json",
-   "status": 200,
-   "bytes": 2019
-  },
-  {
-   "key": "GET /api/tickers?q=NVDA",
-   "file": "tickers/q-nvda.json",
-   "status": 200,
-   "bytes": 167
-  },
-  {
-   "key": "GET /api/tickers?q=NVR",
-   "file": "tickers/q-nvr.json",
-   "status": 200,
-   "bytes": 554
-  },
-  {
-   "key": "GET /api/tickers?q=NXXT",
-   "file": "tickers/q-nxxt.json",
-   "status": 200,
-   "bytes": 167
-  },
-  {
-   "key": "GET /api/tickers?q=o",
-   "file": "tickers/q-o.json",
-   "status": 200,
-   "bytes": 1906
-  },
-  {
-   "key": "GET /api/tickers?q=p",
-   "file": "tickers/q-p.json",
-   "status": 200,
-   "bytes": 1986
-  },
-  {
-   "key": "GET /api/tickers?q=POLE",
-   "file": "tickers/q-pole.json",
-   "status": 200,
-   "bytes": 138
-  },
-  {
-   "key": "GET /api/tickers?q=q",
-   "file": "tickers/q-q.json",
-   "status": 200,
-   "bytes": 1868
-  },
-  {
-   "key": "GET /api/tickers?q=r",
-   "file": "tickers/q-r.json",
-   "status": 200,
-   "bytes": 1891
-  },
-  {
-   "key": "GET /api/tickers?q=RBLX",
-   "file": "tickers/q-rblx.json",
-   "status": 200,
-   "bytes": 167
-  },
-  {
-   "key": "GET /api/tickers?q=RRX",
-   "file": "tickers/q-rrx.json",
-   "status": 200,
-   "bytes": 166
-  },
-  {
-   "key": "GET /api/tickers?q=s",
-   "file": "tickers/q-s.json",
-   "status": 200,
-   "bytes": 1993
-  },
-  {
-   "key": "GET /api/tickers?q=SER",
-   "file": "tickers/q-ser.json",
-   "status": 200,
-   "bytes": 415
-  },
-  {
-   "key": "GET /api/tickers?q=t",
-   "file": "tickers/q-t.json",
-   "status": 200,
-   "bytes": 1780
-  },
-  {
-   "key": "GET /api/tickers?q=u",
-   "file": "tickers/q-u.json",
-   "status": 200,
-   "bytes": 1800
-  },
-  {
-   "key": "GET /api/tickers?q=v",
-   "file": "tickers/q-v.json",
-   "status": 200,
-   "bytes": 1788
-  },
-  {
-   "key": "GET /api/tickers?q=w",
-   "file": "tickers/q-w.json",
-   "status": 200,
-   "bytes": 1720
-  },
-  {
-   "key": "GET /api/tickers?q=x",
-   "file": "tickers/q-x.json",
-   "status": 200,
-   "bytes": 1837
-  },
-  {
-   "key": "GET /api/tickers?q=y",
-   "file": "tickers/q-y.json",
-   "status": 200,
-   "bytes": 1809
-  },
-  {
-   "key": "GET /api/tickers?q=z",
-   "file": "tickers/q-z.json",
-   "status": 200,
-   "bytes": 1775
-  }
- ]
+  "derived_note": "5 responses carry \"derived\": true. They were not produced by this capture run (2026-09-01T23:22:52+00:00); see frontend/fixtures/README.md."
 }

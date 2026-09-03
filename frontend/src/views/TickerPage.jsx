@@ -361,7 +361,7 @@ export default function TickerPage({ ticker }) {
 
         <aside className="ticker-rail">
           <section className="rail-card">
-            <h2 className="card-title">Where the producers stand now</h2>
+            <h2 className="card-title">Latest scores</h2>
             {Object.entries(insights.latest_scores || {}).length ? (
               Object.entries(insights.latest_scores).map(([name, reading]) => {
                 const thr = THRESHOLDS[name]
@@ -381,7 +381,7 @@ export default function TickerPage({ ticker }) {
           </section>
 
           <section className="rail-card">
-            <h2 className="card-title">Exit rules — scored into every return</h2>
+            <h2 className="card-title">Exit rules</h2>
             <ExitRules
               stopPct={stopPct} setStopPct={setStopPct}
               targetPct={targetPct} setTargetPct={setTargetPct}

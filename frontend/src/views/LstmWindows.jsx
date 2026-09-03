@@ -201,25 +201,22 @@ export default function LstmWindows({ embedded = false }) {
 
   return (
     <div>
-      {/* Embedded under Analytics (design turn 5a) the band already carries the
-          question, so the page header would be a second title for one section. */}
-      {embedded ? (
-        <div className="band-lede">
-          The model evaluates four horizons but retains only each ticker’s strongest head;
-          ★ marks the single final daily pick.
-          {latestScored && <> <a className="dlink" href={href('scores', 'lstm', latestScored.date)}>Latest raw scores →</a></>}
-        </div>
-      ) : (
+      {/* Embedded under Analytics the band already names this section, so a
+          page header here would be a second title for one panel. */}
+      {embedded ? null : (
         <PageHeader
-          eyebrow="Model output audit"
-          title="LSTM candidates by best horizon"
-          description="Every published above-threshold candidate, with the model vectors it was scored on and how it has traded since."
-          meta="The model evaluates four horizons, but its score files retain only each ticker’s strongest head; ★ marks the single final daily pick."
+          title="LSTM candidates"
           actions={latestScored && <a className="btn" href={href('scores', 'lstm', latestScored.date)}>Latest raw scores</a>}
         />
       )}
 
-      <Card className="window-summary-card">
+      {/* The horizon caveat belongs beside the counts it qualifies: the window
+          columns below are best-head-only, not one column per horizon. */}
+      <Card className="window-summary-card" title="Counts"
+            right={<span className="muted small">
+              best head per ticker only — ★ marks the final daily pick
+              {embedded && latestScored && <> · <a className="dlink" href={href('scores', 'lstm', latestScored.date)}>latest raw scores →</a></>}
+            </span>}>
         <div className="stat-row">
           <Stat label="BUY candidates" value={Object.values(data.counts).reduce((n, count) => n + count, 0)} />
           <Stat label="scored ticker-days" value={scored} />
@@ -323,7 +320,7 @@ export default function LstmWindows({ embedded = false }) {
           groupings one at a time to find the one that matters, every vector is
           scored by how far apart its best and worst buckets land, and the list
           is ranked by it. Pick a row to open that vector below. */}
-      <Card title="Which vectors separate outcomes"
+      <Card title="Vector separation"
             right={<span className="muted small">ranked by 5-day spread between best and worst bucket</span>}>
         {!(data.vector_scan || []).length ? (
           <EmptyState title="Nothing to rank" detail="Widen the filters above." />

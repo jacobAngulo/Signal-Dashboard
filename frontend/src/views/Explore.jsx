@@ -238,7 +238,7 @@ export default function Explore({ query = {} }) {
         </Field>
 
         <div className="query-rules">
-          <div className="stat-label">Exit rules — scored into every return</div>
+          <div className="stat-label">Exit rules</div>
           <div className="rule-inputs">
             <label>{trailing ? 'trailing stop' : 'stop'}
               <span className="unit"><input type="number" step="0.5" min="0" value={stopPct}

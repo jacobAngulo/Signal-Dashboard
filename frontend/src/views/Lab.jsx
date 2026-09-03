@@ -735,18 +735,9 @@ export default function Lab({ producer = 'lstm', view = 'free' }) {
 
   const chrome = (
     <>
-      <PageHeader
-        eyebrow="Vector lab"
-        title={`${producerMeta?.label || producer} signals, sliced`}
-        description={producerMeta?.available === false
-          ? 'This producer has no row set defined for the lab yet.'
-          : curated
-            ? 'Sixteen named vectors, fixed bucketing and five-day returns — the shape to use when you already know the question.'
-            : 'Every vector at once: the rail sets the slice, and every vector is bucketed against it on the right.'}
-        meta={producerMeta?.available === false ? undefined
-          : curated
-            ? 'This is the former LSTM tab, unchanged. Free-form is the same rows with a control per vector.'
-            : 'Curated is the former LSTM tab: one vector at a time, sixteen of them.'} />
+      {/* The producer and the shape both have a toggle immediately below, so
+          naming either one here would only restate a control. */}
+      <PageHeader title="Vector lab" />
       <Card className="lab-nav">
         <div className="lab-toggles">
           <div className="seg" role="group" aria-label="Producer">
@@ -906,10 +897,10 @@ export default function Lab({ producer = 'lstm', view = 'free' }) {
           </div>
 
           <div className="lab-grid-head">
-            <h2>Every vector, bucketed by {outcomeLabel.toLowerCase()}</h2>
+            <h2>Vectors</h2>
             <span className="muted small">
-              ordered by spread between best and worst bucket; the ones that
-              cannot be ranked follow
+              bucketed by {outcomeLabel.toLowerCase()}, ordered by spread between
+              best and worst bucket; the ones that cannot be ranked follow
             </span>
           </div>
 

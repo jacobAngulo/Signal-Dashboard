@@ -125,7 +125,6 @@ function DataStatus({ onPricesReady }) {
 function PageNotFound() {
   return (
     <div className="empty-state page-not-found">
-      <div className="page-eyebrow">404</div>
       <h1 tabIndex="-1">View not found</h1>
       <div className="muted">That dashboard route does not exist.</div>
       <a className="btn primary-btn" href="#/">Return to overview</a>

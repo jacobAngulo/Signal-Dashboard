@@ -15,7 +15,7 @@ const screens = [
   ['explore', 'Explore', 'Filterable signal ledger'],
   ['analytics', 'Analytics', 'Signal performance: hit rates, return distributions, and per-producer meters'],
   ['lab', 'Lab', 'Free-form slicing across every vector'],
-  ['lab-curated', 'Lab · curated', 'The former LSTM Windows tab, now a view inside the lab'],
+  ['lab-curated', 'Lab · curated', 'One named vector at a time, fixed bucketing and five-day returns'],
   ['scores', 'Scores', 'Raw producer rows for one date'],
   ['ticker', 'Ticker', 'One symbol, its chart, scores, and signals'],
   ['day', 'Day', 'All producer output for one trading day'],
@@ -112,7 +112,6 @@ writeFileSync(join(here, 'index.html'), `<!doctype html>
   <link rel="stylesheet" href="assets/artifact.css">
 </head>
 <body><main class="catalog">
-  <div class="page-eyebrow">Static UI inventory</div>
   <h1>Signal Dashboard design catalog</h1>
   <p class="muted">Directly openable, full-context artifacts derived from the rendered dashboard snapshot.</p>
   <h2>Complete screens</h2>

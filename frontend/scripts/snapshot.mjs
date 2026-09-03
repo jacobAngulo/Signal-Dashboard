@@ -12,7 +12,7 @@ const SCREENS = [
   ['explore',      '#/explore',                'Explore — filterable signal ledger'],
   ['analytics',    '#/analytics',              'Analytics — performance charts and heatmaps'],
   ['lab',          '#/lab/lstm',               'Lab — free-form slicing across every vector'],
-  ['lab-curated',  '#/lab/lstm/curated',       'Lab (curated) — the former LSTM tab, now a view inside the lab'],
+  ['lab-curated',  '#/lab/lstm/curated',       'Lab (curated) — one named vector at a time, fixed bucketing'],
   ['scores',       '#/scores/lstm/2026-09-01', 'Scores — raw producer rows for one date'],
   ['ticker',       '#/ticker/AAPL',            'Ticker — one symbol, its chart, scores, and signals'],
   ['day',          '#/day/2026-09-01',         'Day — all producer output for one trading day'],

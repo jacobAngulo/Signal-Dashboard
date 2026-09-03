@@ -54,7 +54,7 @@ const markers = {
   'states/ticker-search-populated.html': ['class="search-drop"'],
   'states/feedback-panel.html': ['class="feedback-panel"'],
   'states/lab-filtered.html': ['class="rail-active"', 'chip chip-active', 'facet is-touched'],
-  'states/lab-undefined-producer.html': ['no row set defined'],
+  'states/lab-undefined-producer.html': ['is not wired up yet'],
 }
 for (const file of artifactFiles) {
   const html = readFileSync(join(root, file), 'utf8')

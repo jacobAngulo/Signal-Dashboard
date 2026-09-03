@@ -98,7 +98,7 @@ export default function Analytics() {
         {producer === 'lstm' && (
           <section className="band">
             <div className="band-head">
-              <h2>Which candidates did the model publish?</h2>
+              <h2>LSTM candidates</h2>
               <span className="band-note">the LSTM tab, in place — every scored window this producer retained</span>
             </div>
             <LstmWindows embedded />
@@ -124,7 +124,7 @@ function Band({ title, note, children }) {
 // One line per producer replaces three separate cumulative cards.
 function PayingBand({ data, producers }) {
   return (
-    <Band title="Which producer is actually paying?"
+    <Band title="Producer performance"
           note="equal weight · buy at close · 1-day hold">
       <div className="band-split">
         <ResponsiveContainer width="100%" height={248}>
@@ -178,7 +178,7 @@ function PayingBand({ data, producers }) {
 function HorizonBand({ data, producers }) {
   const cols = [['1d', '1 day'], ['5d', '5 day'], ['20d', '20 day'], ['since', 'since signal']]
   return (
-    <Band title="Does the edge survive the hold?" note="win rate by horizon · 50% is a coinflip">
+    <Band title="Win rate by horizon" note="50% is a coinflip">
       <div className="horizon-grid">
         {cols.map(([key, label]) => (
           <div key={key} className="horizon-col">
@@ -231,12 +231,8 @@ function StrengthBand({ data, producers }) {
   }
 
   return (
-    <Band title="Does a stronger signal mean a better trade?"
-          note="each dot is a signal · click to open the ticker">
-      <p className="band-lede">
-        X is the signal&apos;s <b>percentile within its own producer&apos;s metric</b> — adj_prob,
-        discount and score share no scale, so ranking is the only honest common axis.
-      </p>
+    <Band title="Signal strength vs. return"
+          note="x: percentile within the producer’s own metric · each dot is a signal, click to open the ticker">
       <div className="band-split band-split-wide">
         <ResponsiveContainer width="100%" height={230}>
           <ScatterChart margin={{ top: 8, right: 12, bottom: 4, left: 0 }} accessibilityLayer>
@@ -324,7 +320,7 @@ function SupplyBand({ data, producers }) {
   const [tail, setTail] = useState('best')
   const rows = tail === 'best' ? data.best : data.worst
   return (
-    <Band title="Where did the signals come from?" note="buy signals per day, stacked · and the tails">
+    <Band title="Signal volume" note="buy signals per day, stacked · and the tails">
       <div className="band-split band-split-tails">
         <ResponsiveContainer width="100%" height={200}>
           <BarChart data={data.timeline} accessibilityLayer>
@@ -376,7 +372,7 @@ function SupplyBand({ data, producers }) {
 // signals sit inside its own scored universe, and whether the weekday matters.
 function DistributionBand({ data, producers }) {
   return (
-    <Band title="Where in the metric — and on which day — do signals land?"
+    <Band title="Metric and weekday distribution"
           note="signal share against the whole scored universe · avg 5d by signal weekday">
       <div className="dist-grid">
         {producers.map((name) => (

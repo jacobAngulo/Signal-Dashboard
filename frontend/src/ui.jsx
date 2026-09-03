@@ -254,7 +254,7 @@ export function Card({ title, right, children, className = '' }) {
     <section className={`card ${className}`} aria-labelledby={title ? titleId : undefined}>
       {(title || right) && (
         <div className="card-head">
-          <h2 className="card-title" id={title ? titleId : undefined}>{title}</h2>
+          {title ? <h2 className="card-title" id={titleId}>{title}</h2> : <span />}
           <div>{right}</div>
         </div>
       )}
@@ -263,14 +263,11 @@ export function Card({ title, right, children, className = '' }) {
   )
 }
 
-export function PageHeader({ eyebrow, title, description, actions, meta }) {
+export function PageHeader({ title, actions }) {
   return (
     <div className="page-head">
       <div className="page-head-copy">
-        {eyebrow && <div className="page-eyebrow">{eyebrow}</div>}
         <h1 tabIndex="-1">{title}</h1>
-        {description && <p>{description}</p>}
-        {meta && <div className="page-meta">{meta}</div>}
       </div>
       {actions && <div className="page-actions">{actions}</div>}
     </div>

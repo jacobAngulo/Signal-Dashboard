@@ -1,20 +1,45 @@
-import React, { useDeferredValue, useEffect, useState } from 'react'
+import React, { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { api, PRODUCER_META } from '../api.js'
 import { fmtPct } from '../format.js'
-import { Card, EmptyState, ErrorBox, ExitRules, Spinner, pctToFraction } from '../ui.jsx'
+import { EmptyState, ErrorBox, Spinner, pctToFraction } from '../ui.jsx'
 import SignalTable from '../SignalTable.jsx'
-import SignalDetail from '../SignalDetail.jsx'
+import { SignalInspector } from '../SignalDetail.jsx'
 
 const PAGE = 75
 
-// The dig-in surface: server-filtered, paged signals plus a summary of the
-// complete slice. Keeping only one page of sparks makes WATCH-heavy days sane.
+// Design turn 4a, "query bar": nothing to the left of the data. Filters are
+// one band under the header, whatever is active restates itself as a chip you
+// can dismiss, prev/next becomes one tall scroll region, and the modal becomes
+// an inspector docked beside the table -- no overlay, no scroll lock, the
+// table stays live behind it.
+const EXPLORE_COLS = [
+  'when', 'producer', 'ticker_plain', 'call', 'metric',
+  'entry', 'ret_1d', 'ret_5d', 'ret_20d', 'since',
+  'spark', 'status',
+]
+const EXPLORE_GROUPS = [
+  { label: 'Signal', span: 5 },
+  { label: 'Price', span: 1 },
+  { label: 'Returns', span: 4 },
+  { label: 'Tracking', span: 2 },
+]
+
+const OUTCOMES = [
+  ['', 'any outcome'],
+  ['up', 'up since signal'],
+  ['down', 'down since signal'],
+  ['flat', 'flat since signal'],
+  ['pending', 'pending next close'],
+  ['corporate_action_unresolved', 'corporate-action flagged'],
+  ['no_px', 'no price coverage'],
+]
+
 export default function Explore({ query = {} }) {
-  const [data, setData] = useState(null)
+  const [pages, setPages] = useState([])
+  const [meta, setMeta] = useState(null)
   const [err, setErr] = useState(null)
   const [loading, setLoading] = useState(true)
   const [sel, setSel] = useState(null)
-  const [filtersOpen, setFiltersOpen] = useState(true)
 
   const [producer, setProducer] = useState(query.producer || '')
   const [from, setFrom] = useState(query.from || '')
@@ -34,10 +59,11 @@ export default function Explore({ query = {} }) {
   const [exitWindow, setExitWindow] = useState(query.win || '20')
   const [trailing, setTrailing] = useState(query.trail === '1')
 
-  useEffect(() => { setOffset(0) }, [
-    producer, from, to, buysOnly, deferredTicker, status, minMetric,
-    stopPct, targetPct, exitWindow, trailing,
-  ])
+  const filterKey = [producer, from, to, buysOnly, deferredTicker, status, minMetric,
+                     stopPct, targetPct, exitWindow, trailing].join('|')
+  // A filter change restarts the scroll region at the top, not at whatever
+  // depth the previous slice happened to be scrolled to.
+  useEffect(() => { setOffset(0); setPages([]) }, [filterKey])
 
   useEffect(() => {
     const params = new URLSearchParams()
@@ -75,154 +101,230 @@ export default function Explore({ query = {} }) {
       exit_window: exitWindow || 20,
       trailing,
     }, { signal: controller.signal })
-      .then((next) => { setData(next); setErr(null) })
+      .then((next) => {
+        setMeta(next)
+        setPages((prev) => (next.offset === 0 ? [next.signals] : [...prev, next.signals]))
+        setErr(null)
+      })
       .catch((nextErr) => { if (nextErr.name !== 'AbortError') setErr(nextErr) })
       .finally(() => { if (!controller.signal.aborted) setLoading(false) })
     return () => controller.abort()
-  }, [producer, from, to, buysOnly, deferredTicker, status, minMetric, offset,
-      stopPct, targetPct, exitWindow, trailing])
+  }, [filterKey, offset])
+
+  const rows = useMemo(() => pages.flat(), [pages])
+  const total = meta?.total ?? 0
+  const more = rows.length < total
+
+  // Infinite scroll: ask for the next page while there is still a screenful
+  // of rows below the fold, so the scroll never actually stops.
+  const onScroll = (e) => {
+    if (loading || !more) return
+    const el = e.currentTarget
+    if (el.scrollHeight - el.scrollTop - el.clientHeight < 600) setOffset(rows.length)
+  }
 
   const reset = () => {
     setProducer(''); setFrom(''); setTo(''); setBuysOnly(true)
-    setTicker(''); setStatus(''); setMinMetric(''); setOffset(0)
+    setTicker(''); setStatus(''); setMinMetric('')
     setStopPct(''); setTargetPct(''); setExitWindow('20'); setTrailing(false)
   }
-  const clearExitRule = () => { setStopPct(''); setTargetPct(''); setExitWindow('20'); setTrailing(false) }
-  const activeFilters = [producer, from, to, ticker, status, producer && minMetric, !buysOnly]
-    .filter(Boolean).length
-  const summary = data?.summary || {}
+
+  const chips = [
+    producer && { key: 'producer', label: PRODUCER_META[producer]?.label || producer, clear: () => setProducer('') },
+    ticker && { key: 'ticker', label: `ticker ~ ${ticker}`, clear: () => setTicker('') },
+    from && { key: 'from', label: `from ${from}`, clear: () => setFrom('') },
+    to && { key: 'to', label: `to ${to}`, clear: () => setTo('') },
+    status && { key: 'status', label: OUTCOMES.find(([v]) => v === status)?.[1] || status, clear: () => setStatus('') },
+    producer && minMetric && {
+      key: 'min', label: `${PRODUCER_META[producer]?.metric} ≥ ${minMetric}`, clear: () => setMinMetric(''),
+    },
+    !buysOnly && { key: 'buys', label: 'all decisions', clear: () => setBuysOnly(true) },
+    stopPct && { key: 'stop', label: `${trailing ? 'trailing ' : ''}stop ${stopPct}%`, clear: () => setStopPct('') },
+    targetPct && { key: 'target', label: `target ${targetPct}%`, clear: () => setTargetPct('') },
+    exitWindow !== '20' && { key: 'win', label: `max hold ${exitWindow}d`, clear: () => setExitWindow('20') },
+  ].filter(Boolean)
+
+  const summary = meta?.summary || {}
   const sim = summary.sim
   const metricName = producer ? PRODUCER_META[producer]?.metric : null
-  const shownFrom = data?.total ? offset + 1 : 0
-  const shownTo = data ? Math.min(offset + data.signals.length, data.total) : 0
+  const rule = pctToFraction(stopPct) != null || pctToFraction(targetPct) != null
+    ? {
+        stop: pctToFraction(stopPct) ?? null,
+        target: pctToFraction(targetPct) ?? null,
+        window: Number(exitWindow) || 20,
+        trailing,
+      }
+    : null
 
   return (
-    <div>
-      <h1 className="sr-only">Explore signals</h1>
-
-      <div className="rail-layout">
-        <aside>
-          <Card
-            title={<span>Filters {activeFilters > 0 && <span className="filter-count">{activeFilters}</span>}</span>}
-            right={<button type="button" className="text-btn" onClick={() => setFiltersOpen(!filtersOpen)}>
-              {filtersOpen ? 'hide' : 'show'}
-            </button>}
-          >
-            {filtersOpen && <div className="filter-col">
-              <label>Producer
-                <select value={producer} onChange={(e) => setProducer(e.target.value)}>
-                  <option value="">all producers</option>
-                  {Object.entries(PRODUCER_META).map(([name, meta]) => (
-                    <option key={name} value={name}>{meta.label}</option>
-                  ))}
-                </select>
-              </label>
-              <label>Ticker contains
-                <input value={ticker} onChange={(e) => setTicker(e.target.value)} placeholder="e.g. NVDA" />
-              </label>
-              <div className="filter-date-grid">
-                <label>From
-                  <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
-                </label>
-                <label>To
-                  <input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
-                </label>
+    <div className="explore">
+      <div className="ledger-head explore-head">
+        <div>
+          <h1 tabIndex="-1">
+            {total.toLocaleString()} signals <span className="muted">match</span>
+          </h1>
+          <div className="ledger-meta">
+            {[
+              producer ? PRODUCER_META[producer]?.label : 'all producers',
+              buysOnly ? 'buy only' : 'all decisions',
+              from || to ? `${from || '…'} → ${to || '…'}` : 'all dates',
+              ticker ? `ticker ~ ${ticker}` : null,
+              producer && minMetric ? `${metricName} ≥ ${minMetric}` : null,
+              rule ? `exits: ${trailing ? 'trailing ' : ''}stop ${stopPct || '—'}% / target ${targetPct || '—'}% / ${exitWindow}d hold` : null,
+            ].filter(Boolean).join(' · ')}
+          </div>
+        </div>
+        <div className="slice-stats" aria-live="polite">
+          <SliceStat label="win rate 1d" v={summary.wr_1d == null ? '–' : fmtPct(summary.wr_1d, 0)} />
+          <SliceStat label="win rate 5d" v={summary.wr_5d == null ? '–' : fmtPct(summary.wr_5d, 0)} />
+          <SliceStat label="avg 5d" v={summary.avg_5d == null ? '–' : fmtPct(summary.avg_5d)}
+                     cls={summary.avg_5d > 0 ? 'pos' : summary.avg_5d < 0 ? 'neg' : ''} />
+          <SliceStat label="avg since" v={summary.avg_since == null ? '–' : fmtPct(summary.avg_since)}
+                     cls={summary.avg_since > 0 ? 'pos' : summary.avg_since < 0 ? 'neg' : ''} />
+          {sim && (
+            <div className="slice-rules">
+              <div className="stat-label">closed by rule</div>
+              <div className="rule-counts">
+                <span>stop <b className="neg">{sim.counts.stop}</b></span>
+                <span>target <b className="pos">{sim.counts.target}</b></span>
+                <span>max hold <b>{sim.counts.held}</b></span>
+                <span className="muted">open {sim.counts.open}</span>
+                {sim.n_blocked > 0 && <span className="muted">CA-blocked {sim.n_blocked}</span>}
               </div>
-              <label>Performance
-                <select value={status} onChange={(e) => setStatus(e.target.value)}>
-                  <option value="">any outcome</option>
-                  <option value="up">up since signal</option>
-                  <option value="down">down since signal</option>
-                  <option value="flat">flat since signal</option>
-                  <option value="pending">pending next close</option>
-                  <option value="corporate_action_unresolved">corporate-action flagged</option>
-                  <option value="no_px">no price coverage</option>
-                  {!buysOnly && <option value="no_action">not a BUY</option>}
-                </select>
-              </label>
-              <label className={!producer ? 'disabled-control' : ''}>
-                Minimum {metricName || 'metric'}
-                <input type="number" step="0.01" value={minMetric} disabled={!producer}
-                       onChange={(e) => setMinMetric(e.target.value)}
-                       placeholder={producer ? 'e.g. 0.25' : 'choose a producer first'} />
-              </label>
-              <label className="check">
-                <input type="checkbox" checked={buysOnly} onChange={(e) => setBuysOnly(e.target.checked)} />
-                BUY decisions only
-              </label>
-              <button type="button" className="btn full-btn" onClick={reset} disabled={!activeFilters}>Clear filters</button>
-            </div>}
-          </Card>
-
-          <Card title="Exit rules">
-            <ExitRules
-              stopPct={stopPct} setStopPct={setStopPct}
-              targetPct={targetPct} setTargetPct={setTargetPct}
-              exitWindow={exitWindow} setExitWindow={setExitWindow}
-              trailing={trailing} setTrailing={setTrailing}
-              onClear={clearExitRule}
-            />
-          </Card>
-
-          <Card title="Slice performance" className={loading ? 'refetching' : ''}>
-            <div className="kv-grid">
-              <span>signals</span><b>{summary.n ?? '–'}</b>
-              <span>win rate 1d</span><b>{summary.wr_1d == null ? '–' : fmtPct(summary.wr_1d, 0)}</b>
-              <span>win rate 5d</span><b>{summary.wr_5d == null ? '–' : fmtPct(summary.wr_5d, 0)}</b>
-              <span>avg 5d</span><b className={summary.avg_5d > 0 ? 'pos' : summary.avg_5d < 0 ? 'neg' : ''}>{summary.avg_5d == null ? '–' : fmtPct(summary.avg_5d)}</b>
-              <span>avg since</span><b className={summary.avg_since > 0 ? 'pos' : summary.avg_since < 0 ? 'neg' : ''}>{summary.avg_since == null ? '–' : fmtPct(summary.avg_since)}</b>
+              <div className="stat-sub">
+                every return above is scored at its rule exit, not the last close
+              </div>
             </div>
-            <div className="muted small">computed over the full filtered slice</div>
-            {sim && (
-              <>
-                <div className="kv-grid small" style={{ marginTop: 8 }}>
-                  <span>target hit</span><b className="pos">{sim.counts.target}</b>
-                  <span>stopped out</span><b className="neg">{sim.counts.stop}</b>
-                  <span>neither</span><b>{sim.counts.held + sim.counts.open}</b>
-                  <span>hit rate</span><b>{sim.hit_rate == null ? '–' : fmtPct(sim.hit_rate, 0)}</b>
-                  <span>avg return at exit</span>
-                  <b className={sim.avg_return > 0 ? 'pos' : sim.avg_return < 0 ? 'neg' : ''}>
-                    {sim.avg_return == null ? '–' : fmtPct(sim.avg_return)}
-                  </b>
-                  {sim.n_blocked > 0 && (<><span>CA-blocked</span><b>{sim.n_blocked}</b></>)}
-                </div>
-                <div className="muted small">stop/target simulation over the same slice</div>
-              </>
-            )}
-          </Card>
-        </aside>
-
-        <div className="results-panel" aria-busy={loading}>
-          {err && <ErrorBox err={err} />}
-          {!data ? <Spinner /> : (
-            <Card
-              className={loading ? 'refetching' : ''}
-              title={`${data.total.toLocaleString()} signals`}
-              right={<span className="muted small" aria-live="polite">
-                {shownFrom}–{shownTo} · click View for details
-              </span>}
-            >
-              {data.signals.length ? (
-                <SignalTable rows={data.signals} onRow={setSel} maxHeight="72vh" />
-              ) : (
-                <EmptyState title="No signals match"
-                            detail="Try widening the date range or clearing one of the filters."
-                            action={<button type="button" className="btn" onClick={reset}>Clear filters</button>} />
-              )}
-              {data.total > PAGE && (
-                <div className="pagination" aria-label="Signal pages">
-                  <button type="button" className="btn" disabled={offset === 0}
-                          onClick={() => setOffset(Math.max(0, offset - PAGE))}>← Previous</button>
-                  <span className="muted">Page {Math.floor(offset / PAGE) + 1} of {Math.ceil(data.total / PAGE)}</span>
-                  <button type="button" className="btn" disabled={offset + PAGE >= data.total}
-                          onClick={() => setOffset(offset + PAGE)}>Next →</button>
-                </div>
-              )}
-            </Card>
           )}
         </div>
-        <SignalDetail signal={sel} onClose={() => setSel(null)} />
       </div>
+
+      <div className="query-bar">
+        <Field label="Producer">
+          <div className="seg" role="group" aria-label="Producer">
+            {[['', 'All'], ...Object.entries(PRODUCER_META).map(([k, m]) => [k, m.label])]
+              .map(([value, label]) => (
+                <button key={value || 'all'} type="button"
+                        className={`seg-btn ${producer === value ? 'active' : ''}`}
+                        aria-pressed={producer === value}
+                        onClick={() => setProducer(value)}>{label}</button>
+              ))}
+          </div>
+        </Field>
+        <Field label="Ticker contains">
+          <input value={ticker} onChange={(e) => setTicker(e.target.value)}
+                 placeholder="e.g. NVDA" style={{ width: 120 }} aria-label="Ticker contains" />
+        </Field>
+        <Field label="Trade date range">
+          <div className="date-range">
+            <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} aria-label="From" />
+            <span className="muted">→</span>
+            <input type="date" value={to} onChange={(e) => setTo(e.target.value)} aria-label="To" />
+          </div>
+        </Field>
+        <Field label="Outcome">
+          <select value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Outcome"
+                  style={{ width: 178 }}>
+            {OUTCOMES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+            {!buysOnly && <option value="no_action">not a BUY</option>}
+          </select>
+        </Field>
+        <Field label={`Min ${metricName || 'metric'}`}>
+          <input type="number" step="0.01" value={minMetric} disabled={!producer}
+                 onChange={(e) => setMinMetric(e.target.value)} style={{ width: 84 }}
+                 aria-label="Minimum metric"
+                 title={producer ? undefined : 'choose a producer first — the three metrics are not comparable'}
+                 placeholder={producer ? '0.25' : 'producer?'} />
+        </Field>
+
+        <div className="query-rules">
+          <div className="stat-label">Exit rules — scored into every return</div>
+          <div className="rule-inputs">
+            <label>{trailing ? 'trailing stop' : 'stop'}
+              <span className="unit"><input type="number" step="0.5" min="0" value={stopPct}
+                     onChange={(e) => setStopPct(e.target.value)} /><span>%</span></span>
+            </label>
+            <label>target
+              <span className="unit"><input type="number" step="0.5" min="0" value={targetPct}
+                     onChange={(e) => setTargetPct(e.target.value)} /><span>%</span></span>
+            </label>
+            <label>max hold
+              <span className="unit"><input type="number" step="1" min="1" max="252" value={exitWindow}
+                     onChange={(e) => setExitWindow(e.target.value)} /><span>d</span></span>
+            </label>
+            <label className="check">
+              <input type="checkbox" checked={trailing} onChange={(e) => setTrailing(e.target.checked)} />
+              trailing
+            </label>
+          </div>
+        </div>
+
+        <label className="check query-check">
+          <input type="checkbox" checked={buysOnly} onChange={(e) => setBuysOnly(e.target.checked)} />
+          BUY only
+        </label>
+
+        <div className="query-actions">
+          <span className="muted small">{chips.length} filter{chips.length === 1 ? '' : 's'} active</span>
+          <button type="button" className="btn" onClick={reset} disabled={!chips.length}>Clear all</button>
+        </div>
+      </div>
+
+      {chips.length > 0 && (
+        <div className="chips">
+          <span className="stat-label">Applied</span>
+          {chips.map((c) => (
+            <span key={c.key} className="chip">
+              {c.label}
+              <button type="button" onClick={c.clear} aria-label={`Remove filter ${c.label}`}>×</button>
+            </span>
+          ))}
+          <span className="muted small">— the link is shareable, filters live in the URL</span>
+        </div>
+      )}
+
+      {err && <ErrorBox err={err} />}
+
+      <div className="explore-body">
+        <div className="explore-results" aria-busy={loading}>
+          {!meta && loading ? <Spinner /> : rows.length ? (
+            <SignalTable rows={rows} cols={EXPLORE_COLS} groups={EXPLORE_GROUPS}
+                         sparkWidth={122} maxHeight="72vh" onScroll={onScroll}
+                         className={loading ? 'is-loading' : ''}
+                         onSelect={setSel} onRow={setSel} selectedId={sel?.id}
+                         footer={
+                           <span className="muted small">
+                             {more
+                               ? `${loading ? 'loading next ' + PAGE + ' · ' : ''}${rows.length.toLocaleString()} of ${total.toLocaleString()} loaded — keep scrolling`
+                               : `all ${total.toLocaleString()} loaded`}
+                           </span>
+                         } />
+          ) : (
+            <EmptyState title="No signals match"
+                        detail="Try widening the date range or dismissing one of the chips."
+                        action={<button type="button" className="btn" onClick={reset}>Clear all</button>} />
+          )}
+        </div>
+        {sel && <SignalInspector signal={sel} rule={rule} onClose={() => setSel(null)} />}
+      </div>
+    </div>
+  )
+}
+
+function Field({ label, children }) {
+  return (
+    <div className="query-field">
+      <div className="stat-label">{label}</div>
+      {children}
+    </div>
+  )
+}
+
+function SliceStat({ label, v, cls }) {
+  return (
+    <div className="slice-stat">
+      <div className="stat-label">{label}</div>
+      <div className={`mini-stat-v ${cls || ''}`}>{v}</div>
     </div>
   )
 }

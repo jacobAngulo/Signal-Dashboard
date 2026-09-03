@@ -91,7 +91,7 @@ const COLUMNS = [
 // Sorting, filtering and grouping all run on the server: the full enriched
 // history is ~12k candidates, far past what is worth shipping to the browser
 // just to sort it there.
-export default function LstmWindows() {
+export default function LstmWindows({ embedded = false }) {
   const [data, setData] = useState(null)
   const [err, setErr] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -166,8 +166,9 @@ export default function LstmWindows() {
     else if (key === 'date') setDateFrom(group.key === dateFrom ? '' : group.key)
   }
 
-  if (err) return <><PageHeader title="LSTM signals" /><ErrorBox err={err} /></>
-  if (!data) return <><PageHeader title="LSTM signals" /><Spinner /></>
+  const head = embedded ? null : <PageHeader title="LSTM signals" />
+  if (err) return <>{head}<ErrorBox err={err} /></>
+  if (!data) return <>{head}<Spinner /></>
 
   const scored = Object.values(data.scored_counts).reduce((n, count) => n + count, 0)
   const dominant = data.windows.reduce((best, window) =>
@@ -200,13 +201,23 @@ export default function LstmWindows() {
 
   return (
     <div>
-      <PageHeader
-        eyebrow="Model output audit"
-        title="LSTM candidates by best horizon"
-        description="Every published above-threshold candidate, with the model vectors it was scored on and how it has traded since."
-        meta="The model evaluates four horizons, but its score files retain only each ticker’s strongest head; ★ marks the single final daily pick."
-        actions={latestScored && <a className="btn" href={href('scores', 'lstm', latestScored.date)}>Latest raw scores</a>}
-      />
+      {/* Embedded under Analytics (design turn 5a) the band already carries the
+          question, so the page header would be a second title for one section. */}
+      {embedded ? (
+        <div className="band-lede">
+          The model evaluates four horizons but retains only each ticker’s strongest head;
+          ★ marks the single final daily pick.
+          {latestScored && <> <a className="dlink" href={href('scores', 'lstm', latestScored.date)}>Latest raw scores →</a></>}
+        </div>
+      ) : (
+        <PageHeader
+          eyebrow="Model output audit"
+          title="LSTM candidates by best horizon"
+          description="Every published above-threshold candidate, with the model vectors it was scored on and how it has traded since."
+          meta="The model evaluates four horizons, but its score files retain only each ticker’s strongest head; ★ marks the single final daily pick."
+          actions={latestScored && <a className="btn" href={href('scores', 'lstm', latestScored.date)}>Latest raw scores</a>}
+        />
+      )}
 
       <Card className="window-summary-card">
         <div className="stat-row">

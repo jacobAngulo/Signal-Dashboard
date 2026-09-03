@@ -157,10 +157,10 @@ export function Money({ v }) {
 }
 
 // Tiny inline sparkline for table cells; dot marks the signal date.
-export function MiniSpark({ spark, ret }) {
+export function MiniSpark({ spark, ret, width = 92, height = 24 }) {
   if (!spark || !spark.px || spark.px.length < 2) return <span className="muted">–</span>
   const { px, signal_i } = spark
-  const w = 92, h = 24
+  const w = width, h = height
   const min = Math.min(...px), max = Math.max(...px)
   const span = max - min || 1
   const X = (i) => 2 + (i / (px.length - 1)) * (w - 4)

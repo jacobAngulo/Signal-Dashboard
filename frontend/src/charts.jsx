@@ -145,7 +145,8 @@ function TradingTooltip({ active, payload }) {
 // the renderer; range controls are shown for daily history.
 export function PriceChart({
   series, signals = [], height = 260, controls = height >= 240, interval = '1Day',
-  range: controlledRange, mode: controlledMode,
+  range: controlledRange, mode: controlledMode, cursor, levels = [],
+  showSignals = true, legend = true,
 }) {
   const [localRange, setLocalRange] = useState('6M')
   const [localMode, setLocalMode] = useState('candles')
@@ -154,8 +155,8 @@ export function PriceChart({
   const visible = useMemo(() => chartWindow(series, range), [series, range])
   const intraday = Boolean(visible[0]?.timestamp)
   const groups = useMemo(
-    () => signalGroups(signals, visible, intraday),
-    [signals, visible, intraday],
+    () => (showSignals ? signalGroups(signals, visible, intraday) : []),
+    [signals, visible, intraday, showSignals],
   )
   if (!series || series.length < 2) return <div className="muted" style={{ padding: 16 }}>no price series</div>
   const byX = Object.fromEntries(visible.map((point) => [
@@ -252,6 +253,15 @@ export function PriceChart({
             <Line yAxisId="price" dataKey="close" name="close" stroke={PRODUCER_META.lstm.text}
                   strokeWidth={1.7} dot={false} isAnimationActive={false} />
           )}
+          {levels.map((level) => (
+            <ReferenceLine key={`${level.label}-${level.y}`} yAxisId="price" y={level.y}
+                           stroke={level.color} strokeDasharray="4 3" strokeWidth={1.1}
+                           label={{ value: level.label, position: 'insideTopLeft',
+                                    fontSize: 9, fill: level.color }} />
+          ))}
+          {cursor != null && (
+            <ReferenceLine yAxisId="price" x={cursor} stroke={C.text} strokeWidth={1} />
+          )}
           {groups.map((group) => {
             const hasBuy = group.decisions.includes('BUY')
             const hasSell = group.decisions.includes('SELL')
@@ -270,6 +280,7 @@ export function PriceChart({
           })}
         </ComposedChart>
       </ResponsiveContainer>
+      {legend && (
       <div className="chart-legend muted small">
         <span><i className="legend-swatch buy" /> BUY</span>
         <span><i className="legend-swatch sell" /> SELL</span>
@@ -277,7 +288,36 @@ export function PriceChart({
         {hasActionWarning && <span className="warn">CA review flagged</span>}
         <span>{prepared.length} {intraday ? interval : 'daily'} bars</span>
       </div>
+      )}
     </div>
+  )
+}
+
+// A producer's daily score, drawn on the price chart's own x-axis. The lane
+// takes the price chart's axis width and margins verbatim, and is handed the
+// price series' x values rather than its own dates, so a score crossing its
+// threshold lines up with the bar it fired on instead of sitting in a
+// detached card that has to be read by date.
+export function MetricLane({
+  points, color, threshold, height = 76, cursor, domain = [0, 1],
+}) {
+  return (
+    <ResponsiveContainer width="100%" height={height}>
+      <LineChart data={points} margin={{ top: 6, right: 12, bottom: 0, left: 0 }}
+                 accessibilityLayer>
+        <YAxis width={58} domain={domain} tick={axisTick(9)} tickCount={3} />
+        <XAxis dataKey="chart_x" hide />
+        <Tooltip contentStyle={TOOLTIP_STYLE}
+                 labelFormatter={(v) => String(v).slice(0, 10)}
+                 formatter={(v) => (v == null ? '–' : Number(v).toFixed(3))} />
+        {threshold !== undefined && threshold !== null && (
+          <ReferenceLine y={threshold} stroke={C.pending} strokeDasharray="4 3" />
+        )}
+        <Line dataKey="value" name="score" stroke={color} strokeWidth={1.4}
+              dot={{ r: 1.6 }} connectNulls isAnimationActive={false} />
+        {cursor != null && <ReferenceLine x={cursor} stroke={C.text} strokeWidth={1} />}
+      </LineChart>
+    </ResponsiveContainer>
   )
 }
 

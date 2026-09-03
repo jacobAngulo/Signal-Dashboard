@@ -6,6 +6,13 @@ import { Card, EmptyState, ErrorBox, ProducerTag, Spinner, StatusTag, Table, Tag
 import SignalTable from '../SignalTable.jsx'
 import SignalDetail from '../SignalDetail.jsx'
 
+// The day is fixed and the card names the producer, so the ledger drops both
+// and leads with the time the decision was written.
+const DAY_COLS = [
+  'when', 'ticker_plain', 'call', 'metric', 'entry',
+  'ret_1d', 'ret_5d', 'ret_20d', 'since', 'since_bar', 'status',
+]
+
 // One trade date: what each producer generated, with what, and the decisions.
 export default function DayPage({ date }) {
   const [data, setData] = useState(null)
@@ -54,7 +61,7 @@ export default function DayPage({ date }) {
 
           <h3 className="section-h">Decisions · {p.n_decisions_total}</h3>
           {p.decisions.length > 0
-            ? <SignalTable rows={p.decisions} onRow={setSel} hide={['date', 'producer']} />
+            ? <SignalTable rows={p.decisions} onRow={setSel} cols={DAY_COLS} />
             : <EmptyState title="No decision rows" detail="This producer did not emit a ticker-level decision for the day." />}
           {p.decisions_truncated && (
             <div className="inline-notice">

@@ -1,0 +1,40 @@
+.catalog-ribbon {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 34px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--rule-strong);
+  background: var(--inset);
+  color: var(--muted);
+  font: 500 11px/1 var(--mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.catalog-ribbon a { color: var(--link); text-decoration: none; }
+.catalog-ribbon b { margin-left: auto; color: var(--text); }
+
+/* Inventory page. Catalog-only chrome, same as the ribbon: none of this is
+   part of the application's stylesheet. */
+.catalog { max-width: 1080px; margin: auto; padding: 48px max(24px, 6vw); }
+.catalog h1 { margin-bottom: 6px; }
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin: 20px 0 36px;
+}
+.catalog-card {
+  display: block;
+  padding: 18px;
+  border: 1px solid var(--rule-strong);
+  background: var(--panel);
+  color: var(--text);
+  text-decoration: none;
+}
+.catalog-card:hover { border-color: var(--link); background: var(--inset); }
+.catalog-card b { display: block; margin-bottom: 6px; }
+.catalog-card span { color: var(--muted); font-size: 12px; }

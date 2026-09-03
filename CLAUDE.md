@@ -5,6 +5,10 @@ See README.md for architecture, routes, and run instructions.
 
 Rules:
 
+- **Frontend UI changes must keep the static design catalog synchronized.**
+  Follow `design/AGENTS.md`; update affected complete-screen and meaningful-state
+  artifacts, their inventory, shared styles, and validation in the same change.
+
 - **Strictly read-only** against the producer repos' outputs. This
   repo must never write into the other projects.
 - **Decoupled from execution systems by design** (Jacob's call, 2026-07-06):

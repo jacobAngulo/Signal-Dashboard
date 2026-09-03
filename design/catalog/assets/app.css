@@ -1,0 +1,1502 @@
+/* Theme: 2a "Graphite / Rule".
+   Structure is carried entirely by hairlines -- no panel fills, no radius.
+   Colour never fills an area larger than a glyph: every value sits directly on
+   the canvas and only rules divide. Tags are underlined mono labels rather than
+   pills. Green and red stay reserved for money.
+   frontend/src/theme.js reads these back for SVG and recharts. */
+:root {
+  /* surfaces -- two, not four */
+  --canvas: #0A0B0C;
+  --inset: #101315;
+  --hair: #15181B;
+  --rule: #1F2327;
+  --rule-strong: #2C3136;
+
+  /* ink */
+  --text: #E6E9EC;
+  --muted: #7A828A;
+  --faint: #4F565C;
+  --dim: #3F464C;
+
+  /* semantic -- the fill hue and the brighter on-canvas text hue */
+  --up: oklch(0.76 0.15 152);
+  --up-text: oklch(0.80 0.15 152);
+  --down: oklch(0.68 0.17 22);
+  --down-text: oklch(0.76 0.16 22);
+  --pending: oklch(0.82 0.13 85);
+  --pending-text: oklch(0.88 0.12 85);
+
+  /* producers */
+  --lstm: oklch(0.72 0.13 258);
+  --lstm-text: oklch(0.80 0.12 258);
+  --intrinsic: oklch(0.72 0.13 300);
+  --intrinsic-text: oklch(0.80 0.12 300);
+  --foundry: oklch(0.72 0.13 195);
+  --foundry-text: oklch(0.80 0.12 195);
+
+  --sans: 'IBM Plex Sans', -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Names the old stylesheet and a few inline styles still use. Kept as
+     aliases so there is one place a hue is defined, not two. */
+  --bg: var(--canvas);
+  --panel: var(--canvas);
+  --panel-2: var(--inset);
+  --border: var(--rule-strong);
+  --pos: var(--up-text);
+  --neg: var(--down-text);
+  --accent: var(--lstm-text);
+  --warn: var(--pending-text);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--canvas);
+  color: var(--text);
+  font: 400 13px/1.45 var(--sans);
+}
+
+/* Every number in the app is compared down a column, so they all get the mono
+   face and fixed-width figures. */
+.stat-value, .mini-stat-v, .reading-chip, .drawer-ticker,
+td, th, .kv-grid b, .hm-label, .hm-wd {
+  font-variant-numeric: tabular-nums;
+}
+
+.app { max-width: 1380px; margin: 0 auto; padding: 0 16px 48px; }
+
+header {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  padding: 12px 2px 0;
+  border-bottom: 1px solid var(--rule-strong);
+  margin-bottom: 14px;
+  position: sticky; top: 0; background: var(--canvas); z-index: 30;
+}
+.brand { font: 600 16px/1 var(--sans); letter-spacing: -0.01em; white-space: nowrap; padding-bottom: 10px; }
+.brand-link { color: var(--text); text-decoration: none; }
+.brand-mark { color: var(--lstm-text); }
+.brand-sub {
+  font: 400 10px/1 var(--mono); color: var(--faint);
+  letter-spacing: .06em; text-transform: uppercase; margin-left: 8px;
+}
+
+nav { display: flex; gap: 0; margin-left: auto; align-self: stretch; }
+nav a {
+  color: var(--faint); text-decoration: none;
+  padding: 6px 11px; border-radius: 0;
+  font: 400 11.5px/1.5 var(--mono); letter-spacing: .04em; text-transform: uppercase;
+  border-bottom: 2px solid transparent;
+  display: flex; align-items: center;
+}
+nav a:hover { color: var(--text); }
+nav a.active { color: var(--text); font-weight: 500; border-bottom-color: var(--lstm); }
+
+/* global ticker search */
+.search-box { position: relative; width: 210px; padding-bottom: 8px; }
+.search-box input { width: 100%; }
+.search-drop {
+  position: absolute; top: 34px; left: 0; width: 340px; z-index: 50;
+  background: var(--canvas); border: 1px solid var(--rule-strong); border-radius: 0;
+  box-shadow: 0 12px 32px #000d; overflow: hidden;
+}
+.search-hit {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px; cursor: pointer;
+}
+.search-hit:hover { background: var(--inset); }
+
+/* A "card" is a ruled region, not a plate: border, no fill, no radius. */
+.card {
+  background: transparent; border: 1px solid var(--rule-strong);
+  border-radius: 0; padding: 11px 12px; margin-bottom: 14px;
+}
+.card-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 8px; margin-bottom: 9px; padding-bottom: 5px;
+  border-bottom: 1px solid var(--rule);
+}
+.card-title {
+  font: 500 10px/1.4 var(--mono); letter-spacing: .14em;
+  text-transform: uppercase; color: var(--text);
+}
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.grid-31 { display: grid; grid-template-columns: 2.2fr 1fr; gap: 14px; }
+/* Grid items default to min-width:auto, so a card holding a wide table refuses
+   to shrink and pushes the page sideways instead of letting .table-wrap scroll. */
+.grid-2 > *, .grid-31 > *, .rail-layout > * { min-width: 0; }
+@media (max-width: 980px) { .grid-2, .grid-31 { grid-template-columns: 1fr; } }
+
+/* Explore layout: filter rail + content */
+.rail-layout { display: grid; grid-template-columns: 240px 1fr; gap: 14px; align-items: start; }
+.rail-layout aside { position: sticky; top: 62px; }
+@media (max-width: 980px) { .rail-layout { grid-template-columns: 1fr; } .rail-layout aside { position: static; } }
+.filter-col { display: flex; flex-direction: column; gap: 8px; }
+.filter-col label { display: flex; flex-direction: column; gap: 3px; color: var(--muted); font-size: 11.5px; }
+.filter-col label.check { flex-direction: row; align-items: center; gap: 6px; }
+.filter-col select, .filter-col input { width: 100%; }
+.filter-col label.check input { width: auto; }
+
+.stat-row { display: flex; flex-wrap: wrap; gap: 18px; }
+.stat-label {
+  font: 500 9.5px/1 var(--mono); color: var(--faint);
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+.stat-value { font: 500 16px/1.2 var(--mono); margin-top: 2px; letter-spacing: -0.01em; }
+.stat-sub { color: var(--faint); font: 400 11px/1.4 var(--mono); margin-top: 1px; }
+.mini-stat { min-width: 70px; }
+.mini-stat-v { font: 500 14px/1.2 var(--mono); }
+
+/* Tables carry vertical column rules -- the most instrument-like part of 2a. */
+/* `position: relative` is load-bearing, not decoration: without a containing
+   block here the sticky `th` inside a max-height wrapper resolves against the
+   initial containing block, and the clipped table's full height is added to
+   the document's scroll height -- a table scrolled to 800px left ~2,800px of
+   blank page under it. */
+.table-wrap { overflow-x: auto; position: relative; }
+table { border-collapse: collapse; width: 100%; }
+th {
+  text-align: left; color: var(--muted);
+  font: 500 9.5px/1.4 var(--mono); letter-spacing: .1em; text-transform: uppercase;
+  padding: 6px 8px; border-bottom: 1px solid var(--rule-strong);
+  cursor: pointer; user-select: none; white-space: nowrap;
+  position: sticky; top: 0; background: var(--canvas); z-index: 1;
+}
+th + th { border-left: 1px solid var(--rule); }
+th.sorted { color: var(--text); }
+td {
+  padding: 5px 8px; border-bottom: 1px solid var(--hair); white-space: nowrap;
+  font: 400 12px/1.4 var(--mono);
+}
+td + td { border-left: 1px solid var(--hair); }
+tr.clickable { cursor: pointer; }
+tr.clickable:hover td { background: var(--inset); }
+
+.pos { color: var(--up-text); }
+.neg { color: var(--down-text); }
+.muted { color: var(--muted); }
+.small { font-size: 11.5px; }
+.warn { color: var(--pending-text); }
+
+/* Notices are a coloured left rule against the canvas, never a wash. */
+.stale-banner, .action-warning, .error-box, .inline-notice {
+  background: transparent; border: 0; border-left: 2px solid;
+  border-radius: 0; padding: 6px 10px; margin: 0 0 14px;
+}
+/* Ticker no longer scored by the producers -- its data is frozen in the past. */
+.stale-banner { border-color: var(--pending); color: var(--pending-text); }
+.action-warning { border-color: var(--pending); color: var(--pending-text); }
+.center { text-align: center; }
+
+a.tlink { color: var(--text); text-decoration: none; border-bottom: 1px solid var(--rule-strong); }
+a.tlink:hover { color: var(--lstm-text); border-color: var(--lstm); }
+a.dlink { color: var(--muted); text-decoration: none; border-bottom: 1px solid transparent; }
+a.dlink:hover { color: var(--lstm-text); border-color: var(--lstm); }
+
+/* outbound quote/trade links, ticker page header -- brand-coloured icon tiles.
+   The brand fills stay (they are each venue's identity, not our semantics), but
+   the tiles square off like every other surface here. */
+.symbol-links { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+a.symbol-link {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; border-radius: 0; overflow: hidden;
+  text-decoration: none; border: 1px solid #0000;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+}
+a.symbol-link:hover { filter: brightness(1.12); transform: translateY(-1px); }
+a.symbol-link:focus-visible {
+  outline: none; box-shadow: 0 0 0 1px var(--canvas), 0 0 0 2px var(--lstm-text);
+}
+
+/* Tags are underlined mono labels: a rule under a word, not a filled pill. */
+.tag {
+  display: inline-block; padding: 0; border: 0; border-radius: 0;
+  background: transparent;
+  font: 600 10.5px/1.5 var(--mono); letter-spacing: .06em; text-transform: uppercase;
+  color: var(--muted); border-bottom: 1px solid var(--rule-strong);
+  margin-right: 9px; white-space: nowrap;
+}
+.tag:last-child { margin-right: 0; }
+.tag-ok { color: var(--up-text); border-bottom-color: var(--up); }
+.tag-err { color: var(--down-text); border-bottom-color: var(--down); }
+.tag-warn { color: var(--pending-text); border-bottom-color: var(--pending); }
+.tag-info { color: var(--lstm-text); border-bottom-color: var(--lstm); }
+.tag-muted { color: var(--faint); border-bottom-color: var(--rule-strong); }
+.tag-lstm { color: var(--lstm-text); border-bottom-color: var(--lstm); }
+.tag-intrinsic { color: var(--intrinsic-text); border-bottom-color: var(--intrinsic); }
+.tag-foundry { color: var(--foundry-text); border-bottom-color: var(--foundry); }
+
+.btn {
+  background: transparent; color: var(--text); border: 1px solid var(--rule-strong);
+  border-radius: 0; padding: 3px 12px; cursor: pointer;
+  font: 500 12px/1.5 var(--mono); letter-spacing: .04em; text-transform: uppercase;
+  margin-left: 6px;
+}
+.btn:hover { border-color: var(--lstm); }
+.btn:disabled { opacity: 0.4; cursor: default; }
+.btn:disabled:hover { border-color: var(--rule-strong); }
+
+/* Native feedback intake: same relay contract, dashboard-owned presentation. */
+.feedback-control { position: fixed; right: 18px; bottom: 18px; z-index: 60; }
+.feedback-launcher {
+  display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px;
+  border: 1px solid var(--lstm); border-radius: 0; background: var(--canvas);
+  color: var(--text); font: 500 11.5px/1.5 var(--mono);
+  letter-spacing: .04em; text-transform: uppercase; cursor: pointer;
+}
+.feedback-launcher:hover { background: var(--inset); }
+.feedback-launcher span { color: var(--lstm-text); font-size: 10px; }
+.feedback-panel {
+  position: absolute; right: 0; bottom: 42px; width: min(390px, calc(100vw - 24px));
+  padding: 14px; background: var(--canvas); border: 1px solid var(--rule-strong);
+  border-radius: 0; box-shadow: 0 20px 60px #000d;
+}
+.feedback-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.feedback-head h2 { margin: 1px 0 0; font: 600 15px/1.2 var(--sans); letter-spacing: -0.01em; }
+.feedback-kicker {
+  color: var(--lstm-text); font: 500 10px/1 var(--mono);
+  letter-spacing: .1em; text-transform: uppercase;
+}
+.feedback-close { border: 0; padding: 0 2px; background: transparent; color: var(--faint); font-size: 22px; line-height: 1; cursor: pointer; }
+.feedback-close:hover { color: var(--text); }
+.feedback-context { margin: 7px 0 13px; color: var(--muted); font-size: 11.5px; }
+.feedback-form { display: grid; gap: 10px; }
+.feedback-form label { display: grid; gap: 4px; color: var(--muted); font-size: 11.5px; }
+.feedback-form select, .feedback-form input, .feedback-form textarea { width: 100%; margin: 0; }
+.feedback-form textarea {
+  resize: vertical; padding: 6px 8px; background: var(--inset); border: 1px solid var(--rule-strong);
+  border-radius: 0; color: var(--text); color-scheme: dark; font: 400 12.5px/1.45 var(--sans);
+}
+.feedback-form input:focus, .feedback-form select:focus, .feedback-form textarea:focus { border-color: var(--lstm); outline: none; }
+.feedback-identity { color: var(--faint); font-size: 10.5px; }
+.feedback-submit { justify-self: end; margin: 0; }
+.feedback-notice {
+  margin: 10px 0 0; padding: 6px 10px; border: 0; border-left: 2px solid;
+  border-radius: 0; font-size: 11.5px;
+}
+.feedback-notice.ok { color: var(--up-text); border-color: var(--up); }
+.feedback-notice.error { color: var(--down-text); border-color: var(--down); }
+
+@media (max-width: 560px) { .feedback-control { right: 12px; bottom: 12px; } }
+
+.filter-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+select, input {
+  background: var(--inset); border: 1px solid var(--rule-strong); color: var(--text);
+  border-radius: 0; padding: 4px 8px; font: 400 12.5px/1.5 var(--sans);
+  color-scheme: dark;
+}
+input[type="checkbox"] { accent-color: var(--lstm); }
+
+/* calendar heatmap -- square cells, no radius */
+.hm-rows { display: flex; gap: 5px; }
+.hm-weekdays { display: flex; flex-direction: column; gap: 3px; padding-top: 16px; }
+.hm-wd { height: 14px; font: 400 9px/14px var(--mono); color: var(--faint); text-transform: uppercase; }
+.hm-grid { overflow-x: auto; }
+.hm-labels { display: flex; gap: 3px; height: 14px; }
+.hm-label { width: 14px; font: 400 9px/1 var(--mono); color: var(--faint); white-space: nowrap; overflow: visible; }
+.hm-cells { display: flex; gap: 3px; }
+.hm-col { display: flex; flex-direction: column; gap: 3px; }
+.hm-cell {
+  width: 14px; height: 14px; border-radius: 0;
+  background: var(--hair); display: inline-block; text-decoration: none;
+}
+.hm-cell.clickable { cursor: pointer; }
+.hm-cell.clickable:hover { box-shadow: inset 0 0 0 1px var(--lstm-text); }
+.hm-cell.lvl-empty { background: #0F1113; }
+.hm-cell.lvl-none { background: var(--hair); }
+.hm-cell.lvl-0 { background: #18382A; }
+.hm-cell.lvl-1 { background: #2C7451; }
+.hm-cell.lvl-2 { background: #4CB886; }
+.hm-cell.lvl-fail { background: #A03F48; }
+.hm-cell.today { box-shadow: inset 0 0 0 1px var(--lstm); }
+.hm-legend {
+  display: flex; align-items: center; gap: 5px; margin-top: 9px;
+  font: 400 10px/1 var(--mono); color: var(--faint);
+}
+.hm-legend .hm-cell { width: 11px; height: 11px; }
+
+/* breadcrumb page header */
+.crumb { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin: 2px 0 12px; }
+
+.section-h {
+  margin: 14px 0 6px; font: 500 10px/1 var(--mono); color: var(--faint);
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+
+.mover-list { display: flex; flex-direction: column; gap: 6px; }
+.mover { display: flex; align-items: center; gap: 8px; }
+
+/* contributing events inside the signal drawer */
+.ev-list { display: flex; flex-direction: column; }
+.ev-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 4px 0; border-bottom: 1px solid var(--hair); min-width: 0;
+}
+.ev-time { flex: 0 0 auto; }
+.ev-title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gate-line { margin-top: 3px; color: var(--muted); font-size: 12px; }
+
+/* foundry fetch/extract loop health strip (Overview producer card) */
+.pipe-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; flex-wrap: wrap;
+  margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--rule);
+}
+.pipe-srcs { display: flex; gap: 4px; flex-wrap: wrap; }
+
+.kv-grid {
+  display: grid; grid-template-columns: max-content 1fr; gap: 3px 14px;
+  margin: 8px 0; font-size: 12.5px;
+}
+.kv-grid.small { font-size: 11.5px; }
+.kv-grid span { color: var(--muted); }
+.kv-grid b { font: 400 12px/1.5 var(--mono); word-break: break-all; }
+
+.drawer-overlay {
+  position: fixed; inset: 0; background: #000b; z-index: 40;
+  display: flex; justify-content: flex-end;
+}
+.drawer {
+  width: min(680px, 95vw); height: 100%; overflow-y: auto;
+  background: var(--canvas); border-left: 1px solid var(--rule-strong);
+  padding: 16px 18px;
+}
+.drawer-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.drawer-ticker { font: 600 20px/1.2 var(--mono); letter-spacing: -0.01em; }
+.drawer-sub { margin: 4px 0 12px; }
+.drawer h4 {
+  margin: 18px 0 6px; padding-bottom: 5px; border-bottom: 1px solid var(--rule);
+  font: 500 10px/1 var(--mono); color: var(--text);
+  text-transform: uppercase; letter-spacing: 0.14em;
+}
+
+.minispark { display: block; }
+
+/* Trading-style ticker chart. */
+.trading-chart { min-width: 0; }
+.chart-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin: 0 0 3px; flex-wrap: wrap;
+}
+/* Segmented control: one bordered group, dividers between, no radius. */
+.chart-ranges {
+  display: inline-flex; align-items: center; padding: 0;
+  border: 1px solid var(--rule-strong); border-radius: 0;
+  background: transparent;
+}
+.chart-control {
+  border: 0; border-radius: 0; padding: 3px 10px;
+  background: transparent; color: var(--faint);
+  font: 400 11px/1.4 var(--mono); cursor: pointer;
+}
+.chart-ranges .chart-control + .chart-control { border-left: 1px solid var(--rule-strong); }
+.chart-control:hover { color: var(--text); }
+.chart-control.active { background: var(--rule); color: var(--text); font-weight: 500; }
+.chart-control:disabled { opacity: 0.28; cursor: not-allowed; }
+.ticker-chart-controls {
+  display: flex; align-items: center; justify-content: flex-end;
+  gap: 6px; flex-wrap: wrap;
+}
+.ticker-chart-card .card-head { align-items: center; flex-wrap: wrap; }
+.performance-tags { display: inline-flex; align-items: center; gap: 9px; }
+.chart-legend {
+  display: flex; align-items: center; justify-content: flex-end;
+  gap: 12px; margin-top: 1px; flex-wrap: wrap;
+}
+.chart-legend > span { display: inline-flex; align-items: center; gap: 4px; }
+.chart-source { margin: 1px 0 4px; text-align: right; }
+.legend-swatch {
+  display: inline-block; width: 7px; height: 7px; border-radius: 0;
+}
+.legend-swatch.buy { background: var(--pending); }
+.legend-swatch.sell { background: var(--down); }
+.legend-swatch.watch { background: var(--muted); }
+.chart-tooltip-signals {
+  margin-top: 5px; padding-top: 4px; border-top: 1px solid var(--rule);
+  color: var(--pending-text);
+}
+.latest-readings {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin-top: 11px; padding-top: 9px; border-top: 1px solid var(--rule);
+}
+.reading-chip {
+  display: inline-flex; align-items: center; padding: 2px 8px;
+  background: transparent; border: 1px solid var(--rule-strong); border-radius: 0;
+  font: 400 11.5px/1.5 var(--mono);
+}
+.insight-note { margin-top: 8px; }
+
+.error-box { border-color: var(--down); color: var(--down-text); }
+
+/* Functional additions, intentionally matched to the original visual system. */
+.skip-link {
+  position: fixed; left: 16px; top: -60px; z-index: 100;
+  padding: 6px 10px; border-radius: 0; background: var(--canvas);
+  border: 1px solid var(--lstm); color: var(--lstm-text);
+  font: 500 12px/1.5 var(--mono); text-transform: uppercase; text-decoration: none;
+}
+.skip-link:focus { top: 10px; }
+
+.data-status {
+  display: inline-flex; align-items: center; gap: 5px;
+  color: var(--muted); font: 400 10px/1 var(--mono);
+  letter-spacing: .06em; text-transform: uppercase; white-space: nowrap;
+  padding-bottom: 8px;
+}
+.status-dot { width: 5px; height: 5px; border-radius: 0; background: var(--up); }
+.data-status-busy .status-dot { background: var(--pending); }
+.data-status-err .status-dot { background: var(--down); }
+
+.page-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; margin: 2px 0 14px;
+}
+.page-head-copy { min-width: 0; }
+.page-eyebrow { display: none; }
+.page-head h1, .page-not-found h1, .crumb-title {
+  margin: 0; font: 600 22px/1.2 var(--sans); letter-spacing: -0.015em;
+}
+.page-head h1:focus, .page-not-found h1:focus { outline: none; }
+.page-head p { margin: 3px 0 0; color: var(--muted); font-size: 12.5px; }
+.page-meta { margin-top: 3px; color: var(--faint); font: 400 11px/1.5 var(--mono); }
+.page-actions { display: flex; gap: 6px; align-items: center; flex: 0 0 auto; }
+
+.filter-col label, .filter-row label {
+  display: flex; flex-direction: column; gap: 3px;
+  color: var(--muted); font-size: 11.5px;
+}
+.filter-row label.check, .filter-col label.check {
+  flex-direction: row; align-items: center; gap: 6px;
+}
+.filter-row label.check input, .filter-col label.check input { width: auto; }
+.inline-label { flex-direction: row !important; align-items: center; }
+/* Native date inputs carry an intrinsic width wider than half the filter rail,
+   so the columns have to be allowed to shrink under it. */
+.filter-date-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.filter-date-grid > * { min-width: 0; }
+.filter-date-grid input { width: 100%; min-width: 0; }
+.filter-count {
+  display: inline-grid; place-items: center; min-width: 16px; height: 15px;
+  margin-left: 4px; border-radius: 0; background: transparent;
+  border: 1px solid var(--lstm); color: var(--lstm-text);
+  font: 500 9.5px/1 var(--mono); padding: 0 3px;
+}
+.disabled-control { opacity: .55; }
+.full-btn { width: 100%; margin: 3px 0 0 !important; }
+
+/* TB-46: compact Exit-rules control (ticker page) -- same .filter-row layout
+   as everywhere else, just with fixed-width number inputs so four controls
+   and a button fit one line instead of stretching to fill the card. */
+.exit-rules-compact input[type="number"] { width: 70px; }
+
+.kbd-hint {
+  position: absolute; right: 7px; top: calc(50% - 4px); transform: translateY(-50%);
+  font: 400 10px/14px var(--mono); color: var(--faint);
+  border: 1px solid var(--rule-strong); border-radius: 0; padding: 0 4px;
+  pointer-events: none; background: var(--canvas);
+}
+.search-hit {
+  width: 100%; border: 0; border-bottom: 1px solid var(--rule);
+  background: transparent; color: var(--text); font: inherit; text-align: left;
+}
+.search-hit:last-child { border-bottom: 0; }
+.search-hit:hover, .search-hit.active { background: var(--inset); }
+.search-empty { padding: 7px 10px; }
+
+.sort-button {
+  all: unset; display: inline-flex; align-items: center;
+  cursor: pointer; color: inherit; font: inherit;
+}
+.row-action, .row-action-head { width: 1%; text-align: right; }
+.row-action-btn, .text-btn {
+  border: 0; background: transparent; color: var(--lstm-text);
+  padding: 2px 4px; font: 500 10.5px/1.5 var(--mono);
+  letter-spacing: .06em; text-transform: uppercase; cursor: pointer;
+}
+.row-action-btn:hover, .text-btn:hover { text-decoration: underline; }
+
+.sr-only {
+  position: absolute !important; width: 1px !important; height: 1px !important;
+  padding: 0 !important; margin: -1px !important; overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important;
+}
+
+/* The LSTM tab is a flat candidate table now: one row per candidate, every
+   model vector sortable, rather than a day x horizon grid of stacked chips. */
+.candidate-table { min-width: 900px; }
+.candidate-table td, .candidate-table th { white-space: nowrap; }
+.candidate-table .col-ret_1d, .candidate-table .col-ret_5d,
+.candidate-table .col-ret_20d,
+.candidate-table .col-ret_since, .candidate-table .col-adj_prob,
+.candidate-table .col-pred_prob, .candidate-table .col-pred_std,
+.candidate-table .col-volatility, .candidate-table .col-volume_ratio_20,
+.candidate-table .col-close, .candidate-table .col-entry_px,
+.candidate-table .col-last_px, .candidate-table .col-attention_horizon_sessions {
+  font-variant-numeric: tabular-nums;
+}
+.candidate-table th:first-child, .candidate-table td:first-child {
+  position: sticky; left: 0; z-index: 3; background: var(--panel);
+}
+.candidate-table tr.clickable:hover th:first-child,
+.candidate-table tr.clickable:hover td:first-child { background: var(--inset); }
+.candidate-ticker { display: inline-flex; align-items: center; gap: 5px; }
+.vector-table { min-width: 560px; }
+.vector-table td, .vector-table th { white-space: nowrap; }
+.vector-table .col-n, .vector-table .col-picks, .vector-table .col-ret_1d,
+.vector-table .col-ret_5d, .vector-table .col-ret_since, .vector-table .col-wr_5d {
+  font-variant-numeric: tabular-nums;
+}
+.table-pager {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  border-top: 1px solid var(--rule);
+  margin: 10px -12px -11px; padding: 9px 12px;
+}
+/* The pager also renders above the table, where the bottom margin would pull
+   it into the header row. */
+.table-pager:first-child {
+  border-top: 0; border-bottom: 1px solid var(--rule);
+  margin: -6px -12px 10px;
+}
+.table-pager .btn[disabled] { opacity: .45; cursor: default; }
+.tier-note p { margin: 0; }
+.slice-summary { margin-left: auto; }
+
+/* Every filter change is a server round-trip now, so the table has to say it
+   is working. Dimmed rather than blanked: the previous page stays readable
+   and the layout does not jump. */
+.table-wrap.is-loading {
+  opacity: .45; pointer-events: none; transition: opacity .12s ease-in;
+}
+
+/* Column headers deliberately keep the app-wide `top: 0`. `.table-wrap` sets
+   `overflow-x: auto`, which makes it a scroll container on both axes, so these
+   headers stick to the wrapper rather than to the page — any non-zero offset
+   pushes them down *inside* the table and over the first rows. The headers
+   scrolling away on a long table is a real annoyance, but the fix is a
+   scrollable wrapper height, not an offset. */
+.vector-table tr.clickable:hover th, .vector-table tr.clickable:hover td {
+  background: var(--panel-2);
+}
+/* A price-basis bucket label is ~90 characters and was pushing the spread —
+   the column the list is ranked by — off the right edge. Clamp it; the full
+   value is on the title attribute. */
+.vector-table .bucket-label {
+  max-width: 260px; overflow: hidden; text-overflow: ellipsis;
+}
+.bucket-n { opacity: .55; font-size: 10.5px; }
+.card-footer {
+  border-top: 1px solid var(--rule);
+  margin: 10px -12px -11px; padding: 9px 12px;
+}
+
+.compact-filters { justify-content: flex-end; }
+.score-controls { align-items: flex-end; }
+.score-controls .result-range { margin-left: auto; padding-bottom: 5px; }
+.column-toggle { padding-bottom: 5px; }
+.pagination {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; padding-top: 10px;
+}
+.pagination .btn { margin-left: 0; }
+
+.spinner { color: var(--faint); padding: 24px; font: 400 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; }
+.refetching { opacity: .58; cursor: progress; }
+.error-box { display: flex; flex-direction: column; gap: 2px; }
+.error-box b { font: 600 12px/1.4 var(--sans); }
+.error-box span { color: var(--muted); font: 400 11px/1.4 var(--mono); }
+.empty-state {
+  min-height: 120px; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; text-align: center; gap: 5px; padding: 18px;
+}
+.empty-icon { color: var(--dim); font-size: 20px; }
+.empty-action { margin-top: 6px; }
+.page-not-found { min-height: 50vh; }
+.page-not-found .btn { margin-top: 10px; }
+.primary-btn { border-color: var(--lstm); color: var(--lstm-text); }
+.primary-btn:hover { background: var(--inset); }
+.icon-btn { min-width: 28px; padding-inline: 7px; }
+
+.inline-notice { border-color: var(--lstm); color: var(--muted); font-size: 12px; margin: 8px 0; }
+.detail-disclosure { margin-top: 14px; border-top: 1px solid var(--rule); padding-top: 9px; }
+.detail-disclosure summary { color: var(--muted); cursor: pointer; font-size: 12px; }
+.run-metadata { margin: 0 0 10px; padding-top: 7px; }
+
+/* recharts furniture. It draws axes with stroke *attributes*, which a rule
+   outranks, so the chart's own lines land on the same hairlines as the tables. */
+.recharts-cartesian-axis-line,
+.recharts-cartesian-axis-tick-line { stroke: var(--rule-strong); }
+.recharts-cartesian-grid line { stroke: var(--hair); }
+.recharts-legend-item-text {
+  color: var(--muted) !important;
+  font: 400 11px/1.4 var(--mono);
+}
+.recharts-label, .recharts-cartesian-axis-tick-value { font-family: var(--mono); }
+
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 1px solid var(--lstm-text); outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+@media (max-width: 700px) {
+  .app { padding: 0 10px 36px; }
+  header { gap: 9px; }
+  .brand-sub, .data-status { display: none; }
+  .search-box { order: 3; width: 100%; }
+  .search-drop { width: 100%; max-width: calc(100vw - 20px); }
+  nav { margin-left: 0; width: 100%; overflow-x: auto; flex-wrap: nowrap; }
+  nav a { flex: 0 0 auto; }
+  .page-head { align-items: flex-start; flex-direction: column; gap: 7px; }
+  .page-actions { flex-wrap: wrap; }
+  .symbol-links { margin-left: 0; flex-wrap: wrap; }
+  .filter-date-grid { grid-template-columns: 1fr; }
+  .filter-row { align-items: stretch; }
+  .filter-row > label:not(.check) { min-width: calc(50% - 8px); flex: 1; }
+  .filter-row select, .filter-row input { width: 100%; }
+  .score-controls .result-range, .column-toggle {
+    width: 100%; margin-left: 0; padding: 3px 0;
+  }
+  .drawer { width: 100vw; max-width: none; padding: 14px; }
+  .drawer-head { align-items: flex-start; flex-direction: column; }
+  .drawer-head > div:last-child { display: flex; width: 100%; }
+  .ev-row { flex-wrap: wrap; }
+  .ev-title { flex-basis: 100%; }
+  .kv-grid { grid-template-columns: minmax(90px, max-content) minmax(0, 1fr); }
+  .signal-table .col-created_at,
+  .signal-table .col-entry_px,
+  .signal-table .col-ret_1d,
+  .signal-table .col-ret_20d,
+  .signal-table .col-spark { display: none; }
+  .signal-table { min-width: 650px; }
+  .candidate-table .col-volatility,
+  .candidate-table .col-close,
+  .candidate-table .col-ret_20d,
+  .candidate-table .col-volume_ratio_20 { display: none; }
+  .candidate-table { min-width: 620px; }
+  .pagination { justify-content: space-between; }
+}
+
+/* ============================================================================
+   Design turns 3b / 4a / 5a / 7a.
+
+   The refactors do not restyle 2a -- they change what owns each page. Every
+   rule below is built from the same tokens: hairlines divide, nothing fills,
+   and colour never covers more than a glyph or a bar that *is* a value.
+   ========================================================================= */
+
+/* Wider than the old 1380px cap: three of the four refactors are a main
+   column plus a standing rail, which does not fit in the old measure. */
+.app { max-width: 1680px; }
+
+/* --- segmented control, used by every one of the four pages -------------- */
+.seg {
+  display: inline-flex; align-items: center;
+  border: 1px solid var(--rule-strong); border-radius: 0; background: transparent;
+}
+.seg-btn {
+  border: 0; border-radius: 0; padding: 3px 11px; background: transparent;
+  color: var(--faint); cursor: pointer;
+  font: 400 11px/1.5 var(--mono); letter-spacing: .04em; text-transform: uppercase;
+}
+.seg-btn + .seg-btn { border-left: 1px solid var(--rule-strong); }
+.seg-btn:hover { color: var(--text); }
+.seg-btn.active { background: var(--rule); color: var(--text); font-weight: 500; }
+.seg-btn:disabled { opacity: .28; cursor: not-allowed; }
+
+/* --- the merged ledger -------------------------------------------------- */
+.ledger-head {
+  display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap;
+  margin: 2px 0 10px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule-strong);
+}
+.ledger-head h1, .ledger-title {
+  margin: 0; font: 600 22px/1.2 var(--sans); letter-spacing: -0.015em;
+}
+.ledger-head h1:focus { outline: none; }
+.ledger-meta {
+  margin-top: 3px; color: var(--faint);
+  font: 400 11px/1.5 var(--mono); letter-spacing: .04em; text-transform: uppercase;
+}
+.ledger-more { margin-left: auto; font: 400 11.5px/1.5 var(--mono); }
+
+.led-sub { font: 400 11px/1.35 var(--mono); color: var(--faint); margin-top: 1px; }
+.led-ticker { display: inline-flex; align-items: baseline; gap: 6px; }
+.led-wrap td { vertical-align: top; }
+/* Group header (Explore): a quieter band above the column names. */
+.led-groups th {
+  border-bottom: 1px solid var(--rule); color: var(--faint);
+  font: 500 9px/1.4 var(--mono); letter-spacing: .16em; cursor: default;
+  padding-bottom: 3px;
+}
+.led-groups th + th { border-left: 1px solid var(--rule-strong); }
+/* A section rule inside the body: the queue's own dividing line. */
+.led-section td {
+  border-top: 1px solid var(--rule-strong); border-bottom: 1px solid var(--rule);
+  border-left: 0 !important;
+  padding: 9px 8px 5px; color: var(--text);
+  font: 500 10px/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase;
+  background: var(--canvas); position: sticky; left: 0;
+}
+.led-footer td {
+  border-left: 0 !important; border-bottom: 0;
+  padding: 9px 8px; text-align: center;
+  text-transform: uppercase; letter-spacing: .1em;
+}
+tr.selected td { background: var(--inset); box-shadow: inset 2px 0 0 var(--lstm); }
+
+/* Diverging bar on Since: a column of percentages, read as a shape. */
+.dbar {
+  position: relative; display: inline-block; width: 112px; height: 9px;
+  vertical-align: middle;
+}
+.dbar-zero {
+  position: absolute; left: 50%; top: 0; width: 1px; height: 9px;
+  background: var(--rule-strong);
+}
+.dbar-fill { position: absolute; top: 1px; height: 7px; }
+.dbar-fill.pos { background: var(--up); }
+.dbar-fill.neg { background: var(--down); }
+.col-since_bar { width: 120px; }
+/* Pin the number beside its own bar rather than letting the table's leftover
+   width push the two apart. */
+.col-ret_since { width: 96px; }
+
+/* --- 3b Overview: triage queue ------------------------------------------ */
+.triage-body { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 20px; }
+.triage-main { min-width: 0; }
+.triage-rail {
+  min-width: 0; border-left: 1px solid var(--rule-strong); padding-left: 16px;
+  display: flex; flex-direction: column; gap: 18px;
+  position: sticky; top: 62px; align-self: start;
+}
+.rail-card { display: flex; flex-direction: column; gap: 8px; }
+.rail-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.rail-runs { display: flex; flex-direction: column; gap: 14px; }
+.rail-run { display: flex; flex-direction: column; gap: 5px; }
+.rail-run + .rail-run { border-top: 1px solid var(--hair); padding-top: 12px; }
+.rail-run-head { display: flex; align-items: baseline; gap: 8px; }
+.rail-run-head .tag { margin-right: 0; }
+.rail-run-head a { margin-left: auto; font: 400 11px/1.4 var(--mono); }
+.rail-run-cells { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.rail-cell-v { font: 500 14px/1.2 var(--mono); margin-top: 1px; }
+.rail-run-note { line-height: 1.5; }
+.rail-pipe { display: flex; flex-direction: column; gap: 5px; padding-top: 6px; border-top: 1px solid var(--hair); }
+/* The calendar legend is six items wide; in a 330px rail it has to read as
+   lines, not as a wrapped row of orphaned words. */
+.triage-rail .hm-legend { display: block; line-height: 1.9; }
+.triage-rail .hm-legend .hm-cell { margin: 0 4px 0 10px; vertical-align: -1px; }
+.triage-rail .hm-legend .hm-cell:first-child { margin-left: 0; }
+
+/* --- 4a Explore: query bar + docked inspector --------------------------- */
+.explore-head { align-items: flex-start; }
+.slice-stats { display: flex; align-items: flex-start; gap: 22px; margin-left: auto; flex-wrap: wrap; }
+.slice-stat .mini-stat-v { font: 500 16px/1.2 var(--mono); margin-top: 2px; }
+.slice-rules { padding-left: 18px; border-left: 1px solid var(--rule); }
+.rule-counts {
+  display: flex; gap: 12px; flex-wrap: wrap; margin-top: 3px;
+  font: 400 11.5px/1.5 var(--mono);
+}
+.rule-counts b { font-weight: 600; }
+
+.query-bar {
+  display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap;
+  padding: 10px 0 12px; border-bottom: 1px solid var(--rule);
+}
+.query-field { display: flex; flex-direction: column; gap: 4px; }
+.query-field .stat-label { white-space: nowrap; }
+.date-range { display: flex; align-items: center; gap: 6px; }
+.query-rules { padding-left: 18px; border-left: 1px solid var(--rule); display: flex; flex-direction: column; gap: 5px; }
+.rule-inputs { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+.rule-inputs label { display: flex; flex-direction: column; gap: 3px; color: var(--muted); font-size: 11.5px; }
+.rule-inputs label.check { flex-direction: row; align-items: center; gap: 6px; }
+.unit { display: inline-flex; align-items: center; gap: 3px; }
+.unit input { width: 52px; }
+.unit span { color: var(--faint); font: 400 11px/1 var(--mono); }
+.query-check { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 11.5px; }
+.query-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+
+.chips { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; padding: 9px 0; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 1px 4px 1px 8px;
+  border: 1px solid var(--rule-strong); border-radius: 0;
+  font: 400 11.5px/1.6 var(--mono); color: var(--text);
+}
+.chip button {
+  border: 0; background: transparent; color: var(--faint);
+  cursor: pointer; font: 400 13px/1 var(--mono); padding: 0 3px;
+}
+.chip button:hover { color: var(--down-text); }
+
+.explore-body { display: flex; align-items: flex-start; gap: 0; }
+.explore-results { flex: 1 1 auto; min-width: 0; }
+.inspector {
+  flex: 0 0 380px; width: 380px; max-height: 78vh; overflow-y: auto;
+  border-left: 1px solid var(--rule-strong); padding: 0 0 16px 16px;
+  position: sticky; top: 62px;
+}
+.inspector-head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+  position: sticky; top: 0; z-index: 2; background: var(--canvas);
+  padding: 10px 0 8px; border-bottom: 1px solid var(--rule);
+}
+.inspector-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.inspector .drawer-ticker { font-size: 17px; }
+.inspector .stat-row { gap: 14px; }
+.inspector h4 {
+  margin: 16px 0 6px; padding-bottom: 5px; border-bottom: 1px solid var(--rule);
+  font: 500 10px/1 var(--mono); color: var(--text);
+  text-transform: uppercase; letter-spacing: 0.14em;
+}
+.rule-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; margin-bottom: 7px; }
+.rule-cell { min-width: 0; }
+
+/* --- 5a Analytics: one question per band -------------------------------- */
+.control-band {
+  display: flex; align-items: flex-end; gap: 22px; flex-wrap: wrap;
+  padding: 4px 0 12px; border-bottom: 1px solid var(--rule-strong); margin-bottom: 6px;
+}
+.control-note { margin-left: auto; align-items: flex-end; text-align: right; font: 400 11.5px/1.5 var(--mono); }
+
+.band { padding: 18px 0 22px; border-bottom: 1px solid var(--rule); }
+.band-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; }
+.band-head h2 { margin: 0; font: 600 18px/1.2 var(--sans); letter-spacing: -0.01em; }
+.band-note {
+  font: 400 10.5px/1.5 var(--mono); color: var(--faint);
+  letter-spacing: .1em; text-transform: uppercase;
+}
+.band-lede { margin: 0 0 12px; max-width: 900px; color: var(--muted); font-size: 12.5px; }
+.band-split { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: start; }
+.band-split-wide { grid-template-columns: minmax(0, 1fr) 360px; }
+.band-split-tails { grid-template-columns: minmax(0, 1fr) 440px; }
+.band-rail { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.rail-line { display: flex; flex-direction: column; gap: 2px; }
+.rail-line + .rail-line { border-top: 1px solid var(--hair); padding-top: 9px; }
+.rail-line-head { display: flex; align-items: center; gap: 8px; }
+.rail-line-head .tag { margin-right: 0; }
+.rail-line-head b { margin-left: auto; font: 500 15px/1.2 var(--mono); }
+.rail-line-sub b { font-weight: 600; }
+.rail-foot { padding-top: 9px; border-top: 1px solid var(--rule); line-height: 1.5; }
+.series-swatch { display: inline-block; width: 9px; height: 2px; }
+
+.horizon-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px; }
+.horizon-col { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.meter { display: flex; flex-direction: column; gap: 3px; }
+.meter-head { display: flex; align-items: center; gap: 6px; }
+.meter-head .tag { margin-right: 0; }
+.meter-head b { margin-left: auto; font: 500 12px/1.2 var(--mono); }
+.meter-track { position: relative; height: 7px; background: var(--hair); }
+.meter-fill { position: absolute; left: 0; top: 0; height: 7px; }
+/* 50% is a coinflip -- the mark is the whole point of the chart. */
+.meter-mid { position: absolute; left: 50%; top: -2px; width: 1px; height: 11px; background: var(--faint); }
+
+.lift-table td, .lift-table th { font: 400 11.5px/1.4 var(--mono); padding: 4px 6px; }
+.lift-table th { letter-spacing: .06em; }
+.lift-table th[scope="row"] { text-align: left; }
+.lift-table td { text-align: right; }
+.lift-table .tag { margin-right: 0; }
+.tail-table { table-layout: fixed; }
+.tail-table td { font: 400 11.5px/1.4 var(--mono); padding: 4px 6px; border-left: 0; }
+.tail-table td:nth-child(1) { width: 92px; }
+.tail-table td:nth-child(2) { width: 74px; }
+.tail-table td:nth-child(4) { width: 64px; }
+.tail-table td:nth-child(5) { width: 96px; }
+.tail-table .tag { margin-right: 0; }
+
+.dist-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; }
+.dist-cell { min-width: 0; }
+
+/* --- 7a Ticker: aligned canvas ------------------------------------------ */
+.ticker-body { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; margin-bottom: 18px; }
+.ticker-main { min-width: 0; }
+.ticker-rail {
+  min-width: 0; border-left: 1px solid var(--rule-strong); padding-left: 16px;
+  display: flex; flex-direction: column; gap: 18px;
+  position: sticky; top: 62px; align-self: start;
+  max-height: calc(100vh - 80px); overflow-y: auto;
+}
+.ticker-id { display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap; margin-bottom: 12px; }
+.ticker-id .crumb { margin: 0 0 6px; }
+.price-id { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.price-last { font: 500 26px/1.1 var(--mono); letter-spacing: -0.015em; }
+.price-change { font: 500 13px/1.2 var(--mono); }
+.ticker-stats { display: flex; gap: 26px; margin-left: auto; flex-wrap: wrap; }
+.id-stat { min-width: 92px; }
+
+.lane-controls {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  padding: 8px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+  margin-bottom: 10px;
+}
+.lane-controls .inline-label { gap: 6px; color: var(--muted); font-size: 11.5px; }
+.lane-controls label.check { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 11.5px; }
+.lane-note { margin-left: auto; text-align: right; max-width: 340px; }
+
+/* Every lane is a 90px label gutter plus a plot; the plots share the price
+   chart's axis width and margins, so their x positions line up exactly. */
+.lane { display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 8px; align-items: start; }
+.lane + .lane { border-top: 1px solid var(--hair); padding-top: 6px; margin-top: 2px; }
+.lane-label { padding-top: 10px; }
+.lane-name { font: 500 10px/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
+.lane-plot { min-width: 0; }
+.lane-empty { padding: 6px 0 0 98px; }
+
+.reading { display: flex; align-items: baseline; gap: 8px; }
+.reading .tag { margin-right: 0; }
+.reading b { margin-left: auto; font: 500 13px/1.2 var(--mono); }
+.rail-quad { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.rail-quad .stat-value { font-size: 13px; }
+.rail-note { flex-direction: row; align-items: flex-start; gap: 8px; }
+
+@media (max-width: 1200px) {
+  .triage-body, .ticker-body { grid-template-columns: 1fr; }
+  .triage-rail, .ticker-rail {
+    border-left: 0; padding-left: 0; position: static;
+    border-top: 1px solid var(--rule-strong); padding-top: 14px; max-height: none;
+  }
+  .band-split, .band-split-wide, .band-split-tails { grid-template-columns: 1fr; }
+  .explore-body { flex-direction: column; }
+  .inspector {
+    flex: 1 1 auto; width: 100%; position: static; max-height: none;
+    border-left: 0; border-top: 1px solid var(--rule-strong); padding-left: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .horizon-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dist-grid { grid-template-columns: 1fr; }
+  .lane { grid-template-columns: 1fr; }
+  .lane-label { padding-top: 0; display: flex; align-items: baseline; gap: 8px; }
+  .lane-empty { padding-left: 0; }
+  .slice-stats, .ticker-stats { margin-left: 0; }
+  .query-rules, .slice-rules { padding-left: 0; border-left: 0; }
+  .lane-note { margin-left: 0; text-align: left; }
+}
+
+
+
+/* --- Vector lab ------------------------------------------------------- */
+/* Two columns: a rail of one control per vector, and a grid of one card per
+   vector. Neither is a table of rows, which is the point -- the curated view
+   next door is the table, and this page exists to not be it. */
+
+.lab-nav { padding-top: 12px; padding-bottom: 12px; }
+
+.lab-toggles { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+
+/* Producer and view toggles. A segmented control rather than a select: the
+   unavailable producers have to read as unavailable, which they cannot do
+   inside a closed dropdown. */
+.seg {
+  display: inline-flex;
+  border: 1px solid var(--rule-strong);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.seg-btn {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--rule);
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  padding: 6px 14px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.seg-btn:last-child { border-right: 0; }
+.seg-btn:hover { color: var(--text); }
+.seg-btn.is-on { background: var(--inset); color: var(--text); }
+
+/* Says why the position is inert before it is clicked, not after. */
+.seg-todo {
+  color: var(--faint);
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.lab-layout {
+  display: grid;
+  grid-template-columns: 310px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+/* A request is in flight on nearly every drag of a slider. Dimming the whole
+   layout on each one would strobe, so only fade once it is slow enough to
+   notice. */
+.lab-layout.is-loading .lab-grid,
+.lab-layout.is-loading .readout-stats {
+  opacity: 0.55;
+  transition: opacity 120ms linear 350ms;
+}
+
+/* ---- the rail ---- */
+
+/* 62px is where the site header stops -- `.rail-layout aside` parks at the
+   same place. At 12px the rail's own head scrolled underneath it and the row
+   count was cut through the middle. */
+.lab-rail {
+  position: sticky;
+  top: 62px;
+  max-height: calc(100vh - 74px);
+  overflow-y: auto;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rail-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  padding-bottom: 8px;
+}
+
+/* The count and the search are the rail's controls, not its first entry: they
+   stay while the facets scroll under them. */
+.rail-sticky {
+  position: sticky;
+  top: -12px;
+  z-index: 1;
+  background: var(--panel);
+  margin: -12px -12px 0;
+  padding: 12px 12px 0;
+}
+
+.rail-search {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+/* What is currently on, and the way back to each control -- this replaced
+   pinning touched facets to the top of the rail, which moved the list out
+   from under the pointer that had just touched it. */
+.rail-active {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  padding-bottom: 8px;
+  min-height: 27px;
+  align-items: center;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  /* Fades only what actually reaches the right edge, so the strip says it
+     carries more than it shows without lying when it doesn't. */
+  mask-image: linear-gradient(to right, #000 calc(100% - 20px), transparent);
+}
+
+/* Always rendered, never wrapped: this row appearing on the first drag, and
+   growing a line on the fourth filter, moved every facet in the rail down
+   while the pointer was still on a handle. A strip that scrolls sideways is
+   the same height whether it holds nothing or twelve. */
+.rail-active::-webkit-scrollbar { height: 4px; }
+.rail-active::-webkit-scrollbar-thumb { background: var(--rule-strong); border-radius: 2px; }
+.rail-active .chip { flex: none; }
+.rail-empty { font-size: 0.7rem; }
+
+.chip-active { padding: 0; border-color: var(--accent); }
+
+.chip-jump {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.74rem;
+  padding: 2px 2px 2px 6px;
+}
+
+.chip-x {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+  line-height: 1;
+  padding: 2px 6px 3px 3px;
+}
+
+.chip-x:hover { color: var(--down-text); }
+
+.facet {
+  border-top: 1px solid var(--hair);
+  padding: 10px 0 12px;
+}
+
+/* A touched facet has to be findable in a rail of thirty-four -- but the
+   marker is painted outside the box, not built out of border and padding.
+   Those moved the facet 12px left and widened it by 12 the moment a handle
+   was dragged, under the pointer that was dragging it. */
+.facet { position: relative; }
+
+.facet.is-touched::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent);
+}
+
+.facet-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.facet-head h3 {
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.facet-kind { font-size: 0.7rem; }
+
+/* `kind` and `reset` trade places on touch. Neither may be taller than the
+   heading, or touching a control makes its own facet 2px taller and shifts
+   the thirty below it. */
+.facet-head .facet-kind,
+.facet-head .text-btn { line-height: 1.35; padding: 0; }
+
+/* Inset by half a handle, and the range track below is inset to match, so the
+   two share one usable width: a bar and the handle that cuts it off sit at the
+   same x. Without it the handle at the maximum hung 7px past the facet. */
+.facet-hist {
+  display: block;
+  width: calc(100% - 14px);
+  height: 26px;
+  margin: 8px 7px 0;
+}
+
+.hist-in { fill: var(--accent); opacity: 0.8; }
+/* Out of the selected span, but still part of the distribution: legible, or
+   the shape of the field disappears the moment a handle moves. */
+.hist-out { fill: var(--muted); opacity: 0.35; }
+.hist-base { fill: var(--rule-strong); }
+
+/* One track, two handles, all of it a target.
+   Height is hit area: 26px is what makes a handle grabbable on the first try
+   in a rail this narrow, while the rail line stays a hairline. */
+.facet-range {
+  position: relative;
+  height: 26px;
+  margin: 2px 7px 0;
+  touch-action: none;
+  cursor: pointer;
+}
+
+.range-rail,
+.range-fill {
+  position: absolute;
+  top: 12px;
+  height: 2px;
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+.range-rail { left: 0; right: 0; background: var(--rule-strong); }
+
+/* The span that is kept, said in the same accent the lit histogram bars use. */
+.range-fill { background: var(--accent); }
+
+.range-handle {
+  position: absolute;
+  top: 6px;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid var(--panel);
+  background: var(--text);
+  box-shadow: 0 0 0 1px var(--rule-strong);
+  cursor: grab;
+}
+
+.range-handle:hover { box-shadow: 0 0 0 1px var(--accent); }
+.range-handle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.facet-range.is-dragging { cursor: grabbing; }
+.facet-range.is-dragging .range-handle { cursor: grabbing; }
+
+.facet-bounds {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.facet-bounds input {
+  flex: 1 1 0;
+  min-width: 0;
+  font-size: 0.78rem;
+  padding: 3px 6px;
+}
+
+.facet-tails { font-size: 0.7rem; margin-top: 4px; }
+
+.facet-null {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.facet-prefix {
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  line-height: 1.45;
+  margin-top: 6px;
+  overflow-wrap: anywhere;
+}
+
+/* `ticker` has 289 values, and "+279 more" turned a 148px facet into a
+   1759px one -- everything under it left the screen. The list opens in
+   place instead, tall enough to work in and capped so the rail below it
+   stays where it was. */
+.facet-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+  max-height: 216px;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+
+.chip {
+  appearance: none;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  max-width: 100%;
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px;
+  background: var(--inset);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.74rem;
+  padding: 2px 6px;
+}
+
+/* Off, not gone: the count stays readable so you can see what you excluded. */
+.chip.is-off {
+  background: transparent;
+  color: var(--faint);
+  border-style: dashed;
+  text-decoration: line-through;
+}
+
+/* No ellipsis: `elide()` cuts the middle instead, because the right-hand end
+   is where these labels differ. This only has to stop a long one from forcing
+   the rail wider than its column. */
+.chip-label {
+  overflow: hidden;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.chip-n { color: var(--muted); font-size: 0.68rem; }
+.chip.is-off .chip-n { color: var(--dim); }
+
+/* ---- the results ---- */
+
+.lab-results { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+
+.lab-readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 10px 14px;
+}
+
+.readout-stats {
+  display: flex;
+  gap: 18px;
+  margin-left: auto;
+  align-items: baseline;
+  font-variant-numeric: tabular-nums;
+}
+
+.lab-grid-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; }
+
+.lab-grid-head h2 {
+  font-size: 0.86rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* align-items: start, or a four-row card stretches to the height of the
+   twenty-row one beside it and the extra becomes empty bordered space. */
+.lab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 10px;
+  align-items: start;
+}
+
+.vcard {
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 10px 12px 8px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Vectors downstream of the outcome, and pure time axes, still group -- they
+   just are not findings, so they read as background. */
+.vcard.is-context { opacity: 0.62; }
+
+.vcard-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.vcard-head h3 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vcard-spread {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.vcard-flat { font-size: 0.7rem; }
+
+/* The ends every bucket in this card shares, lifted out of the rows so the
+   part that differs gets the width. Its own line: in the header it was a third
+   flex item against the title and the spread, and all three were unreadable. */
+.vcard-prefix {
+  font-size: 0.66rem;
+  font-family: var(--mono);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  margin: 0 0 6px;
+}
+
+.vcard-table { width: 100%; border-collapse: collapse; font-size: 0.74rem; }
+
+.vcard-table th[scope='row'] {
+  font-weight: 400;
+  color: var(--muted);
+  text-align: left;
+  padding: 3px 8px 3px 0;
+  white-space: nowrap;
+  /* `elide()` has already cut these to about twenty characters, so this is a
+     backstop against a pathological one, not the truncation that matters --
+     without it the widest label pushes the table past its own card. */
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vcard-table tr.is-dim th[scope='row'] { color: var(--dim); }
+
+/* Fixed rather than a percentage: the label column is content-width, so a
+   percentage bar column shrank to nothing on `price_basis` and stretched on
+   `selected`, and no two cards shared a scale visually. */
+.vcard-bar { position: relative; width: 40%; min-width: 64px; height: 14px; }
+
+.bar-axis {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--rule-strong);
+}
+
+.bar { position: absolute; top: 3px; height: 8px; border-radius: 1px; }
+.bar-pos { background: var(--up); }
+.bar-neg { background: var(--down); }
+
+.vcard-avg {
+  text-align: right;
+  padding-left: 6px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.vcard-n {
+  text-align: right;
+  padding-left: 6px;
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.vcard-more {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.7rem;
+}
+
+.chip-more { border-style: dotted; color: var(--muted); }
+
+.facet-bounds input[type='date'] {
+  font-size: 0.72rem;
+  padding: 3px 4px;
+}
+
+.lab-rows { margin-top: 4px; }
+
+/* The rail stops being a rail once it is the width of a phone. Laid across
+   the width instead of down it -- stacked, thirty-four facets pushed the cards
+   several screens down, and each control was a 900px-wide slider. */
+@media (max-width: 900px) {
+  .lab-layout { grid-template-columns: minmax(0, 1fr); }
+
+  .lab-rail {
+    position: static;
+    max-height: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 0 18px;
+    align-items: start;
+  }
+
+  .rail-sticky {
+    position: static;
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 0;
+  }
+
+  .facet.is-touched::before { left: -8px; }
+  .facet-bounds input { max-width: 100%; }
+}

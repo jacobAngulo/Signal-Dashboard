@@ -54,16 +54,18 @@ counts, ready fractions, valuation readiness, and fail-closed guard status.
 ## Navigation model
 
 Hash-routed and deep-linkable: `#/` overview · `#/explore` server-filtered,
-paginated signal explorer · `#/lstm-windows` all published above-threshold
-LSTM candidates grouped by each ticker's strongest horizon/day, with the final
-daily pick highlighted · `#/analytics` · `#/runs` ·
+paginated signal explorer · `#/lab/<producer>` the vector lab, with
+`#/lab/lstm/curated` the former LSTM tab (all published above-threshold LSTM
+candidates grouped by each ticker's strongest horizon/day, final daily pick
+highlighted) folded into it as a view · `#/analytics` · `#/runs` ·
 `#/scores/<producer>/<date>` curated raw score browser · `#/ticker/<T>`
 per-ticker page (default 5-day/5-minute Alpaca IEX candlesticks with independent
 lookback, 1m/5m/15m/1h/1D bar interval, Candles/OHLC/Line/Area style controls,
 volume, timestamped signal markers, non-blocking descriptive insights, metric
 history, and all signals) ·
 `#/day/<date>` per-day page. Every ticker and date anywhere in the UI is a
-link; the header has jump-to-ticker search.
+link; the header has jump-to-ticker search. `#/lstm-windows` redirects to
+`#/lab/lstm/curated`: the tab is gone, the bookmarks are not.
 
 Price snapshots refresh asynchronously every five minutes by default
 (`price_refresh_seconds` or `PRICE_REFRESH_SECONDS`). Unresolved corporate
@@ -73,6 +75,67 @@ that cross uncertain action evidence are excluded. Analytics eligibility is
 evaluated separately for each return horizon rather than dropping the signal.
 Intraday chart requests use a separate 45-second gateway cache and never alter
 the daily SIP performance book.
+
+## The vector lab
+
+`#/lab/<producer>` (`GET /api/lab`, `backend/lab.py`) is where signal analysis
+lives. It has two views and a producer toggle across the top.
+
+**Curated** (`#/lab/lstm/curated`) is what used to be the LSTM tab, moved in
+whole: sixteen named vectors, fixed bucketing, a handful of named filters and
+`ret_5d` as the only outcome. The right shape when you already know the
+question. It still answers from `/api/lstm/windows`, unchanged, and Analytics
+still embeds the same component.
+
+**Free-form** (`#/lab/lstm`) is the other shape entirely: a rail with one live
+control per vector down the left, and every vector bucketed against the chosen
+outcome as a card grid on the right. There is no "group by", because there is
+no single vector to group by.
+
+- **Every field is a vector.** The catalogue is derived by walking the enriched
+  rows, not hand-listed, so a column a producer adds later gets a control and a
+  card on its own. Fields that never vary and fields that are null throughout
+  are dropped rather than offered as controls with nothing behind them.
+- **Every vector is controllable at once.** Numeric vectors get a dual-handle
+  range over a histogram of where the rows actually sit; dates get two bounds;
+  categoricals get one chip per value with its count. Facet domains are
+  computed over the whole universe rather than the current slice — a control
+  whose own range collapsed as you dragged it could not be dragged back.
+- **Every vector is bucketed at once**, in one server-side pass, ranked by the
+  spread between its best and worst bucket. The ranking is computed from the
+  very buckets the cards show, so the two can never disagree.
+- The rail is ordered by that same ranking, with touched facets pinned to the
+  top.
+- **The outcome is a parameter** (`ret_1d/5d/20d`, `ret_since`,
+  `ret_since_actionable`, `exit_return`) and everything re-scores against it.
+  The measured outcome gets no card of its own — bucketing a return by itself
+  is a tautology with a number on it.
+- Vectors downstream of the returns being measured (`exit_return`,
+  `status_perf`, the `ret_*` family) and pure time axes (`date`) still get
+  cards, but read as context and carry no spread figure: `exit_return`
+  "predicts" `ret_5d` perfectly and means nothing.
+- Under the hood the rail encodes to the same `where=field:op:value` predicates
+  the endpoint takes (`gte lte gt lt eq ne in nin contains isnull notnull`), so
+  a slice is a URL-shaped thing. An unparseable or unknown clause is a 400,
+  never a silently wider slice.
+
+Both views read the identical cached rows, so they cannot disagree about what a
+candidate is; neither one is a second data path. Both compute aggregates over
+the whole filtered slice server-side and ship one page of rows, because the
+enriched history is ~12k candidates.
+
+**Only LSTM is wired up.** The producer axis is real and the toggle is live, but
+`intrinsic` and `foundry` have no row set defined for the lab yet. They answer
+with `available: false` and the reason rather than a 404 or an empty slice --
+"nothing matched" and "nobody has built this" look identical on screen and are
+not the same fact. `LAB_PRODUCERS` in `backend/main.py` is the list; adding a
+producer means defining its enriched row set and its outcomes, not touching
+`backend/lab.py`, which is already producer-agnostic.
+
+Bucket counts and the minimum bucket size are controls, not constants. The
+minimum is what stops one lucky three-row bucket from crowning a vector, and
+the ranking reports the thinner of the two buckets a spread was measured on so
+a coincidence cannot read as a finding.
 
 ## Frontend development without the backend
 

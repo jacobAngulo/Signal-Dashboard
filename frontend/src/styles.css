@@ -975,3 +975,528 @@ tr.selected td { background: var(--inset); box-shadow: inset 2px 0 0 var(--lstm)
   .query-rules, .slice-rules { padding-left: 0; border-left: 0; }
   .lane-note { margin-left: 0; text-align: left; }
 }
+
+
+
+/* --- Vector lab ------------------------------------------------------- */
+/* Two columns: a rail of one control per vector, and a grid of one card per
+   vector. Neither is a table of rows, which is the point -- the curated view
+   next door is the table, and this page exists to not be it. */
+
+.lab-nav { padding-top: 12px; padding-bottom: 12px; }
+
+.lab-toggles { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+
+/* Producer and view toggles. A segmented control rather than a select: the
+   unavailable producers have to read as unavailable, which they cannot do
+   inside a closed dropdown. */
+.seg {
+  display: inline-flex;
+  border: 1px solid var(--rule-strong);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.seg-btn {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--rule);
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  padding: 6px 14px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.seg-btn:last-child { border-right: 0; }
+.seg-btn:hover { color: var(--text); }
+.seg-btn.is-on { background: var(--inset); color: var(--text); }
+
+/* Says why the position is inert before it is clicked, not after. */
+.seg-todo {
+  color: var(--faint);
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.lab-layout {
+  display: grid;
+  grid-template-columns: 310px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+/* A request is in flight on nearly every drag of a slider. Dimming the whole
+   layout on each one would strobe, so only fade once it is slow enough to
+   notice. */
+.lab-layout.is-loading .lab-grid,
+.lab-layout.is-loading .readout-stats {
+  opacity: 0.55;
+  transition: opacity 120ms linear 350ms;
+}
+
+/* ---- the rail ---- */
+
+/* 62px is where the site header stops -- `.rail-layout aside` parks at the
+   same place. At 12px the rail's own head scrolled underneath it and the row
+   count was cut through the middle. */
+.lab-rail {
+  position: sticky;
+  top: 62px;
+  max-height: calc(100vh - 74px);
+  overflow-y: auto;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rail-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  padding-bottom: 8px;
+}
+
+/* The count and the search are the rail's controls, not its first entry: they
+   stay while the facets scroll under them. */
+.rail-sticky {
+  position: sticky;
+  top: -12px;
+  z-index: 1;
+  background: var(--panel);
+  margin: -12px -12px 0;
+  padding: 12px 12px 0;
+}
+
+.rail-search {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+/* What is currently on, and the way back to each control -- this replaced
+   pinning touched facets to the top of the rail, which moved the list out
+   from under the pointer that had just touched it. */
+.rail-active {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  padding-bottom: 8px;
+  min-height: 27px;
+  align-items: center;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  /* Fades only what actually reaches the right edge, so the strip says it
+     carries more than it shows without lying when it doesn't. */
+  mask-image: linear-gradient(to right, #000 calc(100% - 20px), transparent);
+}
+
+/* Always rendered, never wrapped: this row appearing on the first drag, and
+   growing a line on the fourth filter, moved every facet in the rail down
+   while the pointer was still on a handle. A strip that scrolls sideways is
+   the same height whether it holds nothing or twelve. */
+.rail-active::-webkit-scrollbar { height: 4px; }
+.rail-active::-webkit-scrollbar-thumb { background: var(--rule-strong); border-radius: 2px; }
+.rail-active .chip { flex: none; }
+.rail-empty { font-size: 0.7rem; }
+
+.chip-active { padding: 0; border-color: var(--accent); }
+
+.chip-jump {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.74rem;
+  padding: 2px 2px 2px 6px;
+}
+
+.chip-x {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+  line-height: 1;
+  padding: 2px 6px 3px 3px;
+}
+
+.chip-x:hover { color: var(--down-text); }
+
+.facet {
+  border-top: 1px solid var(--hair);
+  padding: 10px 0 12px;
+}
+
+/* A touched facet has to be findable in a rail of thirty-four -- but the
+   marker is painted outside the box, not built out of border and padding.
+   Those moved the facet 12px left and widened it by 12 the moment a handle
+   was dragged, under the pointer that was dragging it. */
+.facet { position: relative; }
+
+.facet.is-touched::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent);
+}
+
+.facet-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.facet-head h3 {
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.facet-kind { font-size: 0.7rem; }
+
+/* `kind` and `reset` trade places on touch. Neither may be taller than the
+   heading, or touching a control makes its own facet 2px taller and shifts
+   the thirty below it. */
+.facet-head .facet-kind,
+.facet-head .text-btn { line-height: 1.35; padding: 0; }
+
+/* Inset by half a handle, and the range track below is inset to match, so the
+   two share one usable width: a bar and the handle that cuts it off sit at the
+   same x. Without it the handle at the maximum hung 7px past the facet. */
+.facet-hist {
+  display: block;
+  width: calc(100% - 14px);
+  height: 26px;
+  margin: 8px 7px 0;
+}
+
+.hist-in { fill: var(--accent); opacity: 0.8; }
+/* Out of the selected span, but still part of the distribution: legible, or
+   the shape of the field disappears the moment a handle moves. */
+.hist-out { fill: var(--muted); opacity: 0.35; }
+.hist-base { fill: var(--rule-strong); }
+
+/* One track, two handles, all of it a target.
+   Height is hit area: 26px is what makes a handle grabbable on the first try
+   in a rail this narrow, while the rail line stays a hairline. */
+.facet-range {
+  position: relative;
+  height: 26px;
+  margin: 2px 7px 0;
+  touch-action: none;
+  cursor: pointer;
+}
+
+.range-rail,
+.range-fill {
+  position: absolute;
+  top: 12px;
+  height: 2px;
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+.range-rail { left: 0; right: 0; background: var(--rule-strong); }
+
+/* The span that is kept, said in the same accent the lit histogram bars use. */
+.range-fill { background: var(--accent); }
+
+.range-handle {
+  position: absolute;
+  top: 6px;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid var(--panel);
+  background: var(--text);
+  box-shadow: 0 0 0 1px var(--rule-strong);
+  cursor: grab;
+}
+
+.range-handle:hover { box-shadow: 0 0 0 1px var(--accent); }
+.range-handle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.facet-range.is-dragging { cursor: grabbing; }
+.facet-range.is-dragging .range-handle { cursor: grabbing; }
+
+.facet-bounds {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.facet-bounds input {
+  flex: 1 1 0;
+  min-width: 0;
+  font-size: 0.78rem;
+  padding: 3px 6px;
+}
+
+.facet-tails { font-size: 0.7rem; margin-top: 4px; }
+
+.facet-null {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.facet-prefix {
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  line-height: 1.45;
+  margin-top: 6px;
+  overflow-wrap: anywhere;
+}
+
+/* `ticker` has 289 values, and "+279 more" turned a 148px facet into a
+   1759px one -- everything under it left the screen. The list opens in
+   place instead, tall enough to work in and capped so the rail below it
+   stays where it was. */
+.facet-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+  max-height: 216px;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+
+.chip {
+  appearance: none;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  max-width: 100%;
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px;
+  background: var(--inset);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.74rem;
+  padding: 2px 6px;
+}
+
+/* Off, not gone: the count stays readable so you can see what you excluded. */
+.chip.is-off {
+  background: transparent;
+  color: var(--faint);
+  border-style: dashed;
+  text-decoration: line-through;
+}
+
+/* No ellipsis: `elide()` cuts the middle instead, because the right-hand end
+   is where these labels differ. This only has to stop a long one from forcing
+   the rail wider than its column. */
+.chip-label {
+  overflow: hidden;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.chip-n { color: var(--muted); font-size: 0.68rem; }
+.chip.is-off .chip-n { color: var(--dim); }
+
+/* ---- the results ---- */
+
+.lab-results { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+
+.lab-readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 10px 14px;
+}
+
+.readout-stats {
+  display: flex;
+  gap: 18px;
+  margin-left: auto;
+  align-items: baseline;
+  font-variant-numeric: tabular-nums;
+}
+
+.lab-grid-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; }
+
+.lab-grid-head h2 {
+  font-size: 0.86rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* align-items: start, or a four-row card stretches to the height of the
+   twenty-row one beside it and the extra becomes empty bordered space. */
+.lab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 10px;
+  align-items: start;
+}
+
+.vcard {
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 10px 12px 8px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Vectors downstream of the outcome, and pure time axes, still group -- they
+   just are not findings, so they read as background. */
+.vcard.is-context { opacity: 0.62; }
+
+.vcard-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.vcard-head h3 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vcard-spread {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.vcard-flat { font-size: 0.7rem; }
+
+/* The ends every bucket in this card shares, lifted out of the rows so the
+   part that differs gets the width. Its own line: in the header it was a third
+   flex item against the title and the spread, and all three were unreadable. */
+.vcard-prefix {
+  font-size: 0.66rem;
+  font-family: var(--mono);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  margin: 0 0 6px;
+}
+
+.vcard-table { width: 100%; border-collapse: collapse; font-size: 0.74rem; }
+
+.vcard-table th[scope='row'] {
+  font-weight: 400;
+  color: var(--muted);
+  text-align: left;
+  padding: 3px 8px 3px 0;
+  white-space: nowrap;
+  /* `elide()` has already cut these to about twenty characters, so this is a
+     backstop against a pathological one, not the truncation that matters --
+     without it the widest label pushes the table past its own card. */
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vcard-table tr.is-dim th[scope='row'] { color: var(--dim); }
+
+/* Fixed rather than a percentage: the label column is content-width, so a
+   percentage bar column shrank to nothing on `price_basis` and stretched on
+   `selected`, and no two cards shared a scale visually. */
+.vcard-bar { position: relative; width: 40%; min-width: 64px; height: 14px; }
+
+.bar-axis {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--rule-strong);
+}
+
+.bar { position: absolute; top: 3px; height: 8px; border-radius: 1px; }
+.bar-pos { background: var(--up); }
+.bar-neg { background: var(--down); }
+
+.vcard-avg {
+  text-align: right;
+  padding-left: 6px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.vcard-n {
+  text-align: right;
+  padding-left: 6px;
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.vcard-more {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.7rem;
+}
+
+.chip-more { border-style: dotted; color: var(--muted); }
+
+.facet-bounds input[type='date'] {
+  font-size: 0.72rem;
+  padding: 3px 4px;
+}
+
+.lab-rows { margin-top: 4px; }
+
+/* The rail stops being a rail once it is the width of a phone. Laid across
+   the width instead of down it -- stacked, thirty-four facets pushed the cards
+   several screens down, and each control was a 900px-wide slider. */
+@media (max-width: 900px) {
+  .lab-layout { grid-template-columns: minmax(0, 1fr); }
+
+  .lab-rail {
+    position: static;
+    max-height: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 0 18px;
+    align-items: start;
+  }
+
+  .rail-sticky {
+    position: static;
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 0;
+  }
+
+  .facet.is-touched::before { left: -8px; }
+  .facet-bounds input { max-width: 100%; }
+}

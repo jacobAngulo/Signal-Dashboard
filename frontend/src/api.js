@@ -5,9 +5,22 @@ import { token } from './theme.js'
 export async function api(path, params, options = {}) {
   let url = 'api/' + path.replace(/^\//, '')
   if (params) {
-    const qs = new URLSearchParams(
-      Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== '')
-    ).toString()
+    const search = new URLSearchParams()
+    for (const [key, value] of Object.entries(params)) {
+      if (value === undefined || value === null || value === '') continue
+      // An array becomes a repeated parameter rather than one comma-joined
+      // value: FastAPI reads `?where=a&where=b` as a list, and joining them
+      // would hand the server a single clause containing a comma.
+      if (Array.isArray(value)) {
+        for (const item of value) {
+          if (item === undefined || item === null || item === '') continue
+          search.append(key, item)
+        }
+      } else {
+        search.append(key, value)
+      }
+    }
+    const qs = search.toString()
     if (qs) url += '?' + qs
   }
   let res

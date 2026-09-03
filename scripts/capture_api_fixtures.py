@@ -355,6 +355,30 @@ def list_specs(dates, score_dates):
     add(Spec("lstm-windows/resolved-only.json", "/api/lstm/windows",
              {**windows, "resolved_only": "true"}))
 
+    # The vector lab (`views/Lab.jsx`). Its `where` predicates are a repeated
+    # query parameter over an open field space, which no capture can enumerate
+    # -- so these record the page's opening request and one alternate measure,
+    # and a slice with facets applied falls back to the unfiltered capture with
+    # `x-fixture-match: fallback`, the same as every other filter combination
+    # in this set. `limit=1` is what the page actually asks for until the rows
+    # panel is opened: the cards are computed over the whole slice server-side
+    # and do not need the rows.
+    lab = {"producer": "lstm", "outcome": "ret_5d", "buckets": 5,
+           "min_bucket": 20, "sort": "date", "dir": "desc",
+           "limit": 1, "offset": 0}
+    add(Spec("lab/lstm.json", "/api/lab", lab))
+    # `ret_5d` is still pending for most of a ten-day slice, and a fixture set
+    # where every average is blank teaches the wrong lesson about the page.
+    add(Spec("lab/lstm-since-signal.json", "/api/lab",
+             {**lab, "outcome": "ret_since"}))
+    # With the rows panel open, so the table has something to render.
+    add(Spec("lab/lstm-rows.json", "/api/lab", {**lab, "limit": 100}))
+    # The producers that are not wired up yet answer with their reason rather
+    # than a slice. Recorded so the placeholder renders off fixtures, and so a
+    # producer becoming available shows up here as a changed capture.
+    for name in ("intrinsic", "foundry"):
+        add(Spec(f"lab/{name}.json", "/api/lab", {**lab, "producer": name}))
+
     # Day pages follow the shared calendar the heatmap links into.
     for date in dates:
         add(Spec(f"day/{date}.json", f"/api/day/{date}"))

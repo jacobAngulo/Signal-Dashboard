@@ -17,6 +17,7 @@ from .config import (
     PORT,
     PRICE_REFRESH_SECONDS,
 )
+from . import lab
 from .frames import records, sort_key
 from .metrics import analytics, enrich, enriched_decisions, _stats
 from .store import STORE, clean
@@ -726,6 +727,173 @@ def lstm_windows(date_from: str = None, date_to: str = None,
             "tickers": len(STORE.candidate_price_book.points),
             "covered": covered,
             "total": len(rows),
+            "building": STORE._candidate_price_build_busy(),
+            "error": STORE.candidate_price_load_error,
+        },
+        "contract": "best_horizon_per_ticker",
+    })
+
+
+# The lab's vector catalogue is derived by walking every field of every
+# enriched row, which is not free over the full history. It only moves when the
+# candidate set does, so cache it on exactly the same key that set is cached on.
+# Stored as one tuple rather than two fields: a reader that caught a half-done
+# update would get the new key with the previous catalogue behind it, which is
+# a stale answer that looks fresh. Recomputing on a race is harmless -- the
+# result is a pure function of the rows -- so this needs no lock.
+_LAB_CATALOG = (None, None)
+
+
+def _lab_catalog(base, key):
+    """The vector catalogue and every facet's domain, cached together.
+
+    Both walk all twelve thousand rows field by field and both are pure
+    functions of the row set, so they share one key and one entry. Domains are
+    deliberately computed over the whole universe, not the request's slice --
+    a facet whose range shrank to whatever it currently matches could not be
+    widened again.
+    """
+    global _LAB_CATALOG
+    cached_key, cached = _LAB_CATALOG
+    if cached_key == key and cached is not None:
+        return cached
+    catalog = lab.build_catalog(base["candidates"])
+    value = (catalog, lab.domains(base["candidates"], catalog))
+    _LAB_CATALOG = (key, value)
+    return value
+
+
+# Which producers the lab can slice, and what it says about the ones it cannot
+# yet. Declared rather than inferred: an empty result and "this producer is not
+# wired up" are different answers, and a toggle that silently returns nothing
+# for two of its three positions is the worse of the two.
+LAB_PRODUCERS = (
+    {"key": "lstm", "label": "LSTM", "available": True,
+     "note": "Every published above-threshold candidate, enriched with forward "
+             "returns and the model's own exit window."},
+    {"key": "intrinsic", "label": "Intrinsic", "available": False,
+     "note": "Needs development. Intrinsic publishes a discount-to-value score "
+             "rather than a horizon candidate set, so its row set and its "
+             "outcomes have to be defined before this can measure anything."},
+    {"key": "foundry", "label": "Foundry", "available": False,
+     "note": "Needs development. Foundry rows are one gated decision per "
+             "ticker per trading day over an event stream, so the vectors "
+             "worth slicing are the gate's inputs, not a score file's columns."},
+)
+LAB_PRODUCER_KEYS = {item["key"]: item for item in LAB_PRODUCERS}
+
+
+@app.get("/api/lab", dependencies=[Depends(fresh)])
+def lab_slice(producer: str = "lstm",
+              where: Annotated[list[str] | None, Query()] = None,
+              outcome: str = lab.DEFAULT_OUTCOME,
+              buckets: int = Query(5, ge=2, le=12),
+              min_bucket: int = Query(20, ge=1, le=5000),
+              max_groups: int = Query(20, ge=2, le=60),
+              sort: str = "date",
+              dir: Literal["asc", "desc"] = "desc",
+              limit: int | None = Query(100, ge=1, le=500),
+              offset: int = Query(0, ge=0)):
+    """One producer's signals, sliced by whatever you ask rather than by a list.
+
+    `/api/lstm/windows` is the curated counterpart for LSTM: sixteen named
+    vectors, fixed bucketing, five-day returns, one grouping at a time. This is
+    the open one. Every field the rows carry is a vector, `where` takes
+    arbitrary `field:op:value` predicates, the measured outcome is a parameter,
+    and two vectors can be crossed. Where both cover the same producer they read
+    the identical cached row set, so a number here and a number there describe
+    the same candidates.
+
+    The producer axis is real but only LSTM is wired up: `LAB_PRODUCERS` says
+    which, and an unavailable one answers with that list and `available: false`
+    rather than a 404 or an empty slice. The distinction matters -- a toggle
+    position that returns zero rows reads as "nothing matched", which would be a
+    lie about a producer nobody has defined a row set for yet.
+
+    Filtering and grouping run here rather than in the browser for the same
+    reason they do on the curated page: twelve thousand enriched candidates is
+    several megabytes of JSON, and the client only needs a page of rows plus
+    aggregates computed over the whole slice.
+    """
+    if producer not in LAB_PRODUCER_KEYS:
+        raise HTTPException(404, f"unknown producer {producer!r}")
+    meta = LAB_PRODUCER_KEYS[producer]
+    if not meta["available"]:
+        # Deliberately not shaped like an empty result: no vectors, no groups,
+        # no zeroes. There is nothing to render but the reason.
+        return {"producer": producer, "producers": [dict(p) for p in LAB_PRODUCERS],
+                "available": False, "note": meta["note"]}
+
+    base = _lstm_candidate_set()
+    prod = STORE.producers["lstm"]
+    # The producer is in the cache key even though only one feeds it today:
+    # adding a second row set later must not read the first one's catalogue.
+    catalog, facet_domains = _lab_catalog(
+        base, (producer, getattr(prod, "fingerprint", None), STORE.price_generation))
+    by_key = {vector["key"]: vector for vector in catalog}
+
+    if outcome not in lab.OUTCOME_KEYS:
+        raise HTTPException(400, f"unknown outcome {outcome!r}. Known: "
+                                 f"{', '.join(sorted(lab.OUTCOME_KEYS))}")
+
+    predicates, rejected = [], []
+    for clause in (where or []):
+        if not str(clause).strip():
+            continue
+        try:
+            predicate = lab.parse_predicate(clause)
+        except lab.PredicateError as err:
+            rejected.append({"clause": clause, "error": str(err)})
+            continue
+        if predicate["field"] not in by_key:
+            rejected.append({"clause": clause,
+                             "error": f"unknown field {predicate['field']!r}"})
+            continue
+        predicates.append(predicate)
+    # A predicate that could not be parsed must not be silently dropped: the
+    # caller would read a wider slice than they asked for as their answer.
+    if rejected:
+        raise HTTPException(400, "; ".join(
+            f"{item['clause']}: {item['error']}" for item in rejected))
+
+    rows = lab.apply_predicates(base["candidates"], predicates)
+
+    sort = sort if sort in by_key else "date"
+    present = [row for row in rows if row.get(sort) is not None]
+    missing = [row for row in rows if row.get(sort) is None]
+    present.sort(key=lambda row: sort_key(row[sort]), reverse=(dir == "desc"))
+    ordered = present + missing
+    page = ordered if limit is None else ordered[offset:offset + limit]
+
+    return clean({
+        "producer": producer,
+        "producers": [dict(item) for item in LAB_PRODUCERS],
+        "available": True,
+        "vectors": catalog,
+        "outcomes": [dict(item) for item in lab.OUTCOMES],
+        "outcome": outcome,
+        "buckets": buckets,
+        "min_bucket": min_bucket,
+        "where": predicates,
+        # What each facet control needs to draw itself, over the whole
+        # universe rather than this slice.
+        "domains": facet_domains,
+        # Every vector bucketed against the chosen outcome in one pass, ranked
+        # by how far its buckets land apart. This is the page: there is no
+        # "group by" any more, because there is no one vector to group by.
+        "breakdowns": lab.analyze(rows, catalog, outcome, buckets=buckets,
+                                  min_bucket=min_bucket, max_groups=max_groups),
+        "summary": _slice_summary(rows),
+        "measured": sum(1 for row in rows if row.get(outcome) is not None),
+        "universe": len(base["candidates"]),
+        "candidates": page,
+        "total": len(ordered),
+        "offset": offset,
+        "limit": limit,
+        "sort": sort,
+        "dir": dir,
+        "price_tier": {
+            "tickers": len(STORE.candidate_price_book.points),
             "building": STORE._candidate_price_build_busy(),
             "error": STORE.candidate_price_load_error,
         },

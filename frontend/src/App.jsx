@@ -7,7 +7,7 @@ import Explore from './views/Explore.jsx'
 import Overview from './views/Overview.jsx'
 import Runs from './views/Runs.jsx'
 import Scores from './views/Scores.jsx'
-import LstmWindows from './views/LstmWindows.jsx'
+import Lab from './views/Lab.jsx'
 import TickerPage from './views/TickerPage.jsx'
 import { ProducerTag } from './ui.jsx'
 import FeedbackWidget from './components/FeedbackWidget.jsx'
@@ -15,17 +15,23 @@ import FeedbackWidget from './components/FeedbackWidget.jsx'
 const TABS = [
   ['overview', 'Overview', ''],
   ['explore', 'Explore', 'explore'],
-  ['lstm-windows', 'LSTM', 'lstm-windows'],
+  ['lab', 'Lab', 'lab/lstm'],
   ['analytics', 'Analytics', 'analytics'],
   ['runs', 'Runs', 'runs'],
   ['scores', 'Scores', 'scores'],
 ]
 
-const TITLES = { overview: null, explore: 'Explore', analytics: 'Analytics', runs: 'Runs', scores: 'Scores', 'lstm-windows': 'LSTM' }
+const TITLES = { overview: null, explore: 'Explore', analytics: 'Analytics', runs: 'Runs', scores: 'Scores', lab: 'Lab' }
 
 export default function App() {
   const route = useRoute()
   const [dataVersion, setDataVersion] = useState(0)
+
+  // The LSTM tab became the lab's curated view. Its old address is in people's
+  // bookmarks, so it redirects rather than 404s.
+  useEffect(() => {
+    if (route.page === 'lstm-windows') navigate('lab', 'lstm', 'curated')
+  }, [route.page])
 
   // Hash navigation keeps the old scroll position; a new page should start at the top.
   useEffect(() => {
@@ -63,10 +69,18 @@ export default function App() {
         {route.page === 'scores' && (
           <Scores key={route.args.join('/')} producer={route.args[0]} date={route.args[1]} />
         )}
-        {route.page === 'lstm-windows' && <LstmWindows />}
+        {/* Keyed on the producer so switching producers remounts: vectors,
+            predicates and grouping are all producer-specific, and carrying
+            them across would fire one request built from the previous
+            producer's fields. */}
+        {route.page === 'lab' && (
+          <Lab key={route.args[0] || 'lstm'}
+               producer={route.args[0] || 'lstm'}
+               view={route.args[1] || 'free'} />
+        )}
         {route.page === 'ticker' && route.args[0] && <TickerPage ticker={route.args[0].toUpperCase()} />}
         {route.page === 'day' && route.args[0] && <DayPage date={route.args[0]} />}
-        {!['overview', 'explore', 'analytics', 'runs', 'scores', 'lstm-windows', 'ticker', 'day'].includes(route.page) && (
+        {!['overview', 'explore', 'analytics', 'runs', 'scores', 'lab', 'ticker', 'day'].includes(route.page) && (
           <PageNotFound />
         )}
         </div>

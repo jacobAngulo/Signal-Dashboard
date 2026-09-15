@@ -4,9 +4,9 @@ Open [`catalog/index.html`](catalog/index.html) to browse the maintained UI inve
 
 ## Inventory
 
-Complete screens: Overview, Explore, Analytics, Lab, Lab · curated, Scores, Ticker, Day, and Runs.
+Complete screens: Overview, Explore, Analytics, Scores, Ticker, Day, and Runs.
 
-Contextual states: populated global ticker search, signal-detail drawer, docked signal inspector, feedback panel, Lab · filtered, and Lab · undefined producer. Small components such as cards, buttons, filters, and tables stay inside their parent artifact rather than getting their own files.
+Contextual states: populated global ticker search, signal-detail drawer, docked signal inspector, feedback panel, and Explore · multiple producers. Small components such as cards, buttons, filters, and tables stay inside their parent artifact rather than getting their own files.
 
 Everything above is recorded from the running app -- states included. See [`AGENTS.md`](AGENTS.md).
 
@@ -48,18 +48,14 @@ npm run dev:fixtures     # in one shell, serves on :5173
 npm run design:snapshot  # in another
 ```
 
-`scripts/snapshot.mjs` drives a headless browser over the nine routes, then
-over the six interaction states, and copies `#root`'s inner HTML each time;
+`scripts/snapshot.mjs` drives a headless browser over the seven routes, then
+over the five interaction states, and copies `#root`'s inner HTML each time;
 `scripts/shrink.py` rounds SVG geometry and collapses whitespace between tags.
 Neither touches the stylesheet's colours or any rendered number — the shrink
 pass is scoped to SVG geometry attributes for exactly that reason.
 
-`SNAPSHOT_BASE` overrides the dev-server origin. It exists because the Lab
-calls `/api/lab`, which has no recorded fixture yet: until
-`scripts/capture_api_fixtures.py` is run on a box with the producer data,
-`npm run dev:fixtures` alone cannot render the two Lab screens or the two Lab
-states, and the capture has to be pointed at something that answers that
-endpoint. Everything else works off the committed fixtures.
+`SNAPSHOT_BASE` overrides the dev-server origin, for a capture pointed at
+something other than `npm run dev:fixtures`'s committed fixture slice.
 
 Three deliberate lossy steps, all noted in the file itself:
 

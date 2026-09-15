@@ -4,9 +4,9 @@ import { fileURLToPath } from 'node:url'
 
 const root = dirname(fileURLToPath(import.meta.url))
 const expected = {
-  screens: ['overview', 'explore', 'analytics', 'lab', 'lab-curated', 'scores', 'ticker', 'day', 'runs'],
+  screens: ['overview', 'explore', 'analytics', 'scores', 'ticker', 'day', 'runs'],
   states: ['ticker-search-populated', 'signal-detail-drawer', 'signal-inspector', 'feedback-panel',
-           'lab-filtered', 'lab-undefined-producer'],
+           'explore-multi-producer'],
 }
 const artifactFiles = Object.entries(expected).flatMap(([dir, slugs]) =>
   slugs.map((slug) => `${dir}/${slug}.html`)
@@ -44,8 +44,6 @@ for (const file of artifactFiles) {
 // element stopped rendering is a stale artifact, not a passing build.
 const markers = {
   'screens/overview.html': ['class="hm"'],
-  'screens/lab.html': ['class="lab-rail"', 'class="facet"', 'class="vcard'],
-  'screens/lab-curated.html': ['class="candidate-table"', 'class="seg-btn is-on"'],
   'screens/analytics.html': ['class="meter-track"'],
   'screens/ticker.html': ['class="chart-legend'],
   'screens/runs.html': ['class="hm"'],
@@ -53,8 +51,7 @@ const markers = {
   'states/signal-inspector.html': ['class="inspector"'],
   'states/ticker-search-populated.html': ['class="search-drop"'],
   'states/feedback-panel.html': ['class="feedback-panel"'],
-  'states/lab-filtered.html': ['class="rail-active"', 'chip chip-active', 'facet is-touched'],
-  'states/lab-undefined-producer.html': ['is not wired up yet'],
+  'states/explore-multi-producer.html': ['class="producer-rows"', 'resolved only'],
 }
 for (const file of artifactFiles) {
   const html = readFileSync(join(root, file), 'utf8')

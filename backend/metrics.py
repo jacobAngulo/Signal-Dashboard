@@ -396,9 +396,12 @@ def enrich(rec, spark=False, directional=None):
 
 def enriched_decisions(producer=None, date_from=None, date_to=None,
                        ticker=None, buys_only=False, spark=False):
+    producers = None
+    if producer:
+        producers = {producer} if isinstance(producer, str) else set(producer)
     rows = []
     for rec in STORE.all_decisions:
-        if producer and rec["producer"] != producer:
+        if producers and rec["producer"] not in producers:
             continue
         if date_from and rec["date"] < date_from:
             continue

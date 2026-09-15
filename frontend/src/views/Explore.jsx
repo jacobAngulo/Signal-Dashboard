@@ -34,6 +34,16 @@ const OUTCOMES = [
   ['no_px', 'no price coverage'],
 ]
 
+// The highest-value, high-level LSTM knobs -- not the dozens of free-form
+// facets the old Lab tab auto-generated from every raw score column.
+// `LSTM_HORIZON_SESSIONS` in backend/metrics.py is the source of truth for
+// which horizon strings the model actually publishes.
+const LSTM_HORIZONS = [
+  ['1d', '1 day'], ['1w', '1 week'], ['1m', '1 month'], ['6m', '6 months'],
+]
+
+const PRODUCER_KEYS = Object.keys(PRODUCER_META)
+
 export default function Explore({ query = {} }) {
   const [pages, setPages] = useState([])
   const [meta, setMeta] = useState(null)
@@ -41,15 +51,26 @@ export default function Explore({ query = {} }) {
   const [loading, setLoading] = useState(true)
   const [sel, setSel] = useState(null)
 
-  const [producer, setProducer] = useState(query.producer || '')
+  const [producers, setProducers] = useState(() => (
+    (query.producer || '').split(',').map((s) => s.trim()).filter((p) => PRODUCER_META[p])
+  ))
   const [from, setFrom] = useState(query.from || '')
   const [to, setTo] = useState(query.to || '')
   const [buysOnly, setBuysOnly] = useState(query.buys !== '0')
   const [ticker, setTicker] = useState(query.ticker || '')
   const deferredTicker = useDeferredValue(ticker)
   const [status, setStatus] = useState(query.status || '')
-  const [minMetric, setMinMetric] = useState(query.min || '')
+  const [minMetric, setMinMetric] = useState({
+    lstm: query.min_lstm || '', intrinsic: query.min_intrinsic || '', foundry: query.min_foundry || '',
+  })
   const [offset, setOffset] = useState(0)
+
+  // The LSTM-only knobs (TB-69), lifted off the old LstmWindows page. Inert
+  // unless LSTM is one of the checked producers.
+  const [lstmHorizon, setLstmHorizon] = useState(query.lstm_horizon || '')
+  const [lstmAttention, setLstmAttention] = useState(query.lstm_attn || '')
+  const [lstmMinPrice, setLstmMinPrice] = useState(query.lstm_price || '')
+  const [lstmResolvedOnly, setLstmResolvedOnly] = useState(query.lstm_resolved === '1')
 
   // TB-46: stop-loss / take-profit historical simulation. `stopPct`/`targetPct`
   // are whole-percent strings ("5") so the input never makes Jacob type a
@@ -59,40 +80,63 @@ export default function Explore({ query = {} }) {
   const [exitWindow, setExitWindow] = useState(query.win || '20')
   const [trailing, setTrailing] = useState(query.trail === '1')
 
-  const filterKey = [producer, from, to, buysOnly, deferredTicker, status, minMetric,
-                     stopPct, targetPct, exitWindow, trailing].join('|')
+  const lstmOn = producers.includes('lstm')
+  const toggleProducer = (key) => setProducers((prev) => (
+    prev.includes(key) ? prev.filter((p) => p !== key) : [...prev, key]
+  ))
+  const setMinMetricFor = (key, value) => setMinMetric((prev) => ({ ...prev, [key]: value }))
+
+  const filterKey = [
+    producers.slice().sort().join(','), from, to, buysOnly, deferredTicker, status,
+    minMetric.lstm, minMetric.intrinsic, minMetric.foundry,
+    lstmOn && lstmHorizon, lstmOn && lstmAttention, lstmOn && lstmMinPrice, lstmOn && lstmResolvedOnly,
+    stopPct, targetPct, exitWindow, trailing,
+  ].join('|')
   // A filter change restarts the scroll region at the top, not at whatever
   // depth the previous slice happened to be scrolled to.
   useEffect(() => { setOffset(0); setPages([]) }, [filterKey])
 
   useEffect(() => {
     const params = new URLSearchParams()
-    if (producer) params.set('producer', producer)
+    if (producers.length) params.set('producer', producers.join(','))
     if (from) params.set('from', from)
     if (to) params.set('to', to)
     if (!buysOnly) params.set('buys', '0')
     if (ticker) params.set('ticker', ticker)
     if (status) params.set('status', status)
-    if (producer && minMetric) params.set('min', minMetric)
+    if (producers.includes('lstm') && minMetric.lstm) params.set('min_lstm', minMetric.lstm)
+    if (producers.includes('intrinsic') && minMetric.intrinsic) params.set('min_intrinsic', minMetric.intrinsic)
+    if (producers.includes('foundry') && minMetric.foundry) params.set('min_foundry', minMetric.foundry)
+    if (lstmOn && lstmHorizon) params.set('lstm_horizon', lstmHorizon)
+    if (lstmOn && lstmAttention) params.set('lstm_attn', lstmAttention)
+    if (lstmOn && lstmMinPrice) params.set('lstm_price', lstmMinPrice)
+    if (lstmOn && lstmResolvedOnly) params.set('lstm_resolved', '1')
     if (stopPct) params.set('stop', stopPct)
     if (targetPct) params.set('target', targetPct)
     if (exitWindow && exitWindow !== '20') params.set('win', exitWindow)
     if (trailing) params.set('trail', '1')
     history.replaceState(null, '', `#/explore${params.size ? `?${params}` : ''}`)
-  }, [producer, from, to, buysOnly, ticker, status, minMetric,
+  }, [producers, from, to, buysOnly, ticker, status, minMetric, lstmOn,
+      lstmHorizon, lstmAttention, lstmMinPrice, lstmResolvedOnly,
       stopPct, targetPct, exitWindow, trailing])
 
   useEffect(() => {
     const controller = new AbortController()
     setLoading(true)
     api('signals', {
-      producer,
+      producer: producers,
       date_from: from,
       date_to: to,
       buys_only: buysOnly,
       q: deferredTicker,
       status,
-      min_metric: producer ? minMetric : '',
+      min_metric_lstm: producers.includes('lstm') ? minMetric.lstm : '',
+      min_metric_intrinsic: producers.includes('intrinsic') ? minMetric.intrinsic : '',
+      min_metric_foundry: producers.includes('foundry') ? minMetric.foundry : '',
+      lstm_horizon: lstmOn ? lstmHorizon : '',
+      lstm_attention_status: lstmOn ? lstmAttention : '',
+      lstm_min_price: lstmOn ? lstmMinPrice : '',
+      lstm_resolved_only: lstmOn ? lstmResolvedOnly : false,
       limit: PAGE,
       offset,
       spark: true,
@@ -124,21 +168,40 @@ export default function Explore({ query = {} }) {
   }
 
   const reset = () => {
-    setProducer(''); setFrom(''); setTo(''); setBuysOnly(true)
-    setTicker(''); setStatus(''); setMinMetric('')
+    setProducers([]); setFrom(''); setTo(''); setBuysOnly(true)
+    setTicker(''); setStatus(''); setMinMetric({ lstm: '', intrinsic: '', foundry: '' })
+    setLstmHorizon(''); setLstmAttention(''); setLstmMinPrice(''); setLstmResolvedOnly(false)
     setStopPct(''); setTargetPct(''); setExitWindow('20'); setTrailing(false)
   }
 
   const chips = [
-    producer && { key: 'producer', label: PRODUCER_META[producer]?.label || producer, clear: () => setProducer('') },
+    ...producers.map((p) => ({
+      key: `producer-${p}`, label: PRODUCER_META[p]?.label || p, clear: () => toggleProducer(p),
+    })),
     ticker && { key: 'ticker', label: `ticker ~ ${ticker}`, clear: () => setTicker('') },
     from && { key: 'from', label: `from ${from}`, clear: () => setFrom('') },
     to && { key: 'to', label: `to ${to}`, clear: () => setTo('') },
     status && { key: 'status', label: OUTCOMES.find(([v]) => v === status)?.[1] || status, clear: () => setStatus('') },
-    producer && minMetric && {
-      key: 'min', label: `${PRODUCER_META[producer]?.metric} ≥ ${minMetric}`, clear: () => setMinMetric(''),
-    },
+    ...producers.filter((p) => minMetric[p]).map((p) => ({
+      key: `min-${p}`,
+      label: `${PRODUCER_META[p]?.metric} ≥ ${minMetric[p]}`,
+      clear: () => setMinMetricFor(p, ''),
+    })),
     !buysOnly && { key: 'buys', label: 'all decisions', clear: () => setBuysOnly(true) },
+    lstmOn && lstmHorizon && {
+      key: 'lstm-horizon',
+      label: `horizon ${LSTM_HORIZONS.find(([v]) => v === lstmHorizon)?.[1] || lstmHorizon}`,
+      clear: () => setLstmHorizon(''),
+    },
+    lstmOn && lstmAttention && {
+      key: 'lstm-attn', label: `attention ~ ${lstmAttention}`, clear: () => setLstmAttention(''),
+    },
+    lstmOn && lstmMinPrice && {
+      key: 'lstm-price', label: `min price $${lstmMinPrice}`, clear: () => setLstmMinPrice(''),
+    },
+    lstmOn && lstmResolvedOnly && {
+      key: 'lstm-resolved', label: 'resolved only', clear: () => setLstmResolvedOnly(false),
+    },
     stopPct && { key: 'stop', label: `${trailing ? 'trailing ' : ''}stop ${stopPct}%`, clear: () => setStopPct('') },
     targetPct && { key: 'target', label: `target ${targetPct}%`, clear: () => setTargetPct('') },
     exitWindow !== '20' && { key: 'win', label: `max hold ${exitWindow}d`, clear: () => setExitWindow('20') },
@@ -146,7 +209,9 @@ export default function Explore({ query = {} }) {
 
   const summary = meta?.summary || {}
   const sim = summary.sim
-  const metricName = producer ? PRODUCER_META[producer]?.metric : null
+  const producerLabel = producers.length === 0
+    ? 'all producers'
+    : producers.map((p) => PRODUCER_META[p]?.label || p).join(' + ')
   const rule = pctToFraction(stopPct) != null || pctToFraction(targetPct) != null
     ? {
         stop: pctToFraction(stopPct) ?? null,
@@ -165,11 +230,10 @@ export default function Explore({ query = {} }) {
           </h1>
           <div className="ledger-meta">
             {[
-              producer ? PRODUCER_META[producer]?.label : 'all producers',
+              producerLabel,
               buysOnly ? 'buy only' : 'all decisions',
               from || to ? `${from || '…'} → ${to || '…'}` : 'all dates',
               ticker ? `ticker ~ ${ticker}` : null,
-              producer && minMetric ? `${metricName} ≥ ${minMetric}` : null,
               rule ? `exits: ${trailing ? 'trailing ' : ''}stop ${stopPct || '—'}% / target ${targetPct || '—'}% / ${exitWindow}d hold` : null,
             ].filter(Boolean).join(' · ')}
           </div>
@@ -200,15 +264,17 @@ export default function Explore({ query = {} }) {
       </div>
 
       <div className="query-bar">
-        <Field label="Producer">
-          <div className="seg" role="group" aria-label="Producer">
-            {[['', 'All'], ...Object.entries(PRODUCER_META).map(([k, m]) => [k, m.label])]
-              .map(([value, label]) => (
-                <button key={value || 'all'} type="button"
-                        className={`seg-btn ${producer === value ? 'active' : ''}`}
-                        aria-pressed={producer === value}
-                        onClick={() => setProducer(value)}>{label}</button>
-              ))}
+        <Field label="Producers">
+          <div className="seg" role="group" aria-label="Producers">
+            <button type="button" className={`seg-btn ${producers.length === 0 ? 'active' : ''}`}
+                    aria-pressed={producers.length === 0}
+                    onClick={() => setProducers([])}>All</button>
+            {PRODUCER_KEYS.map((key) => (
+              <button key={key} type="button"
+                      className={`seg-btn ${producers.includes(key) ? 'active' : ''}`}
+                      aria-pressed={producers.includes(key)}
+                      onClick={() => toggleProducer(key)}>{PRODUCER_META[key].label}</button>
+            ))}
           </div>
         </Field>
         <Field label="Ticker contains">
@@ -228,13 +294,6 @@ export default function Explore({ query = {} }) {
             {OUTCOMES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
             {!buysOnly && <option value="no_action">not a BUY</option>}
           </select>
-        </Field>
-        <Field label={`Min ${metricName || 'metric'}`}>
-          <input type="number" step="0.01" value={minMetric} disabled={!producer}
-                 onChange={(e) => setMinMetric(e.target.value)} style={{ width: 84 }}
-                 aria-label="Minimum metric"
-                 title={producer ? undefined : 'choose a producer first — the three metrics are not comparable'}
-                 placeholder={producer ? '0.25' : 'producer?'} />
         </Field>
 
         <div className="query-rules">
@@ -269,6 +328,54 @@ export default function Explore({ query = {} }) {
           <button type="button" className="btn" onClick={reset} disabled={!chips.length}>Clear all</button>
         </div>
       </div>
+
+      {/* One filter row per checked producer: each gets its own "Min {metric}"
+          floor, and LSTM's row additionally carries the curated knobs lifted
+          off the retired Lab tab -- horizon, attention status, min price, and
+          resolved-only. */}
+      {producers.length > 0 && (
+        <div className="producer-rows">
+          {producers.map((p) => (
+            <div key={p} className="filter-row producer-row">
+              <span className="producer-row-label">{PRODUCER_META[p]?.label}</span>
+              <Field label={`Min ${PRODUCER_META[p]?.metric}`}>
+                <input type="number" step="0.01" value={minMetric[p] || ''}
+                       onChange={(e) => setMinMetricFor(p, e.target.value)}
+                       style={{ width: 84 }} aria-label={`Minimum ${PRODUCER_META[p]?.metric}`}
+                       placeholder="0.25" />
+              </Field>
+              {p === 'lstm' && (
+                <>
+                  <Field label="Horizon">
+                    <select value={lstmHorizon} onChange={(e) => setLstmHorizon(e.target.value)}
+                            aria-label="LSTM horizon">
+                      <option value="">all horizons</option>
+                      {LSTM_HORIZONS.map(([value, label]) => (
+                        <option key={value} value={value}>{label}</option>
+                      ))}
+                    </select>
+                  </Field>
+                  <Field label="Attention status">
+                    <input value={lstmAttention} onChange={(e) => setLstmAttention(e.target.value)}
+                           placeholder="e.g. surge" style={{ width: 110 }}
+                           aria-label="LSTM attention status" />
+                  </Field>
+                  <Field label="Min price">
+                    <input type="number" step="1" min="0" value={lstmMinPrice}
+                           onChange={(e) => setLstmMinPrice(e.target.value)}
+                           style={{ width: 72 }} aria-label="LSTM minimum price" placeholder="$0" />
+                  </Field>
+                  <label className="check">
+                    <input type="checkbox" checked={lstmResolvedOnly}
+                           onChange={(e) => setLstmResolvedOnly(e.target.checked)} />
+                    resolved only
+                  </label>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
 
       {chips.length > 0 && (
         <div className="chips">

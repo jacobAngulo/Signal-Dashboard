@@ -61,11 +61,14 @@ def normalize(params):
     """
     if not params:
         return ""
-    pairs = [
-        (str(k), str(v))
-        for k, v in params.items()
-        if v is not None and v != ""
-    ]
+    pairs = []
+    for k, v in params.items():
+        # An array becomes a repeated parameter, matching `api.js`'s handling
+        # of list-valued params (`where` clauses, multi-producer selection).
+        values = v if isinstance(v, (list, tuple)) else [v]
+        for item in values:
+            if item is not None and item != "":
+                pairs.append((str(k), str(item)))
     return urlencode(sorted(pairs))
 
 
@@ -342,42 +345,14 @@ def list_specs(dates, score_dates):
     add(Spec("signals/exit-rule.json", "/api/signals",
              {**explore, "stop_pct": 0.05, "target_pct": 0.1}))
 
-    # LSTM windows (`views/LstmWindows.jsx:122`).
-    windows = {"group_by": "horizon", "sort": "date", "dir": "desc",
-               "limit": 100, "offset": 0}
-    add(Spec("lstm-windows/default.json", "/api/lstm/windows", windows))
-    add(Spec("lstm-windows/page-2.json", "/api/lstm/windows",
-             {**windows, "offset": 100}))
-    add(Spec("lstm-windows/by-date.json", "/api/lstm/windows",
-             {**windows, "group_by": "date"}))
-    add(Spec("lstm-windows/picks-only.json", "/api/lstm/windows",
-             {**windows, "picks_only": "true"}))
-    add(Spec("lstm-windows/resolved-only.json", "/api/lstm/windows",
-             {**windows, "resolved_only": "true"}))
-
-    # The vector lab (`views/Lab.jsx`). Its `where` predicates are a repeated
-    # query parameter over an open field space, which no capture can enumerate
-    # -- so these record the page's opening request and one alternate measure,
-    # and a slice with facets applied falls back to the unfiltered capture with
-    # `x-fixture-match: fallback`, the same as every other filter combination
-    # in this set. `limit=1` is what the page actually asks for until the rows
-    # panel is opened: the cards are computed over the whole slice server-side
-    # and do not need the rows.
-    lab = {"producer": "lstm", "outcome": "ret_5d", "buckets": 5,
-           "min_bucket": 20, "sort": "date", "dir": "desc",
-           "limit": 1, "offset": 0}
-    add(Spec("lab/lstm.json", "/api/lab", lab))
-    # `ret_5d` is still pending for most of a ten-day slice, and a fixture set
-    # where every average is blank teaches the wrong lesson about the page.
-    add(Spec("lab/lstm-since-signal.json", "/api/lab",
-             {**lab, "outcome": "ret_since"}))
-    # With the rows panel open, so the table has something to render.
-    add(Spec("lab/lstm-rows.json", "/api/lab", {**lab, "limit": 100}))
-    # The producers that are not wired up yet answer with their reason rather
-    # than a slice. Recorded so the placeholder renders off fixtures, and so a
-    # producer becoming available shows up here as a changed capture.
-    for name in ("intrinsic", "foundry"):
-        add(Spec(f"lab/{name}.json", "/api/lab", {**lab, "producer": name}))
+    # Explore's multi-producer selection: two producers checked at once, and
+    # the curated LSTM-only knobs (TB-69 lifted these off the old LstmWindows
+    # page instead of the dozens of free-form facets Lab auto-generated).
+    add(Spec("signals/multi-producer.json", "/api/signals",
+             {**explore, "producer": ["lstm", "foundry"]}))
+    add(Spec("signals/lstm-knobs.json", "/api/signals",
+             {**explore, "producer": "lstm", "lstm_horizon": "1d",
+              "lstm_resolved_only": "true"}))
 
     # Day pages follow the shared calendar the heatmap links into.
     for date in dates:

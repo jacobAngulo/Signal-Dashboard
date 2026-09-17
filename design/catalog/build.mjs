@@ -14,8 +14,6 @@ const screens = [
   ['overview', 'Overview', 'Daily buy-signal roll-up and the coverage calendar'],
   ['explore', 'Explore', 'Filterable signal ledger'],
   ['analytics', 'Analytics', 'Signal performance: hit rates, return distributions, and per-producer meters'],
-  ['lab', 'Lab', 'Free-form slicing across every vector'],
-  ['lab-curated', 'Lab · curated', 'One named vector at a time, fixed bucketing and five-day returns'],
   ['scores', 'Scores', 'Raw producer rows for one date'],
   ['ticker', 'Ticker', 'One symbol, its chart, scores, and signals'],
   ['day', 'Day', 'All producer output for one trading day'],
@@ -27,8 +25,7 @@ const states = [
   ['signal-detail-drawer', 'Signal detail drawer', 'Modal drawer over the day view'],
   ['signal-inspector', 'Docked signal inspector', 'Explore with a selected signal'],
   ['feedback-panel', 'Feedback panel', 'Issue form over its page context'],
-  ['lab-filtered', 'Lab · filtered', 'Touched facets, the active filter strip, and filtered result cards'],
-  ['lab-undefined-producer', 'Lab · undefined producer', 'A producer with no row set defined yet'],
+  ['explore-multi-producer', 'Explore · multiple producers', 'Two producers checked, one filter row each, LSTM carrying its curated knobs'],
 ]
 
 const sectionPattern = /<section class="snap-head" id="snap-([^"]+)"[^>]*><h2>[^<]*<\/h2><p>([^<]*)<\/p><\/section><div class="snap-body">([\s\S]*?)<\/div>(?=<section class="snap-head" id="snap-|<\/body>)/g
@@ -45,11 +42,8 @@ for (const dir of ['screens', 'states']) {
 const appCss = readFileSync(join(repoDir, 'frontend', 'src', 'styles.css'), 'utf8')
 writeFileSync(join(here, 'assets', 'app.css'), `${appCss.trim()}\n`)
 
-// Frontend navigation, mapped onto static files. Longest prefix first so
-// `#/lab/lstm/curated` does not get swallowed by `#/lab`.
+// Frontend navigation, mapped onto static files.
 const routes = [
-  ['/lab/lstm/curated', 'lab-curated.html'],
-  ['/lab', 'lab.html'],
   ['/explore', 'explore.html'],
   ['/analytics', 'analytics.html'],
   ['/scores', 'scores.html'],

@@ -1,9 +1,7 @@
 import { chromium } from 'playwright'
 import { writeFileSync, readFileSync } from 'fs'
 
-// The fixture dev server by default. `/api/lab` has no recorded capture yet, so
-// a box without one has to point this at something that answers it -- hence the
-// override rather than a hardcoded port.
+// The fixture dev server by default.
 const BASE = process.env.SNAPSHOT_BASE || 'http://localhost:5173'
 
 // Route-level compositions. One entry per screen the router can land on.
@@ -11,8 +9,6 @@ const SCREENS = [
   ['overview',     '#/',                       'Overview — daily signal roll-up'],
   ['explore',      '#/explore',                'Explore — filterable signal ledger'],
   ['analytics',    '#/analytics',              'Analytics — performance charts and heatmaps'],
-  ['lab',          '#/lab/lstm',               'Lab — free-form slicing across every vector'],
-  ['lab-curated',  '#/lab/lstm/curated',       'Lab (curated) — one named vector at a time, fixed bucketing'],
   ['scores',       '#/scores/lstm/2026-09-01', 'Scores — raw producer rows for one date'],
   ['ticker',       '#/ticker/AAPL',            'Ticker — one symbol, its chart, scores, and signals'],
   ['day',          '#/day/2026-09-01',         'Day — all producer output for one trading day'],
@@ -51,21 +47,15 @@ const STATES = [
       await clickFirst('.feedback-launcher')(page)
       await page.waitForSelector('.feedback-panel', { timeout: 15000 })
     }],
-  ['lab-filtered', '#/lab/lstm', 'Lab with several vectors constrained: touched facets, active filter strip, filtered result cards',
+  ['explore-multi-producer', '#/explore', 'Explore with two producers checked: one filter row per producer, LSTM\'s carrying its curated knobs',
     async (page) => {
-      // A numeric bound and a category exclusion, because the rail renders the
-      // two facet kinds differently and both belong in the artifact.
-      const bound = page.locator('.facet .facet-bounds input[type="number"]').first()
-      await bound.waitFor({ state: 'visible', timeout: 20000 })
-      await bound.fill('0.55')
-      await bound.press('Enter')
-      const chip = page.locator('.facet-chips button').first()
-      if (await chip.count()) await chip.click()
-      await page.waitForSelector('.rail-active .chip-active', { timeout: 15000 })
+      const lstmBtn = page.locator('.seg-btn', { hasText: 'LSTM' }).first()
+      await lstmBtn.waitFor({ state: 'visible', timeout: 15000 })
+      await lstmBtn.click()
+      await page.locator('.seg-btn', { hasText: 'Foundry' }).first().click()
+      await page.waitForSelector('.producer-rows', { timeout: 15000 })
       await page.waitForTimeout(600)
     }],
-  ['lab-undefined-producer', '#/lab/intrinsic', 'Lab pointed at a producer with no row set defined yet',
-    async (page) => { await page.waitForTimeout(400) }],
 ]
 
 // Rows are the bulk of the file and every row past a handful is the same

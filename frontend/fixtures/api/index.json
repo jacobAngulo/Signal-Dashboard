@@ -78,8 +78,8 @@
     "CABO"
   ],
   "counts": {
-    "responses": 372,
-    "bytes": 15373294
+    "responses": 362,
+    "bytes": 13987656
   },
   "price_build_errors": [],
   "responses": [
@@ -178,36 +178,6 @@
       "file": "health.json",
       "status": 200,
       "bytes": 384
-    },
-    {
-      "key": "GET /api/lstm/windows?dir=desc&group_by=date&limit=100&offset=0&sort=date",
-      "file": "lstm-windows/by-date.json",
-      "status": 200,
-      "bytes": 210511
-    },
-    {
-      "key": "GET /api/lstm/windows?dir=desc&group_by=horizon&limit=100&offset=0&sort=date",
-      "file": "lstm-windows/default.json",
-      "status": 200,
-      "bytes": 187981
-    },
-    {
-      "key": "GET /api/lstm/windows?dir=desc&group_by=horizon&limit=100&offset=100&sort=date",
-      "file": "lstm-windows/page-2.json",
-      "status": 200,
-      "bytes": 188169
-    },
-    {
-      "key": "GET /api/lstm/windows?dir=desc&group_by=horizon&limit=100&offset=0&picks_only=true&sort=date",
-      "file": "lstm-windows/picks-only.json",
-      "status": 200,
-      "bytes": 154981
-    },
-    {
-      "key": "GET /api/lstm/windows?dir=desc&group_by=horizon&limit=100&offset=0&resolved_only=true&sort=date",
-      "file": "lstm-windows/resolved-only.json",
-      "status": 200,
-      "bytes": 193082
     },
     {
       "key": "GET /api/overview",
@@ -2284,41 +2254,6 @@
       "file": "tickers/q-z.json",
       "status": 200,
       "bytes": 1775
-    },
-    {
-      "key": "GET /api/lab?buckets=5&dir=desc&limit=1&min_bucket=20&offset=0&outcome=ret_5d&producer=lstm&sort=date",
-      "file": "lab/lstm.json",
-      "status": 200,
-      "bytes": 103975,
-      "derived": true
-    },
-    {
-      "key": "GET /api/lab?buckets=5&dir=desc&limit=1&min_bucket=20&offset=0&outcome=ret_since&producer=lstm&sort=date",
-      "file": "lab/lstm-since-signal.json",
-      "status": 200,
-      "bytes": 106455,
-      "derived": true
-    },
-    {
-      "key": "GET /api/lab?buckets=5&dir=desc&limit=100&min_bucket=20&offset=0&outcome=ret_5d&producer=lstm&sort=date",
-      "file": "lab/lstm-rows.json",
-      "status": 200,
-      "bytes": 237579,
-      "derived": true
-    },
-    {
-      "key": "GET /api/lab?buckets=5&dir=desc&limit=1&min_bucket=20&offset=0&outcome=ret_5d&producer=intrinsic&sort=date",
-      "file": "lab/intrinsic.json",
-      "status": 200,
-      "bytes": 916,
-      "derived": true
-    },
-    {
-      "key": "GET /api/lab?buckets=5&dir=desc&limit=1&min_bucket=20&offset=0&outcome=ret_5d&producer=foundry&sort=date",
-      "file": "lab/foundry.json",
-      "status": 200,
-      "bytes": 911,
-      "derived": true
     }
   ],
   "derived_note": "5 responses carry \"derived\": true. They were not produced by this capture run (2026-09-01T23:22:52+00:00); see frontend/fixtures/README.md."

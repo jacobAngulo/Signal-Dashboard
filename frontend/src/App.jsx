@@ -7,7 +7,6 @@ import Explore from './views/Explore.jsx'
 import Overview from './views/Overview.jsx'
 import Runs from './views/Runs.jsx'
 import Scores from './views/Scores.jsx'
-import Lab from './views/Lab.jsx'
 import TickerPage from './views/TickerPage.jsx'
 import { ProducerTag } from './ui.jsx'
 import FeedbackWidget from './components/FeedbackWidget.jsx'
@@ -15,23 +14,23 @@ import FeedbackWidget from './components/FeedbackWidget.jsx'
 const TABS = [
   ['overview', 'Overview', ''],
   ['explore', 'Explore', 'explore'],
-  ['lab', 'Lab', 'lab/lstm'],
   ['analytics', 'Analytics', 'analytics'],
   ['runs', 'Runs', 'runs'],
   ['scores', 'Scores', 'scores'],
 ]
 
-const TITLES = { overview: null, explore: 'Explore', analytics: 'Analytics', runs: 'Runs', scores: 'Scores', lab: 'Lab' }
+const TITLES = { overview: null, explore: 'Explore', analytics: 'Analytics', runs: 'Runs', scores: 'Scores' }
 
 export default function App() {
   const route = useRoute()
   const [dataVersion, setDataVersion] = useState(0)
   const mainRef = useRef(null)
 
-  // The LSTM tab became the lab's curated view. Its old address is in people's
-  // bookmarks, so it redirects rather than 404s.
+  // TB-69 dropped the Lab tab and folded its curated LSTM view into Explore.
+  // The old #/lstm-windows address is in people's bookmarks, so it redirects
+  // to Explore pre-filtered to LSTM rather than 404s.
   useEffect(() => {
-    if (route.page === 'lstm-windows') navigate('lab', 'lstm', 'curated')
+    if (route.page === 'lstm-windows') window.location.hash = '#/explore?producer=lstm'
   }, [route.page])
 
   // Hash navigation keeps element scroll positions. The document itself no
@@ -74,18 +73,9 @@ export default function App() {
         {route.page === 'scores' && (
           <Scores key={route.args.join('/')} producer={route.args[0]} date={route.args[1]} />
         )}
-        {/* Keyed on the producer so switching producers remounts: vectors,
-            predicates and grouping are all producer-specific, and carrying
-            them across would fire one request built from the previous
-            producer's fields. */}
-        {route.page === 'lab' && (
-          <Lab key={route.args[0] || 'lstm'}
-               producer={route.args[0] || 'lstm'}
-               view={route.args[1] || 'free'} />
-        )}
         {route.page === 'ticker' && route.args[0] && <TickerPage ticker={route.args[0].toUpperCase()} />}
         {route.page === 'day' && route.args[0] && <DayPage date={route.args[0]} />}
-        {!['overview', 'explore', 'analytics', 'runs', 'scores', 'lab', 'ticker', 'day'].includes(route.page) && (
+        {!['overview', 'explore', 'analytics', 'runs', 'scores', 'ticker', 'day', 'lstm-windows'].includes(route.page) && (
           <PageNotFound />
         )}
         </div>

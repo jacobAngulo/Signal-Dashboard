@@ -9,13 +9,10 @@ import { DateLink, ErrorBox, Pct, PerfTag, ProducerTag, Spinner, TickerLink } fr
 import { axisTick, DistHist, TOOLTIP_STYLE } from '../charts.jsx'
 import { navigate } from '../nav.js'
 import { C } from '../theme.js'
-import LstmWindows from './LstmWindows.jsx'
 
 // Design turn 5a, "one question per band": a single scroll of full-width
 // bands, each titled with a question and answered by one chart. Producers
-// overlay as series instead of getting a card each. Picking a producer keeps
-// every band and appends that producer's own workbench underneath -- which is
-// where the LSTM tab now lives.
+// overlay as series instead of getting a card each.
 export default function Analytics() {
   const [data, setData] = useState(null)
   const [err, setErr] = useState(null)
@@ -94,16 +91,6 @@ export default function Analytics() {
           <SupplyBand data={data} producers={producers} />
           <DistributionBand data={data} producers={producers} />
         </div>
-
-        {producer === 'lstm' && (
-          <section className="band">
-            <div className="band-head">
-              <h2>LSTM candidates</h2>
-              <span className="band-note">the LSTM tab, in place — every scored window this producer retained</span>
-            </div>
-            <LstmWindows embedded />
-          </section>
-        )}
       </div>
     </div>
   )

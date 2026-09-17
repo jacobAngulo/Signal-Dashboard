@@ -818,6 +818,12 @@ tr.selected td { background: var(--inset); box-shadow: inset 2px 0 0 var(--lstm)
 .query-check { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 11.5px; }
 .query-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
 
+/* TB-69: one row per checked producer under the query bar -- Explore's
+   replacement for the retired Lab tab's per-producer slicing. */
+.producer-rows { display: flex; flex-direction: column; gap: 8px; padding: 10px 0 12px; border-bottom: 1px solid var(--rule); }
+.producer-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+.producer-row-label { font: 600 11.5px/1.4 var(--mono); color: var(--text); min-width: 68px; }
+
 .chips { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; padding: 9px 0; }
 .chip {
   display: inline-flex; align-items: center; gap: 6px; padding: 1px 4px 1px 8px;

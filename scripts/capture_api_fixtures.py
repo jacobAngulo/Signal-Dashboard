@@ -44,7 +44,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 DEFAULT_OUT = ROOT / "frontend" / "fixtures" / "api"
-PRODUCERS = ("lstm", "intrinsic", "foundry")
+PRODUCERS = ("intrinsic", "foundry")
 
 # Every letter, so the header's jump-to-ticker search behaves like a search
 # rather than a lookup table with twenty entries in it.
@@ -345,14 +345,9 @@ def list_specs(dates, score_dates):
     add(Spec("signals/exit-rule.json", "/api/signals",
              {**explore, "stop_pct": 0.05, "target_pct": 0.1}))
 
-    # Explore's multi-producer selection: two producers checked at once, and
-    # the curated LSTM-only knobs (TB-69 lifted these off the old LstmWindows
-    # page instead of the dozens of free-form facets Lab auto-generated).
+    # Explore's multi-producer selection: two producers checked at once.
     add(Spec("signals/multi-producer.json", "/api/signals",
-             {**explore, "producer": ["lstm", "foundry"]}))
-    add(Spec("signals/lstm-knobs.json", "/api/signals",
-             {**explore, "producer": "lstm", "lstm_horizon": "1d",
-              "lstm_resolved_only": "true"}))
+             {**explore, "producer": ["intrinsic", "foundry"]}))
 
     # Day pages follow the shared calendar the heatmap links into.
     for date in dates:
@@ -405,7 +400,7 @@ def signal_specs(client, out_dir, limit):
     """
     ids, seen = [], set()
     for name in ("signals/page-1.json", "signals/page-2.json",
-                 "signals/all-decisions.json", "signals/lstm.json",
+                 "signals/all-decisions.json",
                  "signals/intrinsic.json", "signals/foundry.json"):
         path = out_dir / name
         if not path.exists():

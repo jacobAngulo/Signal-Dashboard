@@ -299,7 +299,7 @@ class CorporateActionPerformanceTests(unittest.TestCase):
 
         with patch("backend.metrics.STORE", store):
             row = enrich({
-                "id": "flagged", "producer": "lstm", "date": "2026-06-26",
+                "id": "flagged", "producer": "intrinsic", "date": "2026-06-26",
                 "ticker": "AAA", "decision": "BUY",
             })
 
@@ -373,19 +373,19 @@ class CorporateActionPerformanceTests(unittest.TestCase):
             metric_values = [0.8]
 
             def run_rows(self):
-                return [{"producer": "lstm", "date": "2026-06-25", "n_buy": 1, "status": "ok"}]
+                return [{"producer": "intrinsic", "date": "2026-06-25", "n_buy": 1, "status": "ok"}]
 
         class Store:
             all_dates = ["2026-06-25", "2026-06-29"]
             price_max_date = "2026-06-29"
             all_decisions = [
                 {
-                    "id": "bad", "producer": "lstm", "date": "2026-06-25",
+                    "id": "bad", "producer": "intrinsic", "date": "2026-06-25",
                     "ticker": "AAA", "decision": "BUY", "metric": 0.8,
                     "signal_price": 105.0,
                 }
             ]
-            producers = {"lstm": Producer()}
+            producers = {"intrinsic": Producer()}
 
             def performance(self, _ticker, _date, **_kwargs):
                 return {
@@ -405,7 +405,7 @@ class CorporateActionPerformanceTests(unittest.TestCase):
 
         with patch("backend.metrics.STORE", Store()):
             result = analytics()
-        producer = result["by_producer"]["lstm"]
+        producer = result["by_producer"]["intrinsic"]
         self.assertEqual(producer["n_corporate_action_unresolved"], 1)
         self.assertEqual(producer["horizons"]["1d"]["n"], 0)
         self.assertEqual(producer["horizons"]["5d"]["n"], 0)
@@ -423,24 +423,24 @@ class CorporateActionPerformanceTests(unittest.TestCase):
             metric_values = [0.8]
 
             def run_rows(self):
-                return [{"producer": "lstm", "date": "2026-06-25", "n_buy": 1, "status": "ok"}]
+                return [{"producer": "intrinsic", "date": "2026-06-25", "n_buy": 1, "status": "ok"}]
 
         row = {
-            "id": "partial", "producer": "lstm", "date": "2026-06-25",
+            "id": "partial", "producer": "intrinsic", "date": "2026-06-25",
             "ticker": "AAA", "decision": "BUY", "metric": 0.8,
             "status_perf": "up", "status_basis": "1d",
             "ret_1d": 0.02, "ret_5d": None, "ret_20d": None,
             "ret_since": None, "blocked_return_reason": "corporate_action_unresolved",
             "has_action_warning": True, "action_warning_ids": ["act-1"],
         }
-        store = type("Store", (), {"producers": {"lstm": Producer()}})()
+        store = type("Store", (), {"producers": {"intrinsic": Producer()}})()
         with (
             patch("backend.metrics.STORE", store),
             patch("backend.metrics.enriched_decisions", return_value=[row]),
         ):
             result = analytics()
 
-        producer = result["by_producer"]["lstm"]
+        producer = result["by_producer"]["intrinsic"]
         self.assertEqual(producer["n_corporate_action_unresolved"], 1)
         self.assertEqual(producer["horizons"]["1d"]["n"], 1)
         self.assertEqual(producer["horizons"]["5d"]["n"], 0)

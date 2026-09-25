@@ -13,16 +13,16 @@ class DashboardApiUxTests(unittest.TestCase):
     def test_score_search_treats_user_text_as_literal(self):
         producer = SimpleNamespace(
             scores={"2026-07-20": pd.DataFrame([
-                {"ticker": "A[B", "best_adj_prob": 0.3},
-                {"ticker": "ABC", "best_adj_prob": 0.2},
+                {"ticker": "A[B", "discount_to_intrinsic": 0.3},
+                {"ticker": "ABC", "discount_to_intrinsic": 0.2},
             ])},
-            spec={"history_metric": "best_adj_prob"},
+            spec={"history_metric": "discount_to_intrinsic"},
             dates=["2026-07-20"],
         )
-        store = SimpleNamespace(producers={"lstm": producer})
+        store = SimpleNamespace(producers={"intrinsic": producer})
         with patch.object(main, "STORE", store):
             result = main.scores(
-                "lstm", "2026-07-20", sort=None, dir="desc",
+                "intrinsic", "2026-07-20", sort=None, dir="desc",
                 limit=10, offset=0, q="[",
             )
 
@@ -32,26 +32,26 @@ class DashboardApiUxTests(unittest.TestCase):
     def test_signal_feed_filters_summarizes_and_pages_before_sparks(self):
         rows = [
             {
-                "id": "a", "producer": "lstm", "date": "2026-07-20",
+                "id": "a", "producer": "intrinsic", "date": "2026-07-20",
                 "ticker": "AAA", "decision": "BUY", "metric": 0.3,
                 "status_perf": "up", "ret_1d": 0.1, "ret_5d": 0.2,
                 "ret_since": 0.25,
             },
             {
-                "id": "b", "producer": "lstm", "date": "2026-07-19",
+                "id": "b", "producer": "intrinsic", "date": "2026-07-19",
                 "ticker": "BBB", "decision": "BUY", "metric": 0.2,
                 "status_perf": "down", "ret_1d": -0.1, "ret_5d": -0.2,
                 "ret_since": -0.25,
             },
         ]
-        store = SimpleNamespace(producers={"lstm": object()})
+        store = SimpleNamespace(producers={"intrinsic": object()})
         with (
             patch.object(main, "STORE", store),
             patch.object(main, "enriched_decisions", return_value=rows),
         ):
             result = main.signals(
-                producer="lstm", ticker=None, q=None, date_from=None,
-                date_to=None, status=None, min_metric_lstm=None,
+                producer="intrinsic", ticker=None, q=None, date_from=None,
+                date_to=None, status=None,
                 min_metric_intrinsic=None, min_metric_foundry=None,
                 buys_only=True,
                 spark=False, sort="date", dir="desc", limit=1, offset=0,
@@ -68,7 +68,7 @@ class DashboardApiUxTests(unittest.TestCase):
             dates=["2026-07-20"],
         )
         store = SimpleNamespace(
-            producers={"lstm": producer}, prices={},
+            producers={"intrinsic": producer}, prices={},
             series=lambda _ticker: [],
         )
         with (
@@ -95,7 +95,7 @@ class DashboardApiUxTests(unittest.TestCase):
         ]
         signals = [
             {
-                "producer": "lstm", "date": "2026-07-18", "decision": "BUY",
+                "producer": "intrinsic", "date": "2026-07-18", "decision": "BUY",
                 "blocked_return_reason": "corporate_action_unresolved",
             }
         ]
@@ -103,13 +103,13 @@ class DashboardApiUxTests(unittest.TestCase):
         result = main._ticker_insights(
             signals,
             series,
-            {"lstm": [{"date": "2026-07-19", "metric": 0.31}]},
+            {"intrinsic": [{"date": "2026-07-19", "metric": 0.31}]},
         )
 
         self.assertEqual(result["status"], "available")
         self.assertTrue(result["has_action_warning"])
         self.assertEqual(result["buy_count"], 1)
-        self.assertEqual(result["latest_scores"]["lstm"]["metric"], 0.31)
+        self.assertEqual(result["latest_scores"]["intrinsic"]["metric"], 0.31)
         self.assertEqual(result["blocked_action_ids"], ["act-1"])
         self.assertEqual(result["action_boundary_count"], 1)
         self.assertEqual(result["performance_excluded_count"], 1)
@@ -132,7 +132,7 @@ class DashboardApiUxTests(unittest.TestCase):
             intraday_series=lambda *_args, **_kwargs: bars,
         )
         signals = [{
-            "id": "s1", "producer": "lstm", "date": "2026-07-27",
+            "id": "s1", "producer": "intrinsic", "date": "2026-07-27",
             "ticker": "ALAB", "decision": "BUY",
             "created_at": "2026-07-27T19:18:00+00:00",
         }]

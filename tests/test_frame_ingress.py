@@ -119,7 +119,7 @@ class FrameIngressTests(unittest.TestCase):
     def test_every_sortable_column_survives_mixed_types(self):
         """The signals feed sorts on a user-supplied column."""
         rows = [
-            {"id": "a", "producer": "lstm", "date": "2026-07-29",
+            {"id": "a", "producer": "intrinsic", "date": "2026-07-29",
              "ticker": "AAA", "decision": "BUY", "metric": 0.4,
              "status_perf": "up", "ret_1d": 0.1, "ret_5d": 0.2,
              "ret_20d": 0.3, "ret_since": 0.4},

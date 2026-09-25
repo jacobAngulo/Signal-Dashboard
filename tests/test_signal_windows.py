@@ -14,32 +14,6 @@ from backend.metrics import _native_exit, _window, enrich
 
 
 class WindowTests(unittest.TestCase):
-    def test_lstm_buy_6m_window(self):
-        result = _window({"producer": "lstm", "horizon": "6m"})
-
-        self.assertEqual(result["window_label"], "6m")
-        self.assertEqual(result["window_sessions"], 126)
-        self.assertEqual(result["window_basis"], "producer_horizon")
-
-    def test_lstm_watch_uses_attention_horizon_not_best_horizon(self):
-        result = _window({
-            "producer": "lstm", "tier": "lstm_attention",
-            "attention_horizon_sessions": 5.0, "best_horizon": "6m",
-        })
-
-        self.assertEqual(result["window_sessions"], 5)
-        self.assertEqual(result["window_basis"], "attention_horizon")
-        self.assertNotEqual(result["window_sessions"], 126)
-
-    def test_lstm_watch_falls_back_to_best_horizon_when_attention_field_missing(self):
-        result = _window({
-            "producer": "lstm", "tier": "lstm_attention",
-            "attention_horizon_sessions": None, "best_horizon": "1m",
-        })
-
-        self.assertEqual(result["window_sessions"], 21)
-        self.assertEqual(result["window_basis"], "producer_horizon")
-
     def test_intrinsic_window_is_always_none(self):
         result = _window({"producer": "intrinsic", "horizon": "irrelevant"})
 
@@ -54,15 +28,6 @@ class WindowTests(unittest.TestCase):
         self.assertEqual(result["window_label"], "swing")
         self.assertIsNone(result["window_sessions"])
         self.assertEqual(result["window_basis"], "llm_time_sensitivity")
-
-    def test_unknown_lstm_horizon_passes_through_label_with_no_sessions(self):
-        # Never guess: an unrecognized horizon string still shows up verbatim,
-        # but with no invented session count.
-        result = _window({"producer": "lstm", "horizon": "3q"})
-
-        self.assertEqual(result["window_label"], "3q")
-        self.assertIsNone(result["window_sessions"])
-
 
 class FakeIntrinsicStore:
     """Just enough of Store for `_native_exit`'s intrinsic branch: a score
@@ -114,30 +79,6 @@ class IntrinsicNativeExitTests(unittest.TestCase):
         self.assertIsNotNone(result["exit_note"])
 
 
-class LstmNativeExitTests(unittest.TestCase):
-    def test_mature_exit_keeps_its_date_when_return_is_ca_blocked(self):
-        store = SimpleNamespace(
-            performance=lambda *_args, **_kwargs: {
-                "return": None,
-                "blocked_reason": "corporate_action_unresolved",
-                "exit": {"date": "2026-06-10", "px": 12.5},
-            },
-        )
-        with patch("backend.metrics.STORE", store):
-            result = _native_exit(
-                {"producer": "lstm", "ticker": "AAA"},
-                "2026-05-11",
-                21,
-            )
-
-        self.assertEqual(result["exit_state"], "closed")
-        self.assertEqual(result["exit_date"], "2026-06-10")
-        self.assertEqual(result["exit_px"], 12.5)
-        self.assertIsNone(result["exit_return"])
-        self.assertEqual(result["sessions_elapsed"], 21)
-        self.assertIn("unresolved corporate action", result["exit_note"])
-
-
 class TradingDaysFailSoftTests(unittest.TestCase):
     def setUp(self):
         trading_days._calendar_built = False
@@ -183,28 +124,31 @@ class TradingDaysFailSoftTests(unittest.TestCase):
         with patch("exchange_calendars.get_calendar", side_effect=RuntimeError("boom")):
             with patch("backend.metrics.STORE", FakeStore()):
                 row = enrich({
-                    "id": "x", "producer": "lstm", "date": "2026-06-25",
-                    "ticker": "AAA", "decision": "BUY", "horizon": "6m",
+                    "id": "x", "producer": "foundry", "date": "2026-06-25",
+                    "ticker": "AAA", "decision": "BUY", "horizon": "swing",
                 })
 
-        # A missing forward date must never take the row down with it.
-        self.assertEqual(row["window_sessions"], 126)
-        self.assertEqual(row["exit_state"], "open")
-        self.assertIsNone(row["exit_date"])
+        # A missing forward date must never take the row down with it: the row
+        # still carries its identity and its entry price.
+        self.assertEqual(row["ticker"], "AAA")
+        self.assertEqual(row["date"], "2026-06-25")
+        self.assertEqual(row["window_label"], "swing")
+        self.assertIsNone(row["window_sessions"])
+        self.assertIsNotNone(row["entry_px"])
 
 
 class SignalsSimContractTests(unittest.TestCase):
     """/api/signals: sim_* fields exist only when a request asks for them."""
 
     ROWS = [
-        {"id": "a", "producer": "lstm", "date": "2026-07-20", "ticker": "AAA",
+        {"id": "a", "producer": "intrinsic", "date": "2026-07-20", "ticker": "AAA",
          "decision": "BUY", "metric": 0.3, "status_perf": "up"},
         {"id": "b", "producer": "foundry", "date": "2026-07-19", "ticker": "BBB",
          "decision": "SELL", "metric": 0.2, "status_perf": "down"},
     ]
 
     def test_no_sim_params_means_no_sim_keys_anywhere_in_the_response(self):
-        store = SimpleNamespace(producers={"lstm": object(), "foundry": object()})
+        store = SimpleNamespace(producers={"intrinsic": object(), "foundry": object()})
         with (
             patch.object(main, "STORE", store),
             patch.object(main, "enriched_decisions", return_value=list(self.ROWS)),
@@ -226,7 +170,7 @@ class SignalsSimContractTests(unittest.TestCase):
             }
 
         store = SimpleNamespace(
-            producers={"lstm": object(), "foundry": object()},
+            producers={"intrinsic": object(), "foundry": object()},
             simulate_exit=fake_simulate_exit,
         )
         with (

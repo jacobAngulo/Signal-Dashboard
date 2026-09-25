@@ -13,10 +13,6 @@ from .store import STORE
 
 HORIZONS = (1, 5, 20)
 
-# TB-46: per-producer holding window, in XNYS trading sessions. Copied by
-# value from the LSTM repo's own dataset builder rather than imported, so this
-# repo stays decoupled from that one -- see docs/TB-46-signal-windows-plan.md.
-LSTM_HORIZON_SESSIONS = {"1d": 1, "1w": 5, "1m": 21, "6m": 126}
 
 
 def _finite(v):
@@ -49,54 +45,11 @@ _WINDOW_NONE = {
 def _window(rec):
     """Per-producer holding window, or None when the producer has none.
 
-    Deliberately not unified into a single number: LSTM publishes a real
-    session count, foundry publishes a word an LLM chose, intrinsic publishes
-    nothing. Flattening those into one scale would be inventing data.
+    Deliberately not unified into a single number: foundry publishes a word an
+    LLM chose and intrinsic publishes nothing. Flattening those into one scale
+    would be inventing data.
     """
     producer = rec.get("producer")
-    if producer == "lstm":
-        if rec.get("tier") == "lstm_attention":
-            # The attention tier carries its own expected holding horizon,
-            # distinct from `best_horizon` (the model's strongest head, not
-            # the attention window). Fall back to best_horizon only when the
-            # attention-specific field is absent.
-            sessions = _finite(rec.get("attention_horizon_sessions"))
-            if sessions is not None:
-                sessions = int(sessions)
-                return {
-                    "window_label": f"{sessions} sessions",
-                    "window_sessions": sessions,
-                    "window_basis": "attention_horizon",
-                    "window_note": "attention tier expected holding horizon",
-                }
-            horizon = _text(rec.get("best_horizon"))
-            sessions = LSTM_HORIZON_SESSIONS.get(horizon) if horizon else None
-            return {
-                "window_label": horizon,
-                "window_sessions": sessions,
-                "window_basis": "producer_horizon" if horizon else None,
-                "window_note": (
-                    f"model horizon — {sessions} trading sessions"
-                    if sessions is not None
-                    else "model horizon" if horizon else None
-                ),
-            }
-        horizon = _text(rec.get("horizon"))
-        if horizon is None:
-            return dict(_WINDOW_NONE)
-        sessions = LSTM_HORIZON_SESSIONS.get(horizon)
-        return {
-            "window_label": horizon,
-            "window_sessions": sessions,
-            "window_basis": "producer_horizon",
-            "window_note": (
-                f"model horizon — {sessions} trading sessions"
-                if sessions is not None
-                # Never guess: an unrecognized horizon string is still shown
-                # verbatim, but with no invented session count.
-                else "model horizon — unrecognized value, published verbatim"
-            ),
-        }
     if producer == "foundry":
         horizon = _text(rec.get("horizon"))
         if horizon is None:
@@ -161,49 +114,6 @@ def _native_exit(rec, entry_date, window_sessions):
     if producer == "foundry":
         return {**_EXIT_NONE, "exit_note": "this producer publishes no exit signal"}
 
-    if producer == "lstm":
-        out = dict(_EXIT_NONE)
-        out["exit_basis"] = "sessions"
-        if window_sessions is None:
-            out["exit_note"] = "unrecognized horizon — cannot compute a native exit"
-            return out
-        if entry_date is None:
-            out["exit_note"] = "no confirmed entry session yet"
-            return out
-        perf = STORE.performance(ticker, entry_date, sessions=window_sessions)
-        reason = perf.get("blocked_reason")
-        if reason == "pending_exit_session":
-            out["exit_state"] = "open"
-            out["exit_date"] = trading_days.session_offset(entry_date, window_sessions)
-            last = perf.get("last") or {}
-            out["sessions_elapsed"] = _sessions_elapsed(ticker, entry_date, last.get("date"))
-            out["exit_note"] = "model horizon not yet reached"
-        elif reason == "corporate_action_unresolved":
-            # The producer's time-based exit still happened on a known session;
-            # only the cross-boundary return is unsafe. Preserve the native exit
-            # state/date and withhold the return, matching `exit_state`'s
-            # contract that None means the producer has no native exit.
-            exit_point = perf.get("exit") or {}
-            out["exit_state"] = "closed"
-            out["exit_date"] = exit_point.get("date")
-            out["exit_px"] = exit_point.get("px")
-            out["sessions_elapsed"] = window_sessions
-            out["exit_note"] = (
-                "model horizon reached, but the return crosses an unresolved "
-                "corporate action"
-            )
-        elif reason is not None:
-            out["exit_note"] = reason
-        elif perf.get("return") is not None:
-            exit_point = perf.get("exit") or {}
-            out["exit_state"] = "closed"
-            out["exit_date"] = exit_point.get("date")
-            out["exit_px"] = exit_point.get("px")
-            out["exit_return"] = perf.get("return")
-            out["sessions_elapsed"] = window_sessions
-            out["exit_note"] = "model horizon reached"
-        return out
-
     if producer == "intrinsic":
         out = dict(_EXIT_NONE)
         out["exit_basis"] = "producer_status"
@@ -248,7 +158,7 @@ def enrich(rec, spark=False, directional=None):
 
     `directional` decides whether the row gets an up/down/flat reading or the
     inert `no_action`. It defaults to "this was a BUY", because a SELL or WATCH
-    row has no long position whose direction would mean anything. LSTM score
+    row has no long position whose direction would mean anything. Score
     candidates pass it explicitly: they carry BUY semantics and were simply not
     the day's single winner, so reading their direction is the whole point of
     the candidate view.

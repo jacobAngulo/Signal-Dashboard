@@ -247,10 +247,10 @@ export function PriceChart({
                  isAnimationActive={false} />
           ) : mode === 'area' ? (
             <Area yAxisId="price" dataKey="close" name="close"
-                  stroke={PRODUCER_META.lstm.text} fill={C.inset} strokeWidth={1.7}
+                  stroke={C.accentBlueText} fill={C.inset} strokeWidth={1.7}
                   dot={false} isAnimationActive={false} />
           ) : (
-            <Line yAxisId="price" dataKey="close" name="close" stroke={PRODUCER_META.lstm.text}
+            <Line yAxisId="price" dataKey="close" name="close" stroke={C.accentBlueText}
                   strokeWidth={1.7} dot={false} isAnimationActive={false} />
           )}
           {levels.map((level) => (

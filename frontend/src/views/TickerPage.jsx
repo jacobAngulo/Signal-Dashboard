@@ -42,7 +42,7 @@ const MAX_INTERVAL_DAYS = { '1Min': 7, '5Min': 31, '15Min': 93, '1Hour': 366, '1
 
 // The score at which each daily producer starts publishing. Foundry is
 // event-driven and has no standing threshold, so its lane draws without one.
-const THRESHOLDS = { lstm: 0.2, intrinsic: 0.8 }
+const THRESHOLDS = { intrinsic: 0.8 }
 
 export default function TickerPage({ ticker }) {
   const [data, setData] = useState(null)

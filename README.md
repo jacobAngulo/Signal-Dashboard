@@ -1,9 +1,13 @@
 # Signal Dashboard
 
-Standalone, read-only analytics UI over the **LSTM_AI_Stock_Predictor**,
-**Intrinsic-Value-Monitor**, and **Signal-Foundry** signal producers. Decoupled
-from execution systems — it only exposes what the producers generated and how
-it moved.
+Standalone, read-only analytics UI over the **Intrinsic-Value-Monitor** and
+**Signal-Foundry** signal producers. Decoupled from execution systems — it only
+exposes what the producers generated and how it moved.
+
+> TB-92 (2026-09-25) dropped the LSTM Stock Predictor and removed it as a
+> producer. Sections below that describe a Lab tab, `#/lab/lstm/*` routes or an
+> `/api/lstm/windows` endpoint describe an interface that TB-69 already replaced
+> with Explore; they are stale and need their own pass.
 
 Answers:
 
@@ -45,9 +49,8 @@ turns mixed-direction chatter days into WATCH. Every row carries a
 ## Attention and coverage states
 
 The production BUY/SELL contracts remain unchanged. Additive WATCH rows expose
-the tested research candidates: LSTM `p > 0.18` with a 1.5x prior-volume surge,
-Intrinsic's shadow-only `0.075-0.65` ratio extension, and Foundry's fixed top-five
-event-type-prior queue. Score browsers retain the underlying attention/shadow
+the tested research candidates: Intrinsic's shadow-only `0.075-0.65` ratio
+extension and Foundry's fixed top-five event-type-prior queue. Score browsers retain the underlying attention/shadow
 columns. Run rows also merge each producer's coverage manifest, including ready
 counts, ready fractions, valuation readiness, and fail-closed guard status.
 
@@ -65,7 +68,7 @@ volume, timestamped signal markers, non-blocking descriptive insights, metric
 history, and all signals) ·
 `#/day/<date>` per-day page. Every ticker and date anywhere in the UI is a
 link; the header has jump-to-ticker search. `#/lstm-windows` redirects to
-`#/lab/lstm/curated`: the tab is gone, the bookmarks are not.
+`#/explore`: the producer and its tab are gone, the bookmarks are not.
 
 Price snapshots refresh asynchronously every five minutes by default
 (`price_refresh_seconds` or `PRICE_REFRESH_SECONDS`). Unresolved corporate
@@ -183,7 +186,7 @@ independent layer rather than a replacement for that.
 ## Architecture
 
 - `backend/` — FastAPI (port 8010). Reads producer outputs strictly read-only:
-  LSTM/Intrinsic `signals/` dirs plus Signal-Foundry's DuckDB file. It caches in
+  Intrinsic's `signals/` dir plus Signal-Foundry's DuckDB file. It caches in
   memory and auto-reloads when source files change (mtime fingerprints). Serves
   the built frontend. `GET /api/signals` is a filterable, optionally paginated
   JSON feed; list rows use a compact contract and `GET /api/signal?id=...`

@@ -22,8 +22,8 @@ const FALLBACK = {
   '--down-text': 'oklch(0.76 0.16 22)',
   '--pending': 'oklch(0.82 0.13 85)',
   '--pending-text': 'oklch(0.88 0.12 85)',
-  '--lstm': 'oklch(0.72 0.13 258)',
-  '--lstm-text': 'oklch(0.80 0.12 258)',
+  '--accent-blue': 'oklch(0.72 0.13 258)',
+  '--accent-blue-text': 'oklch(0.80 0.12 258)',
   '--intrinsic': 'oklch(0.72 0.13 300)',
   '--intrinsic-text': 'oklch(0.80 0.12 300)',
   '--foundry': 'oklch(0.72 0.13 195)',
@@ -65,6 +65,8 @@ export const C = {
   get downText() { return token('--down-text') },
   get pending() { return token('--pending') },
   get pendingText() { return token('--pending-text') },
+  get accentBlue() { return token('--accent-blue') },
+  get accentBlueText() { return token('--accent-blue-text') },
 }
 
 // Direction of a return, as a stroke/fill colour. Null and zero are neutral --

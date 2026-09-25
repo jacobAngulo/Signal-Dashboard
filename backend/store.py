@@ -1,4 +1,4 @@
-"""Load and cache signal files from the LSTM, Intrinsic, and Foundry producers.
+"""Load and cache signal files from the Intrinsic and Foundry producers.
 
 Reads are strictly read-only against the producer repos' data outputs.
 Everything is cached in memory and reloaded when the source dirs change.
@@ -23,14 +23,12 @@ except ImportError:  # pragma: no cover - exercised only in an incomplete env
     duckdb = None
 
 from .config import (
-    CANDIDATE_PRICE_REFRESH_SECONDS,
     FOUNDRY_ATTENTION,
     FOUNDRY_DB,
     FOUNDRY_GATE,
     FOUNDRY_MODEL,
     FOUNDRY_PROMPT,
     INTRINSIC_DIR,
-    LSTM_DIR,
     PRICE_REFRESH_SECONDS,
 )
 from .corporate_actions import ContinuousPriceBook, HTTPGateway
@@ -44,30 +42,6 @@ DATE_RE = re.compile(r"(\d{4}-\d{2}-\d{2})")
 ET = ZoneInfo("America/New_York")
 
 PRODUCERS = {
-    "lstm": {
-        "dir": LSTM_DIR,
-        "decision_glob": "live_decision_*.csv",
-        "scores_glob": "live_scores_*.csv",
-        "status_glob": "premarket_status_*.json",
-        "coverage_glob": "live_coverage_*.json",
-        "price_col": "close",
-        "metric": "adj_prob",
-        "hist_range": (0.0, 0.35),
-        "hist_bins": 14,
-        # per-ticker score history exposed on ticker pages
-        "history_metric": "best_adj_prob",
-        "history_extra": (
-            "best_horizon",
-            "status",
-            "volume_ratio_20",
-            "attention_candidate",
-            "attention_status",
-            "attention_horizon_sessions",
-        ),
-        "attention_col": "attention_candidate",
-        "attention_reason_col": "attention_reason",
-        "attention_tier": "lstm_attention",
-    },
     "intrinsic": {
         "dir": INTRINSIC_DIR,
         "decision_glob": "intrinsic_decision_*.csv",
@@ -464,7 +438,8 @@ class ProducerData:
             dt = file_date(p)
             df = _read_csv(p)
             # Decision CSVs only carry dates; the file mtime is the actual
-            # creation time (matches LSTM's status finished_at to the second).
+            # creation time (it matches the producer's status finished_at to
+            # the second).
             created = datetime.fromtimestamp(
                 p.stat().st_mtime, tz=timezone.utc).isoformat()
             for i, row in enumerate(records(df)):
@@ -961,19 +936,10 @@ class Store:
         self._next_price_attempt = 0.0
         self._price_inputs_built = None
         self._price_thread = None
-        # Second tier: prices for the LSTM score candidates, which outnumber
-        # the decision universe roughly forty to one. Kept in its own book so
-        # a slow candidate rebuild never delays or partially fills the
-        # decision book that the rest of the dashboard reads.
-        self.candidate_price_book = ContinuousPriceBook()
-        self.candidate_price_load_error = None
-        # Bumped whenever either book is swapped. Anything expensive derived
-        # from prices (the enriched candidate set) caches against this plus the
-        # producer's own fingerprint, instead of recomputing per request.
+        # Bumped whenever the book is swapped. Anything expensive derived from
+        # prices caches against this plus the producer's own fingerprint,
+        # instead of recomputing per request.
         self.price_generation = 0
-        self._next_candidate_price_attempt = 0.0
-        self._candidate_price_inputs_built = None
-        self._candidate_price_thread = None
 
     def refresh(self):
         # Single-flight: a cold price build fires one continuous-ohlcv/bulk
@@ -1032,22 +998,6 @@ class Store:
                 self._price_thread = thread
                 thread.start()
             self._build_ticker_index()
-        # The candidate tier is paced purely by its TTL, never by a universe
-        # change: the score files publish a different candidate set every day
-        # and each rebuild is ~29 gateway chunks, so rebuilding on change
-        # would mean rebuilding continuously. Candidate returns lag by design.
-        if (
-            (self._candidate_price_inputs_built is None
-             or now >= self._next_candidate_price_attempt)
-            and not self._candidate_price_build_busy()
-        ):
-            thread = threading.Thread(
-                target=self._candidate_price_build_worker,
-                daemon=True,
-                name="dashboard-candidate-price-build",
-            )
-            self._candidate_price_thread = thread
-            thread.start()
 
     def _price_build_busy(self):
         thread = self._price_thread
@@ -1076,75 +1026,6 @@ class Store:
                 else float(PRICE_REFRESH_SECONDS)
             )
             self._build_ticker_index()
-
-    def _candidate_price_inputs(self):
-        """The LSTM score-candidate universe the second price tier covers."""
-        lstm = self.producers.get("lstm")
-        scores = getattr(lstm, "scores", {}) or {}
-        tickers = set()
-        dates = []
-        for date, frame in scores.items():
-            if frame is None or frame.empty:
-                continue
-            if "ticker" not in frame.columns or "status" not in frame.columns:
-                continue
-            hits = frame.loc[
-                frame["status"].astype("string").str.strip().str.lower()
-                == "buy_candidate",
-                "ticker",
-            ]
-            names = {
-                str(value).strip().upper()
-                for value in hits.tolist()
-                if value is not None and str(value).strip()
-            }
-            if names:
-                tickers.update(names)
-                dates.append(date)
-        return (frozenset(tickers), min(dates) if dates else None)
-
-    def _candidate_price_build_busy(self):
-        thread = self._candidate_price_thread
-        return thread is not None and thread.is_alive()
-
-    def _build_candidate_prices(self, inputs):
-        tickers, start = inputs
-        if not tickers:
-            self.candidate_price_book = ContinuousPriceBook()
-            self.candidate_price_load_error = None
-            self.price_generation += 1
-            return
-        gateway = None
-        try:
-            if self.gateway_factory is not None:
-                gateway = self.gateway_factory()
-            else:
-                gateway = HTTPGateway(AV_GATEWAY_URL)
-            next_book = ContinuousPriceBook()
-            next_book.load(gateway, tickers, start=start)
-            self.candidate_price_book = next_book
-            self.candidate_price_load_error = None
-            self.price_generation += 1
-        except Exception as exc:
-            # Same fail-closed contract as the decision book: a failed or
-            # partial candidate build never replaces a good snapshot, and
-            # candidates show no returns until one fully succeeds.
-            self.candidate_price_load_error = str(exc)
-        finally:
-            if gateway is not None and hasattr(gateway, "close"):
-                gateway.close()
-
-    def _candidate_price_build_worker(self):
-        inputs = self._candidate_price_inputs()
-        try:
-            self._build_candidate_prices(inputs)
-        finally:
-            self._candidate_price_inputs_built = inputs
-            self._next_candidate_price_attempt = time.monotonic() + (
-                min(600.0, float(CANDIDATE_PRICE_REFRESH_SECONDS))
-                if self.candidate_price_load_error
-                else float(CANDIDATE_PRICE_REFRESH_SECONDS)
-            )
 
     def trading_calendar(self):
         """Sorted trading dates observed in the daily producers' score files."""
@@ -1273,16 +1154,15 @@ class Store:
         return px[-1], dates[-1]
 
     def _book_for(self, ticker):
-        """Decision tickers read the fast book, candidate-only ones the slow tier.
+        """Every ticker reads the decision book.
 
-        Membership decides, not emptiness of the result: a decision ticker with
-        a coverage gap must keep reporting the decision book's fail-closed
-        reason rather than silently sourcing a second opinion.
+        TB-92 removed the second, candidate-only tier: it existed solely for
+        one producer's score candidates, which outnumbered the decision universe
+        roughly forty to one. With that producer gone there is one book, and a
+        coverage gap keeps reporting its fail-closed reason rather than silently
+        sourcing a second opinion.
         """
-        key = str(ticker).upper()
-        if key in self.price_book.points:
-            return self.price_book
-        return self.candidate_price_book
+        return self.price_book
 
     def series(self, ticker, start=None):
         return self._book_for(ticker).series(ticker, start=start)

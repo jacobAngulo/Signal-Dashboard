@@ -1,4 +1,4 @@
-"""Signal-Dashboard API: read-only analytics over LSTM, Intrinsic, and Foundry signals."""
+"""Signal-Dashboard API: read-only analytics over Intrinsic and Foundry signals."""
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Annotated, Literal
@@ -53,11 +53,6 @@ SIGNAL_SUMMARY_FIELDS = (
     "sim_outcome", "sim_exit_date", "sim_return", "sim_sessions_held",
     "sim_ambiguous", "sim_blocked_reason",
 )
-
-# What "resolved" means: the signal has a real direction, as opposed to waiting
-# on a session (pending), having no coverage (no_px), or having its window cut
-# by an unresolved corporate action (return_limited).
-RESOLVED_STATUSES = frozenset({"up", "down", "flat"})
 
 
 def _signal_summary(row):
@@ -431,13 +426,8 @@ def signals(producer: Annotated[list[str] | None, Query()] = None,
             ticker: str = None, q: str = None,
             date_from: str = None, date_to: str = None,
             status: str = None,
-            min_metric_lstm: float = None,
             min_metric_intrinsic: float = None,
             min_metric_foundry: float = None,
-            lstm_horizon: str = None,
-            lstm_attention_status: str = None,
-            lstm_min_price: float = None,
-            lstm_resolved_only: bool = False,
             buys_only: bool = True, spark: bool = False,
             sort: str = "date", dir: Literal["asc", "desc"] = "desc",
             limit: int | None = Query(None, ge=1, le=250),
@@ -466,7 +456,6 @@ def signals(producer: Annotated[list[str] | None, Query()] = None,
             )
         ]
     min_metric_by_producer = {
-        "lstm": min_metric_lstm,
         "intrinsic": min_metric_intrinsic,
         "foundry": min_metric_foundry,
     }
@@ -476,23 +465,6 @@ def signals(producer: Annotated[list[str] | None, Query()] = None,
             if (floor := min_metric_by_producer.get(row["producer"])) is None
             or (row.get("metric") is not None and row["metric"] >= floor)
         ]
-    if lstm_horizon or lstm_attention_status or lstm_min_price is not None or lstm_resolved_only:
-        def _keep_lstm_row(row):
-            if row["producer"] != "lstm":
-                return True
-            if lstm_horizon and row.get("horizon") != lstm_horizon:
-                return False
-            if lstm_attention_status and row.get("attention_status") != lstm_attention_status:
-                return False
-            if lstm_min_price is not None and (
-                row.get("entry_px") is None or row["entry_px"] < lstm_min_price
-            ):
-                return False
-            if lstm_resolved_only and row.get("status_perf") not in RESOLVED_STATUSES:
-                return False
-            return True
-        rows = [row for row in rows if _keep_lstm_row(row)]
-
     # Only when asked, and over the full filtered slice (before pagination)
     # so both the page and the summary reflect everything the filters
     # matched, not just the one page a browser happens to render.

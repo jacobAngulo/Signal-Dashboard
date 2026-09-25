@@ -27,8 +27,11 @@
   --pending-text: oklch(0.88 0.12 85);
 
   /* producers */
-  --lstm: oklch(0.72 0.13 258);
-  --lstm-text: oklch(0.80 0.12 258);
+  /* The interface accent: nav, focus rings, buttons, selection. It was named
+     for the LSTM producer, which owned this blue until TB-92 removed it; the
+     hue stayed because the whole interface leans on it. */
+  --accent-blue: oklch(0.72 0.13 258);
+  --accent-blue-text: oklch(0.80 0.12 258);
   --intrinsic: oklch(0.72 0.13 300);
   --intrinsic-text: oklch(0.80 0.12 300);
   --foundry: oklch(0.72 0.13 195);
@@ -45,7 +48,7 @@
   --border: var(--rule-strong);
   --pos: var(--up-text);
   --neg: var(--down-text);
-  --accent: var(--lstm-text);
+  --accent: var(--accent-blue-text);
   --warn: var(--pending-text);
 }
 
@@ -75,7 +78,7 @@ header {
 }
 .brand { font: 600 16px/1 var(--sans); letter-spacing: -0.01em; white-space: nowrap; padding-bottom: 10px; }
 .brand-link { color: var(--text); text-decoration: none; }
-.brand-mark { color: var(--lstm-text); }
+.brand-mark { color: var(--accent-blue-text); }
 .brand-sub {
   font: 400 10px/1 var(--mono); color: var(--faint);
   letter-spacing: .06em; text-transform: uppercase; margin-left: 8px;
@@ -90,7 +93,7 @@ nav a {
   display: flex; align-items: center;
 }
 nav a:hover { color: var(--text); }
-nav a.active { color: var(--text); font-weight: 500; border-bottom-color: var(--lstm); }
+nav a.active { color: var(--text); font-weight: 500; border-bottom-color: var(--accent-blue); }
 
 /* global ticker search */
 .search-box { position: relative; width: 210px; padding-bottom: 8px; }
@@ -190,9 +193,9 @@ tr.clickable:hover td { background: var(--inset); }
 .center { text-align: center; }
 
 a.tlink { color: var(--text); text-decoration: none; border-bottom: 1px solid var(--rule-strong); }
-a.tlink:hover { color: var(--lstm-text); border-color: var(--lstm); }
+a.tlink:hover { color: var(--accent-blue-text); border-color: var(--accent-blue); }
 a.dlink { color: var(--muted); text-decoration: none; border-bottom: 1px solid transparent; }
-a.dlink:hover { color: var(--lstm-text); border-color: var(--lstm); }
+a.dlink:hover { color: var(--accent-blue-text); border-color: var(--accent-blue); }
 
 /* outbound quote/trade links, ticker page header -- brand-coloured icon tiles.
    The brand fills stay (they are each venue's identity, not our semantics), but
@@ -206,7 +209,7 @@ a.symbol-link {
 }
 a.symbol-link:hover { filter: brightness(1.12); transform: translateY(-1px); }
 a.symbol-link:focus-visible {
-  outline: none; box-shadow: 0 0 0 1px var(--canvas), 0 0 0 2px var(--lstm-text);
+  outline: none; box-shadow: 0 0 0 1px var(--canvas), 0 0 0 2px var(--accent-blue-text);
 }
 
 /* Tags are underlined mono labels: a rule under a word, not a filled pill. */
@@ -221,9 +224,8 @@ a.symbol-link:focus-visible {
 .tag-ok { color: var(--up-text); border-bottom-color: var(--up); }
 .tag-err { color: var(--down-text); border-bottom-color: var(--down); }
 .tag-warn { color: var(--pending-text); border-bottom-color: var(--pending); }
-.tag-info { color: var(--lstm-text); border-bottom-color: var(--lstm); }
+.tag-info { color: var(--accent-blue-text); border-bottom-color: var(--accent-blue); }
 .tag-muted { color: var(--faint); border-bottom-color: var(--rule-strong); }
-.tag-lstm { color: var(--lstm-text); border-bottom-color: var(--lstm); }
 .tag-intrinsic { color: var(--intrinsic-text); border-bottom-color: var(--intrinsic); }
 .tag-foundry { color: var(--foundry-text); border-bottom-color: var(--foundry); }
 
@@ -233,7 +235,7 @@ a.symbol-link:focus-visible {
   font: 500 12px/1.5 var(--mono); letter-spacing: .04em; text-transform: uppercase;
   margin-left: 6px;
 }
-.btn:hover { border-color: var(--lstm); }
+.btn:hover { border-color: var(--accent-blue); }
 .btn:disabled { opacity: 0.4; cursor: default; }
 .btn:disabled:hover { border-color: var(--rule-strong); }
 
@@ -241,12 +243,12 @@ a.symbol-link:focus-visible {
 .feedback-control { position: fixed; right: 18px; bottom: 18px; z-index: 60; }
 .feedback-launcher {
   display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px;
-  border: 1px solid var(--lstm); border-radius: 0; background: var(--canvas);
+  border: 1px solid var(--accent-blue); border-radius: 0; background: var(--canvas);
   color: var(--text); font: 500 11.5px/1.5 var(--mono);
   letter-spacing: .04em; text-transform: uppercase; cursor: pointer;
 }
 .feedback-launcher:hover { background: var(--inset); }
-.feedback-launcher span { color: var(--lstm-text); font-size: 10px; }
+.feedback-launcher span { color: var(--accent-blue-text); font-size: 10px; }
 .feedback-panel {
   position: absolute; right: 0; bottom: 42px; width: min(390px, calc(100vw - 24px));
   max-height: calc(100dvh - 72px); overflow-y: auto;
@@ -256,7 +258,7 @@ a.symbol-link:focus-visible {
 .feedback-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
 .feedback-head h2 { margin: 1px 0 0; font: 600 15px/1.2 var(--sans); letter-spacing: -0.01em; }
 .feedback-kicker {
-  color: var(--lstm-text); font: 500 10px/1 var(--mono);
+  color: var(--accent-blue-text); font: 500 10px/1 var(--mono);
   letter-spacing: .1em; text-transform: uppercase;
 }
 .feedback-close { border: 0; padding: 0 2px; background: transparent; color: var(--faint); font-size: 22px; line-height: 1; cursor: pointer; }
@@ -269,7 +271,7 @@ a.symbol-link:focus-visible {
   resize: vertical; padding: 6px 8px; background: var(--inset); border: 1px solid var(--rule-strong);
   border-radius: 0; color: var(--text); color-scheme: dark; font: 400 12.5px/1.45 var(--sans);
 }
-.feedback-form input:focus, .feedback-form select:focus, .feedback-form textarea:focus { border-color: var(--lstm); outline: none; }
+.feedback-form input:focus, .feedback-form select:focus, .feedback-form textarea:focus { border-color: var(--accent-blue); outline: none; }
 .feedback-identity { color: var(--faint); font-size: 10.5px; }
 .feedback-submit { justify-self: end; margin: 0; }
 .feedback-notice {
@@ -287,7 +289,7 @@ select, input {
   border-radius: 0; padding: 4px 8px; font: 400 12.5px/1.5 var(--sans);
   color-scheme: dark;
 }
-input[type="checkbox"] { accent-color: var(--lstm); }
+input[type="checkbox"] { accent-color: var(--accent-blue); }
 
 /* calendar heatmap -- square cells, no radius */
 .hm-rows { display: flex; gap: 5px; }
@@ -303,14 +305,14 @@ input[type="checkbox"] { accent-color: var(--lstm); }
   background: var(--hair); display: inline-block; text-decoration: none;
 }
 .hm-cell.clickable { cursor: pointer; }
-.hm-cell.clickable:hover { box-shadow: inset 0 0 0 1px var(--lstm-text); }
+.hm-cell.clickable:hover { box-shadow: inset 0 0 0 1px var(--accent-blue-text); }
 .hm-cell.lvl-empty { background: #0F1113; }
 .hm-cell.lvl-none { background: var(--hair); }
 .hm-cell.lvl-0 { background: #18382A; }
 .hm-cell.lvl-1 { background: #2C7451; }
 .hm-cell.lvl-2 { background: #4CB886; }
 .hm-cell.lvl-fail { background: #A03F48; }
-.hm-cell.today { box-shadow: inset 0 0 0 1px var(--lstm); }
+.hm-cell.today { box-shadow: inset 0 0 0 1px var(--accent-blue); }
 .hm-legend {
   display: flex; align-items: center; gap: 5px; margin-top: 9px;
   font: 400 10px/1 var(--mono); color: var(--faint);
@@ -434,7 +436,7 @@ input[type="checkbox"] { accent-color: var(--lstm); }
 .skip-link {
   position: fixed; left: 16px; top: -60px; z-index: 100;
   padding: 6px 10px; border-radius: 0; background: var(--canvas);
-  border: 1px solid var(--lstm); color: var(--lstm-text);
+  border: 1px solid var(--accent-blue); color: var(--accent-blue-text);
   font: 500 12px/1.5 var(--mono); text-transform: uppercase; text-decoration: none;
 }
 .skip-link:focus { top: 10px; }
@@ -478,7 +480,7 @@ input[type="checkbox"] { accent-color: var(--lstm); }
 .filter-count {
   display: inline-grid; place-items: center; min-width: 16px; height: 15px;
   margin-left: 4px; border-radius: 0; background: transparent;
-  border: 1px solid var(--lstm); color: var(--lstm-text);
+  border: 1px solid var(--accent-blue); color: var(--accent-blue-text);
   font: 500 9.5px/1 var(--mono); padding: 0 3px;
 }
 .disabled-control { opacity: .55; }
@@ -509,7 +511,7 @@ input[type="checkbox"] { accent-color: var(--lstm); }
 }
 .row-action, .row-action-head { width: 1%; text-align: right; }
 .row-action-btn, .text-btn {
-  border: 0; background: transparent; color: var(--lstm-text);
+  border: 0; background: transparent; color: var(--accent-blue-text);
   padding: 2px 4px; font: 500 10.5px/1.5 var(--mono);
   letter-spacing: .06em; text-transform: uppercase; cursor: pointer;
 }
@@ -521,25 +523,6 @@ input[type="checkbox"] { accent-color: var(--lstm); }
   clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important;
 }
 
-/* The LSTM tab is a flat candidate table now: one row per candidate, every
-   model vector sortable, rather than a day x horizon grid of stacked chips. */
-.candidate-table { min-width: 900px; }
-.candidate-table td, .candidate-table th { white-space: nowrap; }
-.candidate-table .col-ret_1d, .candidate-table .col-ret_5d,
-.candidate-table .col-ret_20d,
-.candidate-table .col-ret_since, .candidate-table .col-adj_prob,
-.candidate-table .col-pred_prob, .candidate-table .col-pred_std,
-.candidate-table .col-volatility, .candidate-table .col-volume_ratio_20,
-.candidate-table .col-close, .candidate-table .col-entry_px,
-.candidate-table .col-last_px, .candidate-table .col-attention_horizon_sessions {
-  font-variant-numeric: tabular-nums;
-}
-.candidate-table th:first-child, .candidate-table td:first-child {
-  position: sticky; left: 0; z-index: 3; background: var(--panel);
-}
-.candidate-table tr.clickable:hover th:first-child,
-.candidate-table tr.clickable:hover td:first-child { background: var(--inset); }
-.candidate-ticker { display: inline-flex; align-items: center; gap: 5px; }
 .vector-table { min-width: 560px; }
 .vector-table td, .vector-table th { white-space: nowrap; }
 .vector-table .col-n, .vector-table .col-picks, .vector-table .col-ret_1d,
@@ -612,11 +595,11 @@ input[type="checkbox"] { accent-color: var(--lstm); }
 .empty-action { margin-top: 6px; }
 .page-not-found { min-height: 50vh; }
 .page-not-found .btn { margin-top: 10px; }
-.primary-btn { border-color: var(--lstm); color: var(--lstm-text); }
+.primary-btn { border-color: var(--accent-blue); color: var(--accent-blue-text); }
 .primary-btn:hover { background: var(--inset); }
 .icon-btn { min-width: 28px; padding-inline: 7px; }
 
-.inline-notice { border-color: var(--lstm); color: var(--muted); font-size: 12px; margin: 8px 0; }
+.inline-notice { border-color: var(--accent-blue); color: var(--muted); font-size: 12px; margin: 8px 0; }
 .detail-disclosure { margin-top: 14px; border-top: 1px solid var(--rule); padding-top: 9px; }
 .detail-disclosure summary { color: var(--muted); cursor: pointer; font-size: 12px; }
 .run-metadata { margin: 0 0 10px; padding-top: 7px; }
@@ -634,7 +617,7 @@ input[type="checkbox"] { accent-color: var(--lstm); }
 
 a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible,
 [tabindex]:focus-visible {
-  outline: 1px solid var(--lstm-text); outline-offset: 1px;
+  outline: 1px solid var(--accent-blue-text); outline-offset: 1px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -745,7 +728,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   padding: 9px 8px; text-align: center;
   text-transform: uppercase; letter-spacing: .1em;
 }
-tr.selected td { background: var(--inset); box-shadow: inset 2px 0 0 var(--lstm); }
+tr.selected td { background: var(--inset); box-shadow: inset 2px 0 0 var(--accent-blue); }
 
 /* Diverging bar on Since: a column of percentages, read as a shape. */
 .dbar {

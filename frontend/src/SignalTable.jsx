@@ -139,7 +139,7 @@ function columnSet({ scale, hasSim, sparkWidth }) {
     },
     call: {
       key: 'call', label: 'Call · window',
-      title: "decision, and the producer's own holding window — LSTM: model horizon in sessions · Intrinsic: none published · Foundry: the extraction model's own word, not a session count",
+      title: "decision, and the producer's own holding window — Intrinsic: none published · Foundry: the extraction model's own word, not a session count",
       sortVal: (r) => r.decision,
       render: (r) => (
         <span>
@@ -152,7 +152,7 @@ function columnSet({ scale, hasSim, sparkWidth }) {
     },
     metric: {
       key: 'metric', label: 'Metric', align: 'right',
-      title: 'LSTM: adjusted probability · Intrinsic: discount to intrinsic value · Foundry: event signal score',
+      title: 'Intrinsic: discount to intrinsic value · Foundry: event signal score',
       render: (r) => (
         <span>
           {fmtNum(r.metric, 3)}{' '}

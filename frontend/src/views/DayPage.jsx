@@ -96,13 +96,6 @@ function scoreColumns(name, metricCol) {
     { key: 'ticker', label: 'Ticker', render: (r) => <TickerLink t={String(r.ticker).toUpperCase()} /> },
     { key: metricCol, label: metricCol, align: 'right', render: (r) => fmtNum(r[metricCol], 4) },
   ]
-  if (name === 'lstm') {
-    return [
-      ...base,
-      { key: 'best_horizon', label: 'Horizon' },
-      { key: 'close', label: 'Close', align: 'right', render: (r) => fmtPx(r.close) },
-    ]
-  }
   if (name === 'intrinsic') {
     return [
       ...base,

@@ -6,7 +6,6 @@ import { Card, EmptyState, ErrorBox, Spinner, TickerLink } from '../ui.jsx'
 
 const PAGE = 100
 const ESSENTIAL_COLUMNS = {
-  lstm: ['ticker', 'status', 'best_horizon', 'best_adj_prob', 'best_pred_prob', 'best_pred_std', 'close', 'volume_ratio_20', 'attention_status', 'as_of_close_date'],
   intrinsic: ['ticker', 'status', 'discount_to_intrinsic', 'price', 'intrinsic_value', 'market_cap', 'shadow_status', 'as_of_close_date'],
   foundry: ['ticker', 'decision', 'signal_score', 'event_type', 'sentiment', 'confidence', 'source', 'title', 'published_at'],
 }
@@ -15,7 +14,7 @@ const humanize = (value) => value.replaceAll('_', ' ').replace(/\b\w/g, (c) => c
 // Server-sorted/paginated browser over daily score files. Decision-driving
 // columns are the default; provenance remains one toggle away.
 export default function Scores({ producer: p0, date: d0 }) {
-  const [producer, setProducer] = useState(p0 || 'lstm')
+  const [producer, setProducer] = useState(p0 || 'intrinsic')
   const [date, setDate] = useState(d0 || '')
   const [q, setQ] = useState('')
   const deferredQ = useDeferredValue(q)

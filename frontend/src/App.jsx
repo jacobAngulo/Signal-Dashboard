@@ -26,11 +26,11 @@ export default function App() {
   const [dataVersion, setDataVersion] = useState(0)
   const mainRef = useRef(null)
 
-  // TB-69 dropped the Lab tab and folded its curated LSTM view into Explore.
-  // The old #/lstm-windows address is in people's bookmarks, so it redirects
-  // to Explore pre-filtered to LSTM rather than 404s.
+  // TB-69 folded the old curated per-producer view into Explore and TB-92
+  // removed that producer altogether, so the #/lstm-windows address people may
+  // still have bookmarked lands on plain Explore rather than a 404.
   useEffect(() => {
-    if (route.page === 'lstm-windows') window.location.hash = '#/explore?producer=lstm'
+    if (route.page === 'lstm-windows') window.location.hash = '#/explore'
   }, [route.page])
 
   // Hash navigation keeps element scroll positions. The document itself no
@@ -52,7 +52,7 @@ export default function App() {
       <header>
         <div className="brand">
           <a href="#/" className="brand-link"><span className="brand-mark">◆</span> Signal Dashboard</a>
-          <span className="muted brand-sub">LSTM + Intrinsic + Foundry</span>
+          <span className="muted brand-sub">Intrinsic + Foundry</span>
         </div>
         <SearchBox />
         <DataStatus onPricesReady={() => setDataVersion((value) => value + 1)} />

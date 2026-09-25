@@ -10,7 +10,6 @@ if not _cfg_path.exists():
 
 CFG = json.loads(_cfg_path.read_text())
 
-LSTM_DIR = Path(CFG["lstm_signals_dir"])
 INTRINSIC_DIR = Path(CFG["intrinsic_signals_dir"])
 FOUNDRY_DB = Path(CFG.get(
     "foundry_db",
@@ -53,20 +52,6 @@ PRICE_REFRESH_SECONDS = max(
         CFG.get("price_refresh_seconds", 300),
     )),
 )
-# The candidate price book is a second tier behind the decision book: ~2.7k
-# LSTM score candidates against the decision universe's ~70 tickers, which is
-# roughly 29 gateway bulk chunks and about five minutes per rebuild. Refreshing
-# that on the decision cadence would leave the builder running permanently, so
-# candidate returns are deliberately allowed to lag. Decision returns keep the
-# fast tier and are unaffected.
-CANDIDATE_PRICE_REFRESH_SECONDS = max(
-    300,
-    int(os.environ.get(
-        "CANDIDATE_PRICE_REFRESH_SECONDS",
-        CFG.get("candidate_price_refresh_seconds", 1800),
-    )),
-)
-
 # Google OAuth client credentials, consumed by the sign-in flow in `auth.py`.
 # Environment only, with no config.json fallback: the app reads config.json at
 # mode 0644, and a client secret must never live there. Ops Console -> Google

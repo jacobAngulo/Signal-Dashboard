@@ -23,12 +23,12 @@ class ProducerAttentionTests(unittest.TestCase):
     def test_blank_no_buy_sentinel_does_not_become_nan_ticker(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            pd.DataFrame([{"ticker": "AAA", "best_adj_prob": 0.1, "close": 10.0}]) \
-                .to_csv(root / "live_scores_2026-07-10.csv", index=False)
+            pd.DataFrame([{"ticker": "AAA", "discount_to_intrinsic": 0.1, "price": 10.0}]) \
+                .to_csv(root / "intrinsic_scores_2026-07-10.csv", index=False)
             pd.DataFrame([{"ticker": None, "decision": "NO_BUY"}]) \
-                .to_csv(root / "live_decision_2026-07-10.csv", index=False)
-            producer = ProducerData("lstm")
-            producer.spec = copy.deepcopy(PRODUCERS["lstm"])
+                .to_csv(root / "intrinsic_decision_2026-07-10.csv", index=False)
+            producer = ProducerData("intrinsic")
+            producer.spec = copy.deepcopy(PRODUCERS["intrinsic"])
             producer.spec["dir"] = root
 
             producer.load()
@@ -43,24 +43,26 @@ class ProducerAttentionTests(unittest.TestCase):
                 {
                     "ticker": "AAA",
                     "status": "no_buy",
-                    "best_adj_prob": 0.19,
-                    "attention_candidate": True,
-                    "attention_reason": "volume confirmed",
+                    "discount_to_intrinsic": 0.19,
+                    "shadow_only_candidate": True,
+                    "shadow_reason": "shadow band only",
                 },
                 {
                     "ticker": "BBB",
                     "status": "buy_candidate",
-                    "best_adj_prob": 0.25,
-                    "attention_candidate": False,
+                    "discount_to_intrinsic": 0.25,
+                    "shadow_only_candidate": False,
                 },
             ]
         )
 
-        rows = _score_attention_decisions("lstm", "2026-07-10", frame, PRODUCERS["lstm"])
+        rows = _score_attention_decisions(
+            "intrinsic", "2026-07-10", frame, PRODUCERS["intrinsic"]
+        )
 
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["decision"], "WATCH")
-        self.assertEqual(rows[0]["tier"], "lstm_attention")
+        self.assertEqual(rows[0]["tier"], "intrinsic_shadow")
         self.assertEqual(rows[0]["ticker"], "AAA")
 
     def test_producer_load_merges_coverage_and_attention(self):
@@ -71,14 +73,14 @@ class ProducerAttentionTests(unittest.TestCase):
                     {
                         "ticker": "AAA",
                         "status": "no_buy",
-                        "best_adj_prob": 0.19,
-                        "close": 10.0,
-                        "attention_candidate": True,
-                        "attention_reason": "volume confirmed",
+                        "discount_to_intrinsic": 0.19,
+                        "price": 10.0,
+                        "shadow_only_candidate": True,
+                        "shadow_reason": "shadow band only",
                     }
                 ]
-            ).to_csv(root / "live_scores_2026-07-10.csv", index=False)
-            (root / "live_coverage_2026-07-10.json").write_text(
+            ).to_csv(root / "intrinsic_scores_2026-07-10.csv", index=False)
+            (root / "intrinsic_coverage_2026-07-10.json").write_text(
                 json.dumps(
                     {
                         "passed": True,
@@ -89,8 +91,8 @@ class ProducerAttentionTests(unittest.TestCase):
                 ),
                 encoding="utf-8",
             )
-            producer = ProducerData("lstm")
-            producer.spec = copy.deepcopy(PRODUCERS["lstm"])
+            producer = ProducerData("intrinsic")
+            producer.spec = copy.deepcopy(PRODUCERS["intrinsic"])
             producer.spec["dir"] = root
 
             producer.load()
@@ -106,24 +108,24 @@ class ProducerAttentionTests(unittest.TestCase):
     def test_failed_coverage_without_status_becomes_failed_run(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            coverage_path = root / "live_coverage_2026-07-21.json"
+            coverage_path = root / "intrinsic_coverage_2026-07-21.json"
             coverage_path.write_text(
                 json.dumps(
                     {
                         "passed": False,
                         "technical_failure": True,
                         "ready_count": 0,
-                        "universe_count": 4016,
+                        "universe_count": 2047,
                         "error": (
-                            "CandidateProvisioningError: candidate publication "
-                            "already exists: /root/data/candidate/afterclose"
+                            "FundamentalsUnavailableError: EPS snapshot missing "
+                            "for the session: /srv/data/intrinsic/artifacts/output"
                         ),
                     }
                 ),
                 encoding="utf-8",
             )
-            producer = ProducerData("lstm")
-            producer.spec = copy.deepcopy(PRODUCERS["lstm"])
+            producer = ProducerData("intrinsic")
+            producer.spec = copy.deepcopy(PRODUCERS["intrinsic"])
             producer.spec["dir"] = root
 
             producer.load()
@@ -138,7 +140,7 @@ class ProducerAttentionTests(unittest.TestCase):
             self.assertEqual(run["generated_at"], expected_generated)
             self.assertEqual(
                 run["failure_reason"],
-                "CandidateProvisioningError: candidate publication already exists",
+                "FundamentalsUnavailableError: EPS snapshot missing for the session",
             )
             self.assertNotIn("2026-07-21", producer.status)
 
@@ -154,12 +156,12 @@ class ProducerAttentionTests(unittest.TestCase):
                 ),
                 encoding="utf-8",
             )
-            (root / "live_coverage_2026-07-21.json").write_text(
+            (root / "intrinsic_coverage_2026-07-21.json").write_text(
                 json.dumps({"passed": False, "technical_failure": True}),
                 encoding="utf-8",
             )
-            producer = ProducerData("lstm")
-            producer.spec = copy.deepcopy(PRODUCERS["lstm"])
+            producer = ProducerData("intrinsic")
+            producer.spec = copy.deepcopy(PRODUCERS["intrinsic"])
             producer.spec["dir"] = root
 
             producer.load()

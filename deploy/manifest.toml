@@ -7,7 +7,7 @@ description = "Read-only analytics UI over LSTM, Intrinsic, and Foundry signals.
 kind        = "service"
 repo        = "https://github.com/jacobAngulo/Signal-Dashboard.git"
 root        = "/projects/Signal-Dashboard"
-depends_on  = ["av-gateway", "signal-foundry", "lstm", "intrinsic"]
+depends_on  = ["av-gateway", "signal-foundry"]
 
 [runtime]
 systemd_unit = "signal-dashboard.service"
@@ -99,10 +99,6 @@ status_column = "status"
 [logs]
 dir    = "/projects/Signal-Dashboard/logs"
 rotate = { size = "20M", keep = 5, compress = true }
-
-[[config.keys]]
-name = "lstm_signals_dir"
-secret = false
 
 [[config.keys]]
 name = "intrinsic_signals_dir"

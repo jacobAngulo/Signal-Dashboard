@@ -96,14 +96,6 @@ function scoreColumns(name, metricCol) {
     { key: 'ticker', label: 'Ticker', render: (r) => <TickerLink t={String(r.ticker).toUpperCase()} /> },
     { key: metricCol, label: metricCol, align: 'right', render: (r) => fmtNum(r[metricCol], 4) },
   ]
-  if (name === 'intrinsic') {
-    return [
-      ...base,
-      { key: 'price', label: 'Price', align: 'right', render: (r) => fmtPx(r.price) },
-      { key: 'intrinsic_value', label: 'Intrinsic', align: 'right', render: (r) => fmtNum(r.intrinsic_value, 2) },
-      { key: 'status', label: 'Status' },
-    ]
-  }
   return [
     ...base,
     { key: 'decision', label: 'Decision' },

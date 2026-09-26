@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 // Tiny hash router so every view is deep-linkable and back/forward work:
-// #/  #/explore  #/analytics  #/runs  #/scores/intrinsic/2026-07-02
+// #/  #/explore  #/analytics  #/runs  #/scores/foundry/2026-07-02
 // #/ticker/GAMB  #/day/2026-07-02
 export function parseHash() {
   const raw = (window.location.hash || '#/').replace(/^#\/?/, '')

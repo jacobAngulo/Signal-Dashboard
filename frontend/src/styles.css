@@ -32,8 +32,6 @@
      hue stayed because the whole interface leans on it. */
   --accent-blue: oklch(0.72 0.13 258);
   --accent-blue-text: oklch(0.80 0.12 258);
-  --intrinsic: oklch(0.72 0.13 300);
-  --intrinsic-text: oklch(0.80 0.12 300);
   --foundry: oklch(0.72 0.13 195);
   --foundry-text: oklch(0.80 0.12 195);
 
@@ -226,7 +224,6 @@ a.symbol-link:focus-visible {
 .tag-warn { color: var(--pending-text); border-bottom-color: var(--pending); }
 .tag-info { color: var(--accent-blue-text); border-bottom-color: var(--accent-blue); }
 .tag-muted { color: var(--faint); border-bottom-color: var(--rule-strong); }
-.tag-intrinsic { color: var(--intrinsic-text); border-bottom-color: var(--intrinsic); }
 .tag-foundry { color: var(--foundry-text); border-bottom-color: var(--foundry); }
 
 .btn {

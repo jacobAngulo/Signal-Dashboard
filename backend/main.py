@@ -1,4 +1,4 @@
-"""Signal-Dashboard API: read-only analytics over Intrinsic and Foundry signals."""
+"""Signal-Dashboard API: read-only analytics over Signal-Foundry's signals."""
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Annotated, Literal
@@ -426,7 +426,6 @@ def signals(producer: Annotated[list[str] | None, Query()] = None,
             ticker: str = None, q: str = None,
             date_from: str = None, date_to: str = None,
             status: str = None,
-            min_metric_intrinsic: float = None,
             min_metric_foundry: float = None,
             buys_only: bool = True, spark: bool = False,
             sort: str = "date", dir: Literal["asc", "desc"] = "desc",
@@ -455,10 +454,7 @@ def signals(producer: Annotated[list[str] | None, Query()] = None,
                 else row.get("status_perf") == status
             )
         ]
-    min_metric_by_producer = {
-        "intrinsic": min_metric_intrinsic,
-        "foundry": min_metric_foundry,
-    }
+    min_metric_by_producer = {"foundry": min_metric_foundry}
     if any(floor is not None for floor in min_metric_by_producer.values()):
         rows = [
             row for row in rows

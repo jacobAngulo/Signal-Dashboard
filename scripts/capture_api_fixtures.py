@@ -44,7 +44,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 DEFAULT_OUT = ROOT / "frontend" / "fixtures" / "api"
-PRODUCERS = ("intrinsic", "foundry")
+PRODUCERS = ("foundry",)
 
 # Every letter, so the header's jump-to-ticker search behaves like a search
 # rather than a lookup table with twenty entries in it.
@@ -228,7 +228,7 @@ def pick_dates(store, n):
 def pick_score_dates(store, n):
     """Each producer's own newest scored days, not the shared window's.
 
-    The producers do not publish on the same calendar -- intrinsic's newest
+    Only one producer publishes now, but the shape is kept -- its newest
     score file can be a fortnight behind foundry's, which emits daily. Slicing
     the shared window would leave that producer's tab with no fixture at all,
     and `views/Scores.jsx:39` opens each tab on that producer's newest scored
@@ -346,8 +346,6 @@ def list_specs(dates, score_dates):
              {**explore, "stop_pct": 0.05, "target_pct": 0.1}))
 
     # Explore's multi-producer selection: two producers checked at once.
-    add(Spec("signals/multi-producer.json", "/api/signals",
-             {**explore, "producer": ["intrinsic", "foundry"]}))
 
     # Day pages follow the shared calendar the heatmap links into.
     for date in dates:
@@ -401,7 +399,7 @@ def signal_specs(client, out_dir, limit):
     ids, seen = [], set()
     for name in ("signals/page-1.json", "signals/page-2.json",
                  "signals/all-decisions.json",
-                 "signals/intrinsic.json", "signals/foundry.json"):
+                 "signals/foundry.json"):
         path = out_dir / name
         if not path.exists():
             continue

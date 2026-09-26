@@ -52,7 +52,7 @@ export default function App() {
       <header>
         <div className="brand">
           <a href="#/" className="brand-link"><span className="brand-mark">◆</span> Signal Dashboard</a>
-          <span className="muted brand-sub">Intrinsic + Foundry</span>
+          <span className="muted brand-sub">Signal Foundry</span>
         </div>
         <SearchBox />
         <DataStatus onPricesReady={() => setDataVersion((value) => value + 1)} />

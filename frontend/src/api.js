@@ -58,10 +58,10 @@ export async function api(path, params, options = {}) {
   return res.json()
 }
 
-// One hue per producer, held apart by hue angle rather than by brightness:
-// violet Intrinsic, cyan Foundry. `color` is the line/mark hue and `text` the
-// brighter on-canvas variant; both come from styles.css via theme.js so the
-// charts and the stylesheet cannot drift.
+// One hue per producer, held apart by hue angle rather than by brightness. Only
+// cyan Foundry is left. `color` is the line/mark hue and `text` the brighter
+// on-canvas variant; both come from styles.css via theme.js so the charts and the
+// stylesheet cannot drift.
 // `color` is the mark hue, `text` the brighter on-canvas variant. Both are
 // getters: styles.css is imported after the component tree, so a token read at
 // module-evaluation time would land before the stylesheet applied.
@@ -73,6 +73,5 @@ const producer = (label, metric, hue) => ({
 })
 
 export const PRODUCER_META = {
-  intrinsic: producer('Intrinsic', 'discount', 'intrinsic'),
   foundry: producer('Foundry', 'score', 'foundry'),
 }

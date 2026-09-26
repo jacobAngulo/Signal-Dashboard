@@ -40,9 +40,10 @@ const WINDOWS = [
 
 const MAX_INTERVAL_DAYS = { '1Min': 7, '5Min': 31, '15Min': 93, '1Hour': 366, '1Day': Infinity }
 
-// The score at which each daily producer starts publishing. Foundry is
-// event-driven and has no standing threshold, so its lane draws without one.
-const THRESHOLDS = { intrinsic: 0.8 }
+// Foundry is event-driven and has no standing publishing threshold, so its lane
+// draws without one. The daily producers that had thresholds are gone (TB-92,
+// TB-93); the map stays so a future producer can declare one.
+const THRESHOLDS = {}
 
 export default function TickerPage({ ticker }) {
   const [data, setData] = useState(null)

@@ -10,7 +10,6 @@ if not _cfg_path.exists():
 
 CFG = json.loads(_cfg_path.read_text())
 
-INTRINSIC_DIR = Path(CFG["intrinsic_signals_dir"])
 FOUNDRY_DB = Path(CFG.get(
     "foundry_db",
     "/srv/data/signal-foundry/db/foundry.duckdb",

@@ -46,8 +46,8 @@ def _window(rec):
     """Per-producer holding window, or None when the producer has none.
 
     Deliberately not unified into a single number: foundry publishes a word an
-    LLM chose and intrinsic publishes nothing. Flattening those into one scale
-    would be inventing data.
+    LLM chose, not a session count. Flattening that into a number would be
+    inventing data.
     """
     producer = rec.get("producer")
     if producer == "foundry":
@@ -61,13 +61,6 @@ def _window(rec):
             "window_note": (
                 "the extraction model's own word (intraday/swing/long_term); "
                 "not a session count — see TB-57"
-            ),
-        }
-    if producer == "intrinsic":
-        return {
-            **_WINDOW_NONE,
-            "window_note": (
-                "valuation snapshot — this producer publishes no holding window"
             ),
         }
     return dict(_WINDOW_NONE)
@@ -109,48 +102,16 @@ def _native_exit(rec, entry_date, window_sessions):
     return-computation elsewhere would have refused to trust.
     """
     producer = rec.get("producer")
-    ticker = rec["ticker"]
 
     if producer == "foundry":
         return {**_EXIT_NONE, "exit_note": "this producer publishes no exit signal"}
 
-    if producer == "intrinsic":
-        out = dict(_EXIT_NONE)
-        out["exit_basis"] = "producer_status"
-        if entry_date is None:
-            out["exit_note"] = "no confirmed entry session yet"
-            return out
-        # getattr, not a direct call: some test doubles patch `STORE` with a
-        # minimal stand-in that predates this method. Real Store always has
-        # it (backend/store.py) -- this only guards against an incomplete
-        # fixture, never real behavior.
-        status_exit = getattr(STORE, "producer_status_exit", None)
-        exit_date = (
-            status_exit("intrinsic", ticker, entry_date, "exit_candidate")
-            if status_exit is not None else None
-        )
-        if exit_date is None:
-            out["exit_state"] = "open"
-            out["exit_note"] = "price has not reached intrinsic value yet"
-            return out
-        out["exit_state"] = "closed"
-        out["exit_date"] = exit_date
-        sessions = _sessions_elapsed(ticker, entry_date, exit_date)
-        out["sessions_elapsed"] = sessions
-        if sessions is not None:
-            perf = STORE.performance(ticker, entry_date, sessions=sessions)
-            if perf.get("return") is not None:
-                exit_point = perf.get("exit") or {}
-                out["exit_px"] = exit_point.get("px")
-                out["exit_return"] = perf.get("return")
-            elif perf.get("blocked_reason") == "corporate_action_unresolved":
-                out["exit_note"] = (
-                    "status flipped, but the return crosses an unresolved "
-                    "corporate action"
-                )
-        return out
-
-    return dict(_EXIT_NONE)
+    # No producer left publishes a native exit: the two that did (a model horizon
+    # in sessions, a valuation status flip) went with TB-92 and TB-93. Returning
+    # the empty shape rather than falling off the end matters -- `enrich` does
+    # `out.update(_native_exit(...))`, so an implicit None would raise for any
+    # producer added later before its branch is written.
+    return {**_EXIT_NONE, "exit_note": "this producer publishes no exit signal"}
 
 
 def enrich(rec, spark=False, directional=None):

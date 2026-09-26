@@ -6,3 +6,10 @@ config.json
 .env.local
 *.log
 .DS_Store
+
+# Local-only: agent worktrees and test-run artefacts. These are working state,
+# not source -- `.worktrees/` is an embedded checkout git would treat as a
+# submodule, and the report/ files are regenerated on every run.
+.worktrees/
+frontend/test-results/
+frontend/tests/.report/

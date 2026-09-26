@@ -1,4 +1,4 @@
-"""Load and cache signal files from the Intrinsic and Foundry producers.
+"""Load and cache the Foundry producer's signals.
 
 Reads are strictly read-only against the producer repos' data outputs.
 Everything is cached in memory and reloaded when the source dirs change.
@@ -28,7 +28,6 @@ from .config import (
     FOUNDRY_GATE,
     FOUNDRY_MODEL,
     FOUNDRY_PROMPT,
-    INTRINSIC_DIR,
     PRICE_REFRESH_SECONDS,
 )
 from .corporate_actions import ContinuousPriceBook, HTTPGateway
@@ -41,38 +40,6 @@ DATE_RE = re.compile(r"(\d{4}-\d{2}-\d{2})")
 # matching the convention of Signal-Foundry's own backtest.
 ET = ZoneInfo("America/New_York")
 
-PRODUCERS = {
-    "intrinsic": {
-        "dir": INTRINSIC_DIR,
-        "decision_glob": "intrinsic_decision_*.csv",
-        "scores_glob": "intrinsic_scores_*.csv",
-        "status_glob": "premarket_status_*.json",
-        "coverage_glob": "intrinsic_coverage_*.json",
-        "price_col": "price",
-        "metric": "discount_to_intrinsic",
-        "hist_range": (0.0, 1.0),
-        "hist_bins": 20,
-        "history_metric": "discount_to_intrinsic",
-        "history_extra": (
-            "intrinsic_value",
-            "status",
-            "shadow_candidate",
-            "shadow_only_candidate",
-            "production_only_candidate",
-            "shadow_status",
-        ),
-        "attention_col": "shadow_only_candidate",
-        "attention_reason_col": "shadow_reason",
-        "attention_tier": "intrinsic_shadow",
-    },
-}
-
-
-def file_date(path: Path):
-    m = DATE_RE.search(path.name)
-    return m.group(1) if m else None
-
-
 def clean(obj):
     """Recursively replace NaN/inf with None so responses are valid JSON."""
     if isinstance(obj, float):
@@ -84,23 +51,6 @@ def clean(obj):
     if pd.isna(obj):
         return None
     return obj
-
-
-def _read_csv(path: Path):
-    try:
-        df = pd.read_csv(path)
-    except Exception:
-        return pd.DataFrame()
-    df.columns = [c.strip() for c in df.columns]
-    return df
-
-
-def _fingerprint(d: Path):
-    try:
-        return tuple(sorted((e.name, e.stat().st_mtime_ns, e.stat().st_size)
-                            for e in os.scandir(d) if e.is_file()))
-    except FileNotFoundError:
-        return ()
 
 
 def _file_fingerprint(path: Path):
@@ -143,17 +93,6 @@ def _as_dt(v):
     except ValueError:
         return None
     return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
-
-
-def _date_from_ts(v):
-    iso = _iso_ts(v)
-    if not iso:
-        return None
-    try:
-        return datetime.fromisoformat(iso.replace("Z", "+00:00")).date().isoformat()
-    except ValueError:
-        m = DATE_RE.search(iso)
-        return m.group(1) if m else None
 
 
 def _snap_trading(day, calendar):
@@ -230,7 +169,7 @@ def _foundry_gate(events, unknown_ticker):
     if gross <= 0:
         return "WATCH", "no directional events", w_pos, w_neg
     if unknown_ticker:
-        return ("WATCH", "ticker not in listing_status — possible hallucination",
+        return ("WATCH", "not a currently-traded symbol — possible hallucination",
                 w_pos, w_neg)
     dom = max(w_pos, w_neg) / gross
     if dom < FOUNDRY_GATE["dominance"]:
@@ -256,90 +195,6 @@ def _foundry_gate(events, unknown_ticker):
             f"{FOUNDRY_GATE['score_floor']:.2f}"
             + (f", net weight {net:.2f} < {FOUNDRY_GATE['net_floor']:.2f}"
                if len(side) >= 2 else " (single event)"), w_pos, w_neg)
-
-
-def _truthy(value):
-    if isinstance(value, bool):
-        return value
-    if value is None or (isinstance(value, float) and math.isnan(value)):
-        return False
-    return str(value).strip().lower() in {"1", "true", "yes", "y"}
-
-
-def _clean_ticker(value):
-    """Normalize a ticker without turning pandas' missing value into 'NAN'."""
-    if value is None or pd.isna(value):
-        return ""
-    return str(value).strip().upper()
-
-
-def _coverage_failure_reason(coverage):
-    """Return a compact operator-facing reason for a failed coverage gate."""
-    error = coverage.get("error") or coverage.get("reason")
-    if error:
-        message = " ".join(str(error).split())
-        # Producer errors sometimes append an absolute artifact path. The
-        # exception and message are useful in a tooltip; the deployment path
-        # is not.
-        path_at = message.find(": /")
-        if path_at >= 0:
-            message = message[:path_at]
-        return message[:177] + "..." if len(message) > 180 else message
-
-    if coverage.get("technical_failure") is True:
-        return "coverage generation failed"
-
-    ready = coverage.get("ready_count")
-    universe = coverage.get("universe_count")
-    if ready is not None and universe is not None:
-        reason = f"{ready} of {universe} ready"
-        counts = coverage.get("status_counts")
-        if isinstance(counts, dict) and counts:
-            dominant = max(counts, key=counts.get).replace("_", " ")
-            reason += f"; mostly {dominant}"
-        return reason
-
-    coverage_status = coverage.get("status")
-    if coverage_status:
-        return f"coverage {coverage_status}"
-    return "coverage requirements not met"
-
-
-def _score_attention_decisions(producer, dt, df, spec):
-    """Convert additive score flags into WATCH rows without changing BUYs."""
-    attention_col = spec.get("attention_col")
-    if not attention_col or attention_col not in df.columns or "ticker" not in df.columns:
-        return []
-    reason_col = spec.get("attention_reason_col")
-    metric_col = spec["history_metric"]
-    rows = []
-    for index, raw in enumerate(records(df)):
-        if not _truthy(raw.get(attention_col)):
-            continue
-        ticker = _clean_ticker(raw.get("ticker"))
-        if not ticker:
-            continue
-        reason_value = raw.get(reason_col) if reason_col else None
-        reason = (
-            spec["attention_tier"]
-            if reason_value is None or pd.isna(reason_value) or not str(reason_value).strip()
-            else str(reason_value)
-        )
-        row = dict(raw)
-        row.update({
-            "id": f"{producer}:{spec['attention_tier']}:{dt}:{ticker}:{index}",
-            "producer": producer,
-            "date": dt,
-            "ticker": ticker,
-            "decision": "WATCH",
-            "tier": spec["attention_tier"],
-            "gate_reason": reason,
-            "reason": reason,
-            "metric": raw.get(metric_col),
-            "created_at": raw.get("as_of_timestamp") or None,
-        })
-        rows.append(row)
-    return rows
 
 
 def _foundry_type_group(value):
@@ -377,183 +232,6 @@ def _assign_foundry_attention(decisions):
                 "attention_candidate" if row["attention_candidate"] else ""
             )
     return decisions
-
-
-class ProducerData:
-    def __init__(self, name: str):
-        self.name = name
-        self.spec = PRODUCERS[name]
-        self.fingerprint = None
-        self.decisions = []          # list[dict], normalized + raw fields
-        self.scores = {}             # date -> DataFrame
-        self.status = {}             # date -> raw status json (+ _mtime)
-        self.coverage = {}           # date -> producer coverage/readiness json
-        self.dates = []              # sorted trading dates seen in scores
-        self.history = {}            # ticker -> [{date, metric, px, ...}]
-        self.metric_values = []      # metric across the whole score universe
-
-    def stale(self):
-        return _fingerprint(self.spec["dir"]) != self.fingerprint
-
-    def load(self):
-        d = self.spec["dir"]
-        self.fingerprint = _fingerprint(d)
-        self.scores = {}
-        self.status = {}
-        self.coverage = {}
-        self.decisions = []
-
-        for p in sorted(d.glob(self.spec["scores_glob"])):
-            dt = file_date(p)
-            if dt:
-                self.scores[dt] = _read_csv(p)
-
-        for p in sorted(d.glob(self.spec["status_glob"])):
-            dt = file_date(p)
-            if not dt:
-                continue
-            try:
-                raw = json.loads(p.read_text())
-            except Exception:
-                raw = {"status": "unreadable"}
-            raw["_mtime"] = p.stat().st_mtime
-            self.status[dt] = raw
-
-        for p in sorted(d.glob(self.spec.get("coverage_glob", "__none__"))):
-            dt = file_date(p)
-            if not dt:
-                continue
-            try:
-                raw = json.loads(p.read_text())
-            except Exception:
-                raw = {"passed": False, "status": "unreadable"}
-            raw["_mtime"] = p.stat().st_mtime
-            self.coverage[dt] = raw
-            # Coverage is a separate producer artifact. Only merge it into a
-            # real status manifest; otherwise `has_status` must remain false.
-            if dt in self.status:
-                self.status[dt]["coverage"] = raw
-
-        for p in sorted(d.glob(self.spec["decision_glob"])):
-            dt = file_date(p)
-            df = _read_csv(p)
-            # Decision CSVs only carry dates; the file mtime is the actual
-            # creation time (it matches the producer's status finished_at to
-            # the second).
-            created = datetime.fromtimestamp(
-                p.stat().st_mtime, tz=timezone.utc).isoformat()
-            for i, row in enumerate(records(df)):
-                rec = {k: v for k, v in row.items()}
-                rec["producer"] = self.name
-                rec["date"] = dt
-                rec["ticker"] = _clean_ticker(row.get("ticker"))
-                rec["decision"] = str(row.get("decision", "")).upper() or None
-                # NO_BUY sentinel rows describe the run, not a security. Keep
-                # them out of signal tables and the global ticker index.
-                if not rec["ticker"]:
-                    continue
-                rec["metric"] = row.get(self.spec["metric"])
-                signal_price = row.get(self.spec["price_col"])
-                if signal_price is None and dt in self.scores and rec["ticker"]:
-                    score_frame = self.scores[dt]
-                    price_col = self.spec["price_col"]
-                    if price_col in score_frame and "ticker" in score_frame:
-                        match = score_frame[
-                            score_frame["ticker"].astype(str).str.upper().eq(rec["ticker"])
-                        ]
-                        if not match.empty:
-                            # Back through the same door: a blank price in the
-                            # score file must arrive as None, not NaN, or the
-                            # `is None` checks downstream never fire.
-                            signal_price = records(match.tail(1))[0].get(price_col)
-                rec["signal_price"] = signal_price
-                rec["created_at"] = created
-                rec["id"] = f"{self.name}:{dt}:{rec['ticker']}:{i}"
-                self.decisions.append(rec)
-
-        for dt, frame in self.scores.items():
-            self.decisions.extend(
-                _score_attention_decisions(self.name, dt, frame, self.spec)
-            )
-
-        self.dates = sorted(self.scores.keys())
-        self._build_history()
-
-    def _build_history(self):
-        """Per-ticker daily score history + full-universe metric sample."""
-        metric_col = self.spec["history_metric"]
-        px_col = self.spec["price_col"]
-        extra = self.spec["history_extra"]
-        self.history = {}
-        self.metric_values = []
-        for dt in self.dates:
-            df = self.scores[dt]
-            if "ticker" not in df.columns:
-                continue
-            cols = [c for c in (metric_col, px_col, *extra) if c in df.columns]
-            for row in df[["ticker", *cols]].itertuples(index=False):
-                rec = dict(zip(("ticker", *cols), row))
-                t = _clean_ticker(rec.pop("ticker"))
-                if not t:
-                    continue
-                h = {"date": dt, "metric": rec.get(metric_col), "px": rec.get(px_col)}
-                for e in extra:
-                    if e in rec:
-                        h[e] = rec[e]
-                self.history.setdefault(t, []).append(h)
-                m = rec.get(metric_col)
-                if isinstance(m, float) and math.isfinite(m):
-                    self.metric_values.append(m)
-
-    def run_rows(self):
-        """One row per known date: run health + volumes."""
-        dates = sorted(set(self.dates) | set(self.status) | set(self.coverage) |
-                       {r["date"] for r in self.decisions})
-        by_date = {}
-        for r in self.decisions:
-            by_date.setdefault(r["date"], []).append(r)
-        rows = []
-        for dt in dates:
-            st = self.status.get(dt, {})
-            decs = by_date.get(dt, [])
-            n_scores = len(self.scores[dt]) if dt in self.scores else None
-            stale_rows = st.get("stale_rows") or {}
-            coverage = self.coverage.get(dt, {})
-            has_status = dt in self.status
-            coverage_failed = (
-                not has_status
-                and (coverage.get("technical_failure") is True
-                     or coverage.get("passed") is False)
-            )
-            status = st.get("status") or ("failed" if coverage_failed else None)
-            generated_mtime = st.get("_mtime") or coverage.get("_mtime")
-            rows.append({
-                "producer": self.name,
-                "date": dt,
-                "status": status,
-                "n_scores": n_scores,
-                "n_decisions": len(decs),
-                "n_buy": sum(1 for r in decs if r["decision"] == "BUY"),
-                "n_attention": sum(1 for r in decs if r.get("tier")),
-                "decision_summary": st.get("decision"),
-                "stale": sum(stale_rows.values()) if stale_rows else None,
-                "generated_at": st.get("finished_at") or st.get("generated_at")
-                    or (datetime.fromtimestamp(generated_mtime, tz=timezone.utc)
-                        .isoformat() if generated_mtime is not None else None),
-                "as_of_date": st.get("as_of_date"),
-                "has_scores": dt in self.scores,
-                "has_status": has_status,
-                "coverage_passed": coverage.get("passed"),
-                "failure_reason": (
-                    _coverage_failure_reason(coverage) if coverage_failed else None
-                ),
-                "universe_count": coverage.get("universe_count"),
-                "ready_count": coverage.get("ready_count"),
-                "ready_fraction": coverage.get("ready_fraction"),
-                "valuation_ready_count": coverage.get("valuation_ready_count"),
-                "valuation_ready_fraction": coverage.get("valuation_ready_fraction"),
-            })
-        return rows
 
 
 class FoundryData:
@@ -923,8 +601,12 @@ class FoundryData:
 
 class Store:
     def __init__(self, gateway_factory=None):
-        self.producers = {name: ProducerData(name) for name in PRODUCERS}
-        self.producers["foundry"] = FoundryData()
+        # Foundry is the only producer left: TB-92 removed LSTM and TB-93
+        # then Intrinsic, and with them the file-based ProducerData class. The map
+        # stays a mapping so every aggregation over `self.producers` still reads
+        # the same, and so a second producer can be added back without reshaping
+        # the store.
+        self.producers = {"foundry": FoundryData()}
         self.price_book = ContinuousPriceBook()
         self.prices = {}         # compatibility index; values come only from gateway
         self.price_max_date = None  # latest traded session anywhere in the book
@@ -962,13 +644,10 @@ class Store:
 
     def _refresh_locked(self):
         changed = False
-        for name in PRODUCERS:
-            p = self.producers[name]
-            if p.stale():
-                p.load()
-                changed = True
-        # Foundry loads last: it snaps events onto the trading calendar the
-        # daily producers just established.
+        # Foundry used to load last, snapping its events onto the trading
+        # calendar the daily producers had just established. It is now the only
+        # producer, so it is its own calendar source: the first load derives the
+        # dates from its own events, and subsequent loads snap to those.
         cal = self.trading_calendar()
         foundry = self.producers["foundry"]
         if foundry.stale(cal) and foundry.load(cal):
@@ -1028,10 +707,16 @@ class Store:
             self._build_ticker_index()
 
     def trading_calendar(self):
-        """Sorted trading dates observed in the daily producers' score files."""
+        """Sorted trading dates every loaded producer has published.
+
+        This iterated the file-based `PRODUCERS` registry, which is now empty, so
+        it returned no dates at all even though Foundry had dozens -- and Foundry
+        snaps its events onto this calendar. Reading `self.producers` keeps it
+        honest with one producer and with any number.
+        """
         ds = set()
-        for name in PRODUCERS:
-            ds.update(self.producers[name].dates)
+        for producer in self.producers.values():
+            ds.update(producer.dates)
         return tuple(sorted(ds))
 
     def producer_status_exit(self, producer, ticker, after_date, status):

@@ -34,8 +34,6 @@ const OUTCOMES = [
   ['no_px', 'no price coverage'],
 ]
 
-const PRODUCER_KEYS = Object.keys(PRODUCER_META)
-
 export default function Explore({ query = {} }) {
   const [pages, setPages] = useState([])
   const [meta, setMeta] = useState(null)
@@ -43,18 +41,13 @@ export default function Explore({ query = {} }) {
   const [loading, setLoading] = useState(true)
   const [sel, setSel] = useState(null)
 
-  const [producers, setProducers] = useState(() => (
-    (query.producer || '').split(',').map((s) => s.trim()).filter((p) => PRODUCER_META[p])
-  ))
+  const [minScore, setMinScore] = useState(query.min_score || query.min_foundry || '')
   const [from, setFrom] = useState(query.from || '')
   const [to, setTo] = useState(query.to || '')
   const [buysOnly, setBuysOnly] = useState(query.buys !== '0')
   const [ticker, setTicker] = useState(query.ticker || '')
   const deferredTicker = useDeferredValue(ticker)
   const [status, setStatus] = useState(query.status || '')
-  const [minMetric, setMinMetric] = useState({
-    intrinsic: query.min_intrinsic || '', foundry: query.min_foundry || '',
-  })
   const [offset, setOffset] = useState(0)
 
   // TB-46: stop-loss / take-profit historical simulation. `stopPct`/`targetPct`
@@ -65,14 +58,10 @@ export default function Explore({ query = {} }) {
   const [exitWindow, setExitWindow] = useState(query.win || '20')
   const [trailing, setTrailing] = useState(query.trail === '1')
 
-  const toggleProducer = (key) => setProducers((prev) => (
-    prev.includes(key) ? prev.filter((p) => p !== key) : [...prev, key]
-  ))
-  const setMinMetricFor = (key, value) => setMinMetric((prev) => ({ ...prev, [key]: value }))
 
   const filterKey = [
-    producers.slice().sort().join(','), from, to, buysOnly, deferredTicker, status,
-    minMetric.intrinsic, minMetric.foundry,
+    from, to, buysOnly, deferredTicker, status,
+    minScore,
     stopPct, targetPct, exitWindow, trailing,
   ].join('|')
   // A filter change restarts the scroll region at the top, not at whatever
@@ -81,34 +70,30 @@ export default function Explore({ query = {} }) {
 
   useEffect(() => {
     const params = new URLSearchParams()
-    if (producers.length) params.set('producer', producers.join(','))
     if (from) params.set('from', from)
     if (to) params.set('to', to)
     if (!buysOnly) params.set('buys', '0')
     if (ticker) params.set('ticker', ticker)
     if (status) params.set('status', status)
-    if (producers.includes('intrinsic') && minMetric.intrinsic) params.set('min_intrinsic', minMetric.intrinsic)
-    if (producers.includes('foundry') && minMetric.foundry) params.set('min_foundry', minMetric.foundry)
+    if (minScore) params.set('min_score', minScore)
     if (stopPct) params.set('stop', stopPct)
     if (targetPct) params.set('target', targetPct)
     if (exitWindow && exitWindow !== '20') params.set('win', exitWindow)
     if (trailing) params.set('trail', '1')
     history.replaceState(null, '', `#/explore${params.size ? `?${params}` : ''}`)
-  }, [producers, from, to, buysOnly, ticker, status, minMetric,
+  }, [from, to, buysOnly, ticker, status, minScore,
       stopPct, targetPct, exitWindow, trailing])
 
   useEffect(() => {
     const controller = new AbortController()
     setLoading(true)
     api('signals', {
-      producer: producers,
       date_from: from,
       date_to: to,
       buys_only: buysOnly,
       q: deferredTicker,
       status,
-      min_metric_intrinsic: producers.includes('intrinsic') ? minMetric.intrinsic : '',
-      min_metric_foundry: producers.includes('foundry') ? minMetric.foundry : '',
+      min_metric_foundry: minScore,
       limit: PAGE,
       offset,
       spark: true,
@@ -141,23 +126,20 @@ export default function Explore({ query = {} }) {
 
   const reset = () => {
     setProducers([]); setFrom(''); setTo(''); setBuysOnly(true)
-    setTicker(''); setStatus(''); setMinMetric({ intrinsic: '', foundry: '' })
+    setTicker(''); setStatus(''); setMinScore('')
     setStopPct(''); setTargetPct(''); setExitWindow('20'); setTrailing(false)
   }
 
   const chips = [
-    ...producers.map((p) => ({
-      key: `producer-${p}`, label: PRODUCER_META[p]?.label || p, clear: () => toggleProducer(p),
-    })),
     ticker && { key: 'ticker', label: `ticker ~ ${ticker}`, clear: () => setTicker('') },
     from && { key: 'from', label: `from ${from}`, clear: () => setFrom('') },
     to && { key: 'to', label: `to ${to}`, clear: () => setTo('') },
     status && { key: 'status', label: OUTCOMES.find(([v]) => v === status)?.[1] || status, clear: () => setStatus('') },
-    ...producers.filter((p) => minMetric[p]).map((p) => ({
-      key: `min-${p}`,
-      label: `${PRODUCER_META[p]?.metric} ≥ ${minMetric[p]}`,
-      clear: () => setMinMetricFor(p, ''),
-    })),
+    minScore && {
+      key: 'min-score',
+      label: `score ≥ ${minScore}`,
+      clear: () => setMinScore(''),
+    },
     !buysOnly && { key: 'buys', label: 'all decisions', clear: () => setBuysOnly(true) },
     stopPct && { key: 'stop', label: `${trailing ? 'trailing ' : ''}stop ${stopPct}%`, clear: () => setStopPct('') },
     targetPct && { key: 'target', label: `target ${targetPct}%`, clear: () => setTargetPct('') },
@@ -166,9 +148,7 @@ export default function Explore({ query = {} }) {
 
   const summary = meta?.summary || {}
   const sim = summary.sim
-  const producerLabel = producers.length === 0
-    ? 'all producers'
-    : producers.map((p) => PRODUCER_META[p]?.label || p).join(' + ')
+  const producerLabel = PRODUCER_META.foundry?.label || 'Foundry'
   const rule = pctToFraction(stopPct) != null || pctToFraction(targetPct) != null
     ? {
         stop: pctToFraction(stopPct) ?? null,
@@ -221,18 +201,11 @@ export default function Explore({ query = {} }) {
       </div>
 
       <div className="query-bar">
-        <Field label="Producers">
-          <div className="seg" role="group" aria-label="Producers">
-            <button type="button" className={`seg-btn ${producers.length === 0 ? 'active' : ''}`}
-                    aria-pressed={producers.length === 0}
-                    onClick={() => setProducers([])}>All</button>
-            {PRODUCER_KEYS.map((key) => (
-              <button key={key} type="button"
-                      className={`seg-btn ${producers.includes(key) ? 'active' : ''}`}
-                      aria-pressed={producers.includes(key)}
-                      onClick={() => toggleProducer(key)}>{PRODUCER_META[key].label}</button>
-            ))}
-          </div>
+        <Field label={`Min ${PRODUCER_META.foundry?.metric || 'score'}`}>
+          <input type="number" step="0.01" value={minScore}
+                 onChange={(e) => setMinScore(e.target.value)}
+                 style={{ width: 96 }} placeholder="0.25"
+                 aria-label={`Minimum ${PRODUCER_META.foundry?.metric || 'score'}`} />
         </Field>
         <Field label="Ticker contains">
           <input value={ticker} onChange={(e) => setTicker(e.target.value)}
@@ -285,25 +258,6 @@ export default function Explore({ query = {} }) {
           <button type="button" className="btn" onClick={reset} disabled={!chips.length}>Clear all</button>
         </div>
       </div>
-
-      {/* One filter row per checked producer, each with its own "Min {metric}"
-          floor. TB-92 removed the one producer that carried extra curated knobs
-          (horizon, attention status, min price, resolved-only). */}
-      {producers.length > 0 && (
-        <div className="producer-rows">
-          {producers.map((p) => (
-            <div key={p} className="filter-row producer-row">
-              <span className="producer-row-label">{PRODUCER_META[p]?.label}</span>
-              <Field label={`Min ${PRODUCER_META[p]?.metric}`}>
-                <input type="number" step="0.01" value={minMetric[p] || ''}
-                       onChange={(e) => setMinMetricFor(p, e.target.value)}
-                       style={{ width: 84 }} aria-label={`Minimum ${PRODUCER_META[p]?.metric}`}
-                       placeholder="0.25" />
-              </Field>
-            </div>
-          ))}
-        </div>
-      )}
 
       {chips.length > 0 && (
         <div className="chips">

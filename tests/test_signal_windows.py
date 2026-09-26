@@ -10,74 +10,16 @@ import pandas as pd
 
 from backend import main, trading_days
 from backend.corporate_actions import ContinuousPriceBook
-from backend.metrics import _native_exit, _window, enrich
+from backend.metrics import _window, enrich
 
 
 class WindowTests(unittest.TestCase):
-    def test_intrinsic_window_is_always_none(self):
-        result = _window({"producer": "intrinsic", "horizon": "irrelevant"})
-
-        self.assertIsNone(result["window_label"])
-        self.assertIsNone(result["window_sessions"])
-        self.assertIsNone(result["window_basis"])
-        self.assertIsNotNone(result["window_note"])
-
     def test_foundry_swing_label_with_no_session_count(self):
         result = _window({"producer": "foundry", "horizon": "swing"})
 
         self.assertEqual(result["window_label"], "swing")
         self.assertIsNone(result["window_sessions"])
         self.assertEqual(result["window_basis"], "llm_time_sensitivity")
-
-class FakeIntrinsicStore:
-    """Just enough of Store for `_native_exit`'s intrinsic branch: a score
-    history to search for the status flip, plus a fixed performance/series
-    answer so the surrounding return computation never touches the network."""
-
-    def __init__(self, history):
-        self.producers = {"intrinsic": SimpleNamespace(history=history)}
-
-    def producer_status_exit(self, producer, ticker, after_date, status):
-        for row in self.producers[producer].history.get(ticker, []):
-            if row["date"] > after_date and row.get("status") == status:
-                return row["date"]
-        return None
-
-    def performance(self, ticker, entry_date, *, sessions=None, **_kwargs):
-        return {"return": 0.25, "exit": {"date": "2026-01-20", "px": 15.0}}
-
-    def series(self, ticker, start=None):
-        return []
-
-
-class IntrinsicNativeExitTests(unittest.TestCase):
-    def test_resolves_closed_when_status_flips_to_exit_candidate(self):
-        history = {"AAA": [
-            {"date": "2026-01-05", "status": "buy_candidate"},
-            {"date": "2026-01-12", "status": "buy_candidate"},
-            {"date": "2026-01-20", "status": "exit_candidate"},
-        ]}
-        with patch("backend.metrics.STORE", FakeIntrinsicStore(history)):
-            result = _native_exit(
-                {"producer": "intrinsic", "ticker": "AAA"}, "2026-01-05", None)
-
-        self.assertEqual(result["exit_state"], "closed")
-        self.assertEqual(result["exit_date"], "2026-01-20")
-        self.assertEqual(result["exit_basis"], "producer_status")
-
-    def test_stays_open_when_status_never_flips(self):
-        history = {"AAA": [
-            {"date": "2026-01-05", "status": "buy_candidate"},
-            {"date": "2026-01-12", "status": "buy_candidate"},
-        ]}
-        with patch("backend.metrics.STORE", FakeIntrinsicStore(history)):
-            result = _native_exit(
-                {"producer": "intrinsic", "ticker": "AAA"}, "2026-01-05", None)
-
-        self.assertEqual(result["exit_state"], "open")
-        self.assertIsNone(result["exit_date"])
-        self.assertIsNotNone(result["exit_note"])
-
 
 class TradingDaysFailSoftTests(unittest.TestCase):
     def setUp(self):

@@ -24,8 +24,6 @@ const FALLBACK = {
   '--pending-text': 'oklch(0.88 0.12 85)',
   '--accent-blue': 'oklch(0.72 0.13 258)',
   '--accent-blue-text': 'oklch(0.80 0.12 258)',
-  '--intrinsic': 'oklch(0.72 0.13 300)',
-  '--intrinsic-text': 'oklch(0.80 0.12 300)',
   '--foundry': 'oklch(0.72 0.13 195)',
   '--foundry-text': 'oklch(0.80 0.12 195)',
 }

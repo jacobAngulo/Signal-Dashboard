@@ -1,5 +1,4 @@
 {
-  "intrinsic_signals_dir": "/srv/data/intrinsic/artifacts/signals",
   "foundry_db": "/srv/data/signal-foundry/db/foundry.duckdb",
   "foundry_model": "gpt-oss:20b",
   "foundry_prompt": "v2",

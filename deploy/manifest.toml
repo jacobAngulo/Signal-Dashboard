@@ -101,10 +101,6 @@ dir    = "/projects/Signal-Dashboard/logs"
 rotate = { size = "20M", keep = 5, compress = true }
 
 [[config.keys]]
-name = "intrinsic_signals_dir"
-secret = false
-
-[[config.keys]]
 name = "foundry_db"
 secret = false
 
